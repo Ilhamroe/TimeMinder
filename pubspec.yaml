@@ -1,19 +1,32 @@
 name: mobile_time_minder
 description: A new Flutter project.
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.1.0 <4.0.0'
+  sdk: ">=3.1.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  cupertino_icons: ^1.0.0
+  shared_preferences: ^2.2.2
+  sqflite: ^2.3.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
 
+assets:
+  - assets/fonts/
+
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Nunito-Bold
+      fonts:
+        - asset: assets/fonts/Nunito-Bold.ttf
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
