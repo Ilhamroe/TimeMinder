@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_svg: ^2.0.10+1
 
 dev_dependencies:
   flutter_test:
@@ -17,3 +18,15 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/images/
+  fonts:
+    - family: Nunito-Bold
+      fonts:
+        - asset: assets/fonts/Nunito-Bold.ttf
+    - family: Nunito
+      fonts:
+        - asset: assets/fonts/Nunito-Regular.ttf
+    - family: DMSans
+      fonts:
+        - asset: assets/fonts/DMSans.ttf
