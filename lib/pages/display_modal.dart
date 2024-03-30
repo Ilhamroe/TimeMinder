@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/widgets/cupertino_switch.dart';
 import 'package:mobile_time_minder/widgets/text.dart';
@@ -21,7 +22,7 @@ class _DisplayModalState extends State<DisplayModal> {
       GlobalKey<SettingBreakWidgetState>();
 
   //databases
-  List<Map<String, dynamic>> _allData = [];
+  late List<Map<String, dynamic>> _allData = [];
 
   int _counter = 0;
   int _counterBreakTime = 0;
@@ -30,62 +31,14 @@ class _DisplayModalState extends State<DisplayModal> {
   bool statusSwitch = false;
   bool hideContainer = true;
 
-  void _handleBreakTimeChange(int value) {
-    setState(() {
-      _counterBreakTime = value;
-    });
-  }
-
-  void _handleIntervalChange(int value) {
-    setState(() {
-      _counterInterval = value;
-    });
-  }
-
-  void _openIconButtonPressed() {
-    setState(() {
-      hideContainer = !hideContainer;
-      statusSwitch = false;
-    });
-  }
-
-  void _resetSetting() {
-    setState(() {
-      _namaTimerController.clear();
-      _deskripsiController.clear();
-      _counter = 0;
-      _settingTimeWidgetKey.currentState?.resetCounter();
-      _settingBreakWidgetKey.currentState?.resetCounter();
-      hideContainer = true;
-    });
-  }
-
-  void _submitButton([int? id]) async {
-    if (id == null) {
-      await _addData();
-    }
-    if (id != null) {
-      await _updateData(id);
-    }
-
-    _namaTimerController.text = "";
-    _deskripsiController.text = "";
-    _counter.toString();
-    _counterBreakTime.toString();
-    _counterInterval.toString();
-
-    Navigator.of(context).pop();
-    // _refreshData();
-  }
-
-  void updateCounter(int value) {
-    setState(() {
-      _counter = value;
-    });
-  }
-
   TextEditingController _namaTimerController = TextEditingController();
   TextEditingController _deskripsiController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
+  }
 
   // show data
   void _refreshData() async {
@@ -96,20 +49,17 @@ class _DisplayModalState extends State<DisplayModal> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
-  }
-
   // add data
   Future<void> _addData() async {
     await SQLHelper.createData(
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
+      _namaTimerController.text,
+      _deskripsiController.text,
+      _counter,
+      _counterBreakTime,
+      _counterInterval,
+    );
+
+    Navigator.of(context).pop();
     _refreshData();
   }
 
@@ -122,20 +72,99 @@ class _DisplayModalState extends State<DisplayModal> {
         _counter,
         _counterBreakTime,
         _counterInterval);
+    Navigator.of(context).pop();
     _refreshData();
   }
 
-  // delete data
-  void _deleteData(int id) async {
-    await SQLHelper.deleteData(id);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      backgroundColor: Colors.redAccent,
-      content: Text("Data deleted"),
-    ));
+  Future<void> _handleBreakTimeChange(int value) async {
+    setState(() {
+      _counterBreakTime = value;
+    });
+  }
+
+  Future<void> _handleIntervalChange(int value) async {
+    setState(() {
+      _counterInterval = value;
+    });
+  }
+
+  Future<void> _openIconButtonPressed() async {
+    setState(() {
+      hideContainer = !hideContainer;
+      statusSwitch = false;
+    });
+  }
+
+  Future<void> _resetSetting() async {
+    setState(() {
+      _namaTimerController.clear();
+      _deskripsiController.clear();
+      _counter = 0;
+      _settingTimeWidgetKey.currentState?.resetCounter();
+      _settingBreakWidgetKey.currentState?.resetCounter();
+      hideContainer = true;
+    });
+  }
+
+  Future<void> updateCounter(int value) async {
+    setState(() {
+      _counter = value;
+    });
+  }
+
+  void _submitButton([int? id]) async {
+    final name = _namaTimerController.text.trim();
+    final description = _deskripsiController.text.trim();
+    final counter = _counter;
+
+    if (name.isEmpty || description.isEmpty || counter == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        backgroundColor: Colors.redAccent,
+        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
+      ));
+      return;
+    }
+
+    if (id == null) {
+      await _addData();
+    } else {
+      await _updateData(id);
+    }
+
     _refreshData();
   }
 
-  
+  void _showModal([int? id]) async {
+    if (id != null) {
+      final existingData =
+          _allData.firstWhere((element) => element['id'] == id);
+      _namaTimerController.text = existingData['title'];
+      _deskripsiController.text = existingData['description'];
+      _counter = existingData['time'] ?? 0;
+      _counterBreakTime = existingData['rest'] ?? 0;
+      _counterInterval = existingData['interval'] ?? 0;
+    }
+
+    final newData = await showCupertinoModalPopup(
+      context: context,
+      builder: (_) => CupertinoTheme(
+        data: CupertinoThemeData(
+          brightness: Brightness.light,
+          scaffoldBackgroundColor: Colors.redAccent,
+        ),
+        child: Container(
+          margin: EdgeInsets.only(top: 170),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(70),
+          ),
+          child: DisplayModal(),
+        ),
+      ),
+    );
+    if (newData != null) {
+      _refreshData();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +196,10 @@ class _DisplayModalState extends State<DisplayModal> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.close),
+                      icon: Icon(
+                        Icons.close,
+                        color: Colors.black,
+                      ),
                     ),
                   ],
                 ),
@@ -175,13 +207,21 @@ class _DisplayModalState extends State<DisplayModal> {
                 CustomTextField(labelText: "Nama Timer : "),
                 TextField(
                   controller: _namaTimerController,
-                  decoration: InputDecoration(),
+                  maxLength: 20, 
+                  decoration: InputDecoration(
+                    counterText:
+                        '', 
+                  ),
                 ),
                 SizedBox(height: 7),
                 CustomTextField(labelText: "Deskripsi : "),
                 TextField(
                   controller: _deskripsiController,
-                  decoration: InputDecoration(),
+                  maxLength: 33, 
+                  decoration: InputDecoration(
+                    counterText:
+                        '', 
+                  ),
                 ),
                 SizedBox(height: 7),
                 Column(
@@ -209,7 +249,8 @@ class _DisplayModalState extends State<DisplayModal> {
                                   _counter != 0
                               ? _openIconButtonPressed
                               : null,
-                          icon: Icon(Icons.arrow_drop_down_circle_outlined),
+                          icon: Icon(Icons.arrow_drop_down_circle_outlined,
+                              color: Colors.black),
                         ),
                       ],
                     ),

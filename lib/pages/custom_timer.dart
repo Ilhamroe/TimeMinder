@@ -11,8 +11,7 @@ class CustomTimer extends StatefulWidget {
 }
 
 class _CustomTimerState extends State<CustomTimer> {
-  //databases
-  List<Map<String, dynamic>> _allData = [];
+  late List<Map<String, dynamic>> _allData = [];
 
   int _counter = 0;
   int _counterBreakTime = 0;
@@ -24,42 +23,13 @@ class _CustomTimerState extends State<CustomTimer> {
   TextEditingController _namaTimerController = TextEditingController();
   TextEditingController _deskripsiController = TextEditingController();
 
-  // show data
+  // refresh data
   void _refreshData() async {
     final data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
       _isLoading = false;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
-  }
-
-  // add data
-  Future<void> _addData() async {
-    await SQLHelper.createData(
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    _refreshData();
-  }
-
-  // edit data
-  Future<void> _updateData(int id) async {
-    await SQLHelper.updateData(
-        id,
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    _refreshData();
   }
 
   // delete data
@@ -72,27 +42,43 @@ class _CustomTimerState extends State<CustomTimer> {
     _refreshData();
   }
 
-  void _showModal(BuildContext context, int? id) async {
+  void _showModal([int? id]) async {
     if (id != null) {
       final existingData =
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      _counter = existingData['time'];
-      _counterBreakTime = existingData['rest'];
-      _counterInterval = existingData['interval'];
+      _counter = existingData['time'] ?? 0;
+      _counterBreakTime = existingData['rest'] ?? 0;
+      _counterInterval = existingData['interval'] ?? 0;
     }
 
-    showCupertinoModalPopup(
+    final newData = await showCupertinoModalPopup(
       context: context,
-      builder: (_) => Container(
-        margin: EdgeInsets.only(top: 170),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(70),
+      builder: (_) => CupertinoTheme(
+        data: CupertinoThemeData(
+          brightness: Brightness.light,
+          scaffoldBackgroundColor:
+              Colors.redAccent,
         ),
-        child: DisplayModal(),
+        child: Container(
+          margin: EdgeInsets.only(top: 170),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(70),
+          ),
+          child: DisplayModal(),
+        ),
       ),
     );
+    if (newData != null) {
+      _refreshData();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
   }
 
   @override
@@ -109,26 +95,40 @@ class _CustomTimerState extends State<CustomTimer> {
               itemCount: _allData.length,
               itemBuilder: (context, index) => Card(
                 margin: EdgeInsets.all(15),
-                child: InkWell(
-                  onTap: () {
-                    _showModal(context, _allData[index]['id']);
-                  },
-                  child: ListTile(
-                    title: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
-                      child: Text(
-                        _allData[index]['title'],
-                        style: TextStyle(fontSize: 20),
-                      ),
+                child: ListTile(
+                  title: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      _allData[index]['title'],
+                      style: TextStyle(fontSize: 20),
                     ),
-                    subtitle: Text(_allData[index]['rest'].toString()),
-                    trailing: Text(_allData[index]['timer'].toString()),
+                  ),
+                  subtitle: Text(_allData[index]['description']),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(_allData[index]['timer'].toString()),
+                      IconButton(
+                        onPressed: () {
+                          _showModal(_allData[index]['id']);
+                        },
+                        icon: Icon(Icons.edit),
+                        color: Colors.indigo,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _deleteData(_allData[index]['id']);
+                        },
+                        icon: Icon(Icons.delete),
+                        color: Colors.redAccent,
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () => _showModal(context, null),
+        onPressed: () => _showModal(null),
         child: Icon(Icons.add),
       ),
     );
