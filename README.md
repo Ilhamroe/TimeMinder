@@ -1,3 +1,3 @@
-# mobile_time_minder
+# list_timer
 
 A new Flutter project.
