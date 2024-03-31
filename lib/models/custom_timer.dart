@@ -1,33 +1,65 @@
-class CustomTimer {
-  final String name;
+const String customTimer = "timer";
+
+class CustomTimerFields {
+  static const String id = "id";
+  static const String title = "title";
+  static const String description = "description";
+  static const String timer = "time";
+  static const String rest = "rest";
+  static const String interval = "interval";
+}
+
+class CusTime {
+  final int? id;
+  final String title;
   final String description;
-  final int mainTime;
-  final int? breakTime;
+  final int timer;
+  final int? rest;
   final int? interval;
 
-  CustomTimer({
-    required this.name,
+  CusTime({
+    this.id,
+    required this.title,
     required this.description,
-    required this.mainTime,
-    this.breakTime,
+    required this.timer,
+    this.rest,
     this.interval,
   });
 
-  List<CustomTimer> addTimer = [
-    CustomTimer(
-        name: "Focus Instan",
-        description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        mainTime: 30)
-  ];
+  CusTime copy({
+    int? id,
+    String? title,
+    String? description,
+    int? timer,
+    int? rest,
+    int? interval,
+  }) {
+    return CusTime(
+        id: id,
+        title: title ?? this.title,
+        description: description ?? this.description,
+        timer: timer ?? this.timer,
+        rest: rest ?? this.rest,
+        interval: interval ?? this.interval);
+  }
 
-  List<CustomTimer> addTimeBreak = [
-    CustomTimer(
-        name: "For a moment",
-        description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-        mainTime: 40,
-        breakTime: 5,
-        interval: 2)
-  ];
+  static CusTime fromJson(Map<String, Object?> json) {
+    return CusTime(
+      id: json[CustomTimerFields.id] as int?,
+      title: json[CustomTimerFields.title] as String,
+      description: json[CustomTimerFields.description] as String,
+      timer: json[CustomTimerFields.timer] as int,
+      rest: json[CustomTimerFields.rest] as int?,
+      interval: json[CustomTimerFields.rest] as int?,
+    );
+  }
+
+  Map<String, Object?> toJson() => {
+        CustomTimerFields.id: id,
+        CustomTimerFields.title: title,
+        CustomTimerFields.description: description,
+        CustomTimerFields.timer: timer,
+        CustomTimerFields.rest: rest,
+        CustomTimerFields.interval: interval,
+      };
 }
