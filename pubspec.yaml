@@ -10,8 +10,10 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
-  shared_preferences: ^2.2.2
+  intl: ^0.19.0
+  path: ^1.8.3
   sqflite: ^2.3.2
+  timer_count_down: ^2.2.2
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_time_minder/theme.dart';
 
 class SettingTimeWidget extends StatefulWidget {
   final int initialCounter;
@@ -54,9 +55,9 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
             padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Color(0xFFFAF8EE),
+              color: offYellow,
               border: Border.all(
-                color: Color(0xFFFFBF1C),
+                color: ripeMango,
                 width: 1,
               ),
             ),
@@ -69,7 +70,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     decoration: BoxDecoration(
                       border: Border(
                         right: BorderSide(
-                          color: Colors.white,
+                          color: offYellow,
                           width: 1,
                         ),
                       ),
@@ -78,7 +79,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                       onPressed: _decrement,
                       icon: Icon(Icons.remove),
                       iconSize: 18,
-                      color: Color(0xFFFFBF1C),
+                      color: ripeMango,
                     ),
                   ),
                 ),
@@ -99,7 +100,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     decoration: BoxDecoration(
                       border: Border(
                         left: BorderSide(
-                          color: Colors.white,
+                          color: offYellow,
                           width: 1,
                         ),
                       ),
@@ -108,7 +109,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                       onPressed: _increment,
                       icon: Icon(Icons.add),
                       iconSize: 18,
-                      color: Color(0xFFFFBF1C),
+                      color: ripeMango,
                     ),
                   ),
                 ),
