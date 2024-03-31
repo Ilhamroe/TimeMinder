@@ -26,13 +26,12 @@ class _CustomTimerState extends State<CustomTimer> {
     blueJeans,
     darkGrey,
     halfGrey,
+    cetaceanBlue,
   ];
-
   Color _getRandomColor() {
     final Random random = Random();
     return _customColors[random.nextInt(_customColors.length)];
   }
-
 
   late List<Map<String, dynamic>> _allData = [];
 
@@ -70,7 +69,6 @@ class _CustomTimerState extends State<CustomTimer> {
   }
 
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
-  void _showModal([int? id]) async {
     if (id != null) {
       final existingData =
           _allData.firstWhere((element) => element['id'] == id);
@@ -90,29 +88,16 @@ class _CustomTimerState extends State<CustomTimer> {
 
     final newData = await showCupertinoModalPopup(
       context: context,
-      builder: (_) => CupertinoTheme(
-        data: CupertinoThemeData(
-          brightness: Brightness.light,
-          scaffoldBackgroundColor:
-              Colors.redAccent,
-        ),
-        child: Container(
-          margin: EdgeInsets.only(top: 170),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(70),
-          ),
-          child: DisplayModal(),
+      builder: (_) => Container(
+        margin: EdgeInsets.only(top: 170),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(70),
         ),
         child: DisplayModal(id: id),
       ),
     );
     onClose(newData);
     _refreshData();
-      ),
-    );
-    if (newData != null) {
-      _refreshData();
-    }
   }
 
   @override
@@ -121,6 +106,7 @@ class _CustomTimerState extends State<CustomTimer> {
     _refreshData();
   }
 
+  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,87 +119,53 @@ class _CustomTimerState extends State<CustomTimer> {
             )
           : ListView.builder(
               itemCount: _allData.length,
-              itemBuilder: (context, index) {
-                final Key itemKey = UniqueKey();
-                final Color itemColor = _getRandomColor();
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => DetailTimer(data: _allData[index]),
+              itemBuilder: (context, index) => GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => DetailTimer(data: _allData[index]),
+                    ),
+                  );
+                },
+                child: Card(
+                  margin: EdgeInsets.all(15),
+                  color: _getRandomColor(), // Set background color
+                  child: ListTile(
+                    title: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 5),
+                      child: Text(
+                        _allData[index]['title'],
+                        style: TextStyle(fontSize: 20),
                       ),
-                    );
-                  },
-                  child: Card(
-                    key: itemKey,
-                    margin: EdgeInsets.all(15),
-                    color: itemColor, // Use the random color
-                    child: ListTile(
-                      title: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 5),
-                        child: Text(
-                          _allData[index]['title'],
-                          style: TextStyle(fontSize: 20),
+                    ),
+                    subtitle: Text(_allData[index]['description']),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(_formatTime(_allData[index]['timer'] ?? 0) +
+                            " punya"),
+                        Text(_allData[index]['rest'].toString() +
+                            "x rest, selama"),
+                        Text(_allData[index]['interval'].toString() + "x"),
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () => _showModal((int? id) {
+                            // Lakukan sesuatu dengan ID yang dikembalikan
+                          }, _allData[index]['id']), // Pass id ke _showModal
                         ),
-                      ),
-                      subtitle: Text(_allData[index]['description']),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(_formatTime(_allData[index]['timer'] ?? 0) + " punya"),
-                          Text(_allData[index]['rest'].toString() + "x rest, selama"),
-                          Text(_allData[index]['interval'].toString() + "x"),
-                          IconButton(
-                            icon: Icon(Icons.edit),
-                            onPressed: () => _showModal((int? id) {
-                              // Lakukan sesuatu dengan ID yang dikembalikan
-                            }, _allData[index]['id']),
-                          ),
-                          IconButton(
-                            icon: Icon(Icons.delete),
-                            onPressed: () => _deleteData(_allData[index]['id']),
-                          )
-                        ],
-                      ),
-                    ),
-              itemBuilder: (context, index) => Card(
-                margin: EdgeInsets.all(15),
-                child: ListTile(
-                  title: Padding(
-                    padding: EdgeInsets.symmetric(vertical: 5),
-                    child: Text(
-                      _allData[index]['title'],
-                      style: TextStyle(fontSize: 20),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => _deleteData(_allData[index]['id']),
+                        )
+                      ],
                     ),
                   ),
-                  subtitle: Text(_allData[index]['description']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(_allData[index]['timer'].toString()),
-                      IconButton(
-                        onPressed: () {
-                          _showModal(_allData[index]['id']);
-                        },
-                        icon: Icon(Icons.edit),
-                        color: Colors.indigo,
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          _deleteData(_allData[index]['id']);
-                        },
-                        icon: Icon(Icons.delete),
-                        color: Colors.redAccent,
-                      ),
-                    ],
-                  ),
-                );
-              },
+                ),
+              ),
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showModal((int? id) {}),
-        onPressed: () => _showModal(null),
         child: Icon(Icons.add),
       ),
     );

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/cupertino_switch.dart';
@@ -24,8 +23,6 @@ class _DisplayModalState extends State<DisplayModal> {
       GlobalKey<SettingBreakWidgetState>();
 
   int? id;
-  //databases
-  late List<Map<String, dynamic>> _allData = [];
   int _counter = 0;
   int _counterBreakTime = 0;
   int _counterInterval = 0;
@@ -50,75 +47,21 @@ class _DisplayModalState extends State<DisplayModal> {
 
   // show data
   void _refreshData() async {
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
-  }
-
-  // show data
-  void _refreshData() async {
-    final data = await SQLHelper.getAllData();
-    setState(() {
-      _allData = data;
-      _isLoading = false;
-    });
-  }
-
-  // add data
-  Future<void> _addData() async {
-    await SQLHelper.createData(
-      _namaTimerController.text,
-      _deskripsiController.text,
-      _counter,
-      _counterBreakTime,
-      _counterInterval,
-    );
-
-    Navigator.of(context).pop();
-    _refreshData();
-  }
-
-  // edit data
-  Future<void> _updateData(int id) async {
-    await SQLHelper.updateData(
-        id,
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    Navigator.of(context).pop();
-    _refreshData();
-  }
-
-  Future<void> _handleBreakTimeChange(int value) async {
-    setState(() {
-      _counterBreakTime = value;
-    });
-  }
-
-  Future<void> _handleIntervalChange(int value) async {
     setState(() {
       _isLoading = true;
     });
     final data = await SQLHelper.getAllData();
-  }
-
-  Future<void> _openIconButtonPressed() async {
     setState(() {
       _allData = data;
       _isLoading = false;
     });
   }
-
 
   // show data by id
   void getSingleData(int id) async {
     final data = await SQLHelper.getSingleData(id);
     final int timerValue = data[0]['timer'] ?? 0;
 
-  Future<void> _resetSetting() async {
     setState(() {
       _namaTimerController.text = data[0]['title'];
       _deskripsiController.text = data[0]['description'];
@@ -151,7 +94,6 @@ class _DisplayModalState extends State<DisplayModal> {
   }
 
   void _resetSetting() {
-  Future<void> updateCounter(int value) async {
     setState(() {
       _namaTimerController.clear();
       _deskripsiController.clear();
@@ -179,38 +121,30 @@ class _DisplayModalState extends State<DisplayModal> {
       statusSwitch = false;
     });
   }
-  void _submitButton([int? id]) async {
-    final name = _namaTimerController.text.trim();
-    final description = _deskripsiController.text.trim();
-    final counter = _counter;
 
-    if (name.isEmpty || description.isEmpty || counter == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
-      ));
-      return;
-    }
-
-    if (id == null) {
-      await _addData();
-    } else {
-      await _updateData(id);
-    }
-
+  // add data
+  Future<void> _addData() async {
+    await SQLHelper.createData(
+        _namaTimerController.text,
+        _deskripsiController.text,
+        _counter,
+        _counterBreakTime,
+        _counterInterval);
     _refreshData();
   }
 
-  void _showModal([int? id]) async {
-    if (id != null) {
-      final existingData =
-          _allData.firstWhere((element) => element['id'] == id);
-      _namaTimerController.text = existingData['title'];
-      _deskripsiController.text = existingData['description'];
-      _counter = existingData['time'] ?? 0;
-      _counterBreakTime = existingData['rest'] ?? 0;
-      _counterInterval = existingData['interval'] ?? 0;
-    }
+  // edit data
+  Future<void> _updateData(int id) async {
+    await SQLHelper.updateData(
+        id,
+        _namaTimerController.text,
+        _deskripsiController.text,
+        _counter,
+        _counterBreakTime,
+        _counterInterval);
+    _refreshData();
+  }
+
   // delete data
   void _deleteData(int id) async {
     await SQLHelper.deleteData(id);
@@ -220,25 +154,6 @@ class _DisplayModalState extends State<DisplayModal> {
       duration: Duration(milliseconds: 500),
     ));
     _refreshData();
-    final newData = await showCupertinoModalPopup(
-      context: context,
-      builder: (_) => CupertinoTheme(
-        data: CupertinoThemeData(
-          brightness: Brightness.light,
-          scaffoldBackgroundColor: Colors.redAccent,
-        ),
-        child: Container(
-          margin: EdgeInsets.only(top: 170),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(70),
-          ),
-          child: DisplayModal(),
-        ),
-      ),
-    );
-    if (newData != null) {
-      _refreshData();
-    }
   }
 
   @override
@@ -273,10 +188,7 @@ class _DisplayModalState extends State<DisplayModal> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(
-                        Icons.close,
-                        color: Colors.black,
-                      ),
+                      icon: Icon(Icons.close),
                     ),
                   ],
                 ),
@@ -287,23 +199,15 @@ class _DisplayModalState extends State<DisplayModal> {
                   controller: _namaTimerController,
                   decoration: InputDecoration(
                     counterText: '',
-                  maxLength: 20, 
-                  decoration: InputDecoration(
-                    counterText:
-                        '', 
                   ),
                 ),
                 SizedBox(height: 7),
                 CustomTextField(labelText: "Deskripsi : "),
                 TextField(
-                  maxLength: 30,
+                  maxLength: 33,
                   controller: _deskripsiController,
                   decoration: InputDecoration(
                     counterText: '',
-                  maxLength: 30, 
-                  decoration: InputDecoration(
-                    counterText:
-                        '',
                   ),
                 ),
                 SizedBox(height: 7),
@@ -332,8 +236,7 @@ class _DisplayModalState extends State<DisplayModal> {
                                   _counter != 0
                               ? _openIconButtonPressed
                               : null,
-                          icon: Icon(Icons.arrow_drop_down_circle_outlined,
-                              color: Colors.black),
+                          icon: Icon(Icons.arrow_drop_down_circle_outlined),
                         ),
                       ],
                     ),
