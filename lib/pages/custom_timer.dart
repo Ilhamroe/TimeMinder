@@ -33,6 +33,7 @@ class _CustomTimerState extends State<CustomTimer> {
     return _customColors[random.nextInt(_customColors.length)];
   }
 
+
   late List<Map<String, dynamic>> _allData = [];
 
   int _counter = 0;
@@ -69,6 +70,7 @@ class _CustomTimerState extends State<CustomTimer> {
   }
 
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
+  void _showModal([int? id]) async {
     if (id != null) {
       final existingData =
           _allData.firstWhere((element) => element['id'] == id);
@@ -88,16 +90,29 @@ class _CustomTimerState extends State<CustomTimer> {
 
     final newData = await showCupertinoModalPopup(
       context: context,
-      builder: (_) => Container(
-        margin: EdgeInsets.only(top: 170),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(70),
+      builder: (_) => CupertinoTheme(
+        data: CupertinoThemeData(
+          brightness: Brightness.light,
+          scaffoldBackgroundColor:
+              Colors.redAccent,
+        ),
+        child: Container(
+          margin: EdgeInsets.only(top: 170),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(70),
+          ),
+          child: DisplayModal(),
         ),
         child: DisplayModal(id: id),
       ),
     );
     onClose(newData);
     _refreshData();
+      ),
+    );
+    if (newData != null) {
+      _refreshData();
+    }
   }
 
   @override
@@ -162,12 +177,43 @@ class _CustomTimerState extends State<CustomTimer> {
                         ],
                       ),
                     ),
+              itemBuilder: (context, index) => Card(
+                margin: EdgeInsets.all(15),
+                child: ListTile(
+                  title: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                    child: Text(
+                      _allData[index]['title'],
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                  subtitle: Text(_allData[index]['description']),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(_allData[index]['timer'].toString()),
+                      IconButton(
+                        onPressed: () {
+                          _showModal(_allData[index]['id']);
+                        },
+                        icon: Icon(Icons.edit),
+                        color: Colors.indigo,
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _deleteData(_allData[index]['id']);
+                        },
+                        icon: Icon(Icons.delete),
+                        color: Colors.redAccent,
+                      ),
+                    ],
                   ),
                 );
               },
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showModal((int? id) {}),
+        onPressed: () => _showModal(null),
         child: Icon(Icons.add),
       ),
     );

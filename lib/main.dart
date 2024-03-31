@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/pages/custom_timer.dart';
+import 'package:mobile_time_minder/pages/home_page.dart';
+
 
 void main() {
   runApp(const MainApp());
