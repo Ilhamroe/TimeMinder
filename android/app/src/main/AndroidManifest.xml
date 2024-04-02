@@ -2,7 +2,7 @@
     <application
         android:label="mobile_time_minder"
         android:name="${applicationName}"
-        android:icon="@mipmap/catlogo"
+        android:icon="@mipmap/logo"
         android:enableOnBackInvokedCallback="true">
         <activity
             android:name=".MainActivity"
@@ -39,7 +39,7 @@
             android:value="2" />
         <meta-data 
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/catlogo"
+            android:resource="@mipmap/logo"
             />
     </application>
 </manifest>

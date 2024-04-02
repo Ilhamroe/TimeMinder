@@ -2,7 +2,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Notif{
     static Future initialize(FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async{
-      var androidInitialize= new AndroidInitializationSettings('mipmap/catlogo');
+      var androidInitialize= new AndroidInitializationSettings('mipmap/logo');
       var iOSInitialize= new DarwinInitializationSettings();
       var initializationSettings= new InitializationSettings(android: androidInitialize);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
