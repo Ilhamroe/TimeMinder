@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -15,27 +16,41 @@ class _SplashScreenState extends State<SplashScreen>
 
   @override
   void initState() {
+    super.initState();
     animationController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
-    animation =
-        CurvedAnimation(parent: animationController, curve: Curves.easeInOut);
+    animation = CurvedAnimation(
+      parent: animationController,
+      curve: Curves.easeInOut,
+    );
     animation.addListener(() {
       if (mounted) {
         setState(() {});
       }
     });
     animationController.forward();
-    Future.delayed(const Duration(seconds: 2))
-        .then((value) => Navigator.popAndPushNamed(context, AppRoutes.onboard));
-    super.initState();
+    Future.delayed(const Duration(seconds: 2), () {
+      checkFirstSeen();
+    });
   }
 
   @override
   void dispose() {
     animationController.dispose();
     super.dispose();
+  }
+
+  Future<void> checkFirstSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool seen = (prefs.getBool('seen') ?? false);
+    if (seen) {
+      Navigator.popAndPushNamed(context, AppRoutes.home);
+    } else {
+      await prefs.setBool('seen', true);
+      Navigator.popAndPushNamed(context, AppRoutes.onboard);
+    }
   }
 
   @override

@@ -15,7 +15,6 @@ class MainApp extends StatelessWidget {
       home: MaterialApp(
         initialRoute: AppRoutes.splash, //splash screen will come first as it is define here
         onGenerateRoute: AppRoutes.generateRoute,
-        debugShowCheckedModeBanner: false,
       ),
     );
   }
