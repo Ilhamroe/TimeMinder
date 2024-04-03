@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
+import 'package:mobile_time_minder/pages/custom_timer.dart';
 
 void main() {
   runApp(const MainApp());
@@ -13,9 +14,10 @@ class MainApp extends StatelessWidget {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MaterialApp(
-        initialRoute: AppRoutes.splash, //splash screen will come first as it is define here
+        initialRoute: AppRoutes.splash,
         onGenerateRoute: AppRoutes.generateRoute,
       ),
+      home: CustomTimer(),
     );
   }
 }

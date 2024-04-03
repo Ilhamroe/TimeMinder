@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
+import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/cupertino_switch.dart';
 import 'package:mobile_time_minder/widgets/text.dart';
 import 'package:mobile_time_minder/widgets/setting_time.dart';
@@ -7,7 +8,8 @@ import 'package:mobile_time_minder/widgets/setting_break.dart';
 import 'package:mobile_time_minder/widgets/button_exe.dart';
 
 class DisplayModal extends StatefulWidget {
-  const DisplayModal({Key? key}) : super(key: key);
+  const DisplayModal({Key? key, this.id}) : super(key: key);
+  final int? id;
 
   @override
   State<DisplayModal> createState() => _DisplayModalState();
@@ -20,15 +22,86 @@ class _DisplayModalState extends State<DisplayModal> {
   final GlobalKey<SettingBreakWidgetState> _settingBreakWidgetKey =
       GlobalKey<SettingBreakWidgetState>();
 
-  //databases
-  List<Map<String, dynamic>> _allData = [];
-
+  int? id;
   int _counter = 0;
   int _counterBreakTime = 0;
   int _counterInterval = 0;
-  bool _isLoading = true;
+  bool _isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
+
+  TextEditingController _namaTimerController = TextEditingController();
+  TextEditingController _deskripsiController = TextEditingController();
+
+  //databases
+  List<Map<String, dynamic>> _allData = [];
+
+  @override
+  void initState() {
+    super.initState();
+    id = widget.id;
+    if (id != null) {
+      getSingleData(id!);
+    }
+  }
+
+  // show data
+  void _refreshData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final data = await SQLHelper.getAllData();
+    setState(() {
+      _allData = data;
+      _isLoading = false;
+    });
+  }
+
+  // show data by id
+  void getSingleData(int id) async {
+    final data = await SQLHelper.getSingleData(id);
+    final int timerValue = data[0]['timer'] ?? 0;
+
+    setState(() {
+      _namaTimerController.text = data[0]['title'];
+      _deskripsiController.text = data[0]['description'];
+      _counter = timerValue;
+      _counterBreakTime = data[0]['rest'] ?? 0;
+      _counterInterval = data[0]['interval'] ?? 0;
+    });
+  }
+
+  void _submitSetting() async {
+    final name = _namaTimerController.text.trim();
+    final description = _deskripsiController.text.trim();
+    final counter = _counter;
+
+    if (name.isEmpty || description.isEmpty || counter == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        backgroundColor: Colors.redAccent,
+        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
+        duration: Duration(seconds: 1),
+      ));
+      return;
+    }
+    if (id == null) {
+      await _addData();
+    } else {
+      await _updateData(id!);
+    }
+
+    Navigator.of(context).pop();
+  }
+
+  void _resetSetting() {
+    setState(() {
+      _namaTimerController.clear();
+      _deskripsiController.clear();
+      _settingTimeWidgetKey.currentState?.resetCounter();
+      _settingBreakWidgetKey.currentState?.resetCounter();
+      hideContainer = true;
+    });
+  }
 
   void _handleBreakTimeChange(int value) {
     setState(() {
@@ -47,59 +120,6 @@ class _DisplayModalState extends State<DisplayModal> {
       hideContainer = !hideContainer;
       statusSwitch = false;
     });
-  }
-
-  void _resetSetting() {
-    setState(() {
-      _namaTimerController.clear();
-      _deskripsiController.clear();
-      _counter = 0;
-      _settingTimeWidgetKey.currentState?.resetCounter();
-      _settingBreakWidgetKey.currentState?.resetCounter();
-      hideContainer = true;
-    });
-  }
-
-  void _submitButton([int? id]) async {
-    if (id == null) {
-      await _addData();
-    }
-    if (id != null) {
-      await _updateData(id);
-    }
-
-    _namaTimerController.text = "";
-    _deskripsiController.text = "";
-    _counter.toString();
-    _counterBreakTime.toString();
-    _counterInterval.toString();
-
-    Navigator.of(context).pop();
-    // _refreshData();
-  }
-
-  void updateCounter(int value) {
-    setState(() {
-      _counter = value;
-    });
-  }
-
-  TextEditingController _namaTimerController = TextEditingController();
-  TextEditingController _deskripsiController = TextEditingController();
-
-  // show data
-  void _refreshData() async {
-    final data = await SQLHelper.getAllData();
-    setState(() {
-      _allData = data;
-      _isLoading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
   }
 
   // add data
@@ -131,26 +151,27 @@ class _DisplayModalState extends State<DisplayModal> {
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       backgroundColor: Colors.redAccent,
       content: Text("Data deleted"),
+      duration: Duration(milliseconds: 500),
     ));
     _refreshData();
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20.0),
-      ),
+      backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
         },
         child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(26, 15, 26, 21),
+          padding: EdgeInsets.fromLTRB(26, 15, 26, 21),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -174,14 +195,20 @@ class _DisplayModalState extends State<DisplayModal> {
                 SizedBox(height: 7),
                 CustomTextField(labelText: "Nama Timer : "),
                 TextField(
+                  maxLength: 20,
                   controller: _namaTimerController,
-                  decoration: InputDecoration(),
+                  decoration: InputDecoration(
+                    counterText: '',
+                  ),
                 ),
                 SizedBox(height: 7),
                 CustomTextField(labelText: "Deskripsi : "),
                 TextField(
+                  maxLength: 33,
                   controller: _deskripsiController,
-                  decoration: InputDecoration(),
+                  decoration: InputDecoration(
+                    counterText: '',
+                  ),
                 ),
                 SizedBox(height: 7),
                 Column(
@@ -277,17 +304,17 @@ class _DisplayModalState extends State<DisplayModal> {
                         CustomButton(
                           text: '  Reset  ',
                           primaryColor: Colors.white,
-                          onPrimaryColor: Color(0xFF030A30),
-                          borderSideColor: Color(0xFF030A30),
+                          onPrimaryColor: cetaceanBlue,
+                          borderSideColor: cetaceanBlue,
                           onPressed: _resetSetting,
                         ),
                         SizedBox(width: 20),
                         CustomButton(
                           text: 'Terapkan',
-                          primaryColor: Color(0xFFFFBF1C),
-                          onPrimaryColor: Color.fromARGB(255, 254, 254, 254),
+                          primaryColor: ripeMango,
+                          onPrimaryColor: cetaceanBlue,
                           borderSideColor: Colors.transparent,
-                          onPressed: _submitButton,
+                          onPressed: _submitSetting,
                         ),
                       ],
                     ),
