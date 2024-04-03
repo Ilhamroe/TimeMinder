@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
+import 'package:mobile_time_minder/pages/custom_timer.dart';
+// import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/pages/onboarding_page.dart';
 import 'package:mobile_time_minder/pages/splash_screen.dart';
 
@@ -22,7 +23,7 @@ class AppRoutes {
 
       case AppRoutes.home:
         return MaterialPageRoute(
-            settings: settings, builder: (_) => const HomePage());
+            settings: settings, builder: (_) => const CustomTimer());
 
       default:
         return MaterialPageRoute(

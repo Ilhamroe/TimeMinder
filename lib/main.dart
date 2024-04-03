@@ -17,7 +17,6 @@ class MainApp extends StatelessWidget {
         initialRoute: AppRoutes.splash,
         onGenerateRoute: AppRoutes.generateRoute,
       ),
-      home: CustomTimer(),
     );
   }
 }
