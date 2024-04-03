@@ -1,11 +1,84 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile_time_minder/database/db_helper.dart';
+import 'package:mobile_time_minder/pages/detail_list_timer.dart';
+import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
 
-class HomePage extends StatelessWidget {
-  const HomePage({Key? key});
+typedef ModalCloseCallback = void Function(int? id);
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  late List<Map<String, dynamic>> _allData = [];
+
+  int _counter = 0;
+  int _counterBreakTime = 0;
+  int _counterInterval = 0;
+  bool _isLoading = false;
+  bool statusSwitch = false;
+  bool hideContainer = true;
+
+  TextEditingController _namaTimerController = TextEditingController();
+  TextEditingController _deskripsiController = TextEditingController();
+
+  // refresh data
+  void _refreshData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final data = await SQLHelper.getAllData();
+    setState(() {
+      _allData = data;
+      _isLoading = false;
+    });
+  }
+
+  void _showModal(ModalCloseCallback onClose, [int? id]) async {
+    if (id != null) {
+      final existingData =
+          _allData.firstWhere((element) => element['id'] == id);
+      _namaTimerController.text = existingData['title'];
+      _deskripsiController.text = existingData['description'];
+      _counter = existingData['time'] ?? 0;
+      _counterBreakTime = existingData['rest'] ?? 0;
+      _counterInterval = existingData['interval'] ?? 0;
+    } else {
+      // Jika data baru, reset nilai controller
+      _namaTimerController.text = '';
+      _deskripsiController.text = '';
+      _counter = 0;
+      _counterBreakTime = 0;
+      _counterInterval = 0;
+    }
+
+    final newData = await showCupertinoModalPopup(
+      context: context,
+      builder: (_) => Container(
+        margin: EdgeInsets.only(top: 170),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(70),
+        ),
+        child: DisplayModal(id: id),
+      ),
+    );
+    onClose(newData);
+    _refreshData();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +86,7 @@ class HomePage extends StatelessWidget {
       backgroundColor: ripeMango,
       // Ini sementara buat percobaan bottom navigation (diisi sama Rifqi)
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.plus_one), label: ''),
           BottomNavigationBarItem(icon: Icon(Icons.calendar_month), label: ''),
@@ -85,17 +158,15 @@ class HomePage extends StatelessWidget {
                   children: [
                     Container(
                       padding: EdgeInsets.all(8.0),
+                      margin: EdgeInsets.only(left: 8.0),
                       child: Row(
                         children: [
-                          SizedBox(
-                            width: 8,
-                          ),
                           SvgPicture.asset(
                             "assets/images/star.svg",
                           ),
                           SizedBox(
                             width: 8,
-                          ), // Menambahkan jarak antara gambar dan teks
+                          ),
                           Text(
                             "Rekomendasi",
                             style: TextStyle(
@@ -129,23 +200,37 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                           Spacer(),
-                          Text(
-                            "Lihat Semua",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: ripeMango,
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DetailListTimer(),
+                                ),
+                              );
+                            },
+                            child: Text(
+                              "Lihat Semua",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: ripeMango,
+                              ),
                             ),
                           ),
                         ],
                       ),
                     ),
-                    HomeTimerMuTile(),
+                    HomeTimermuTile(),
                   ],
                 ),
               ),
             )
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => _showModal((int? id) {}),
+        child: Icon(Icons.add),
       ),
     );
   }
