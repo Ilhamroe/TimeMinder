@@ -1,9 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:list_timer/model/timers.dart';
-import 'package:list_timer/theme.dart';
+import 'package:mobile_time_minder/models/timers.dart';
+import 'package:mobile_time_minder/pages/custom_timer.dart';
+import 'package:mobile_time_minder/pages/display_modal.dart';
+import 'package:mobile_time_minder/database/db_helper.dart';
+import 'package:mobile_time_minder/theme.dart';
+import 'package:sqflite/sqflite.dart';
+
+class CustomTimer extends StatefulWidget {
+  const CustomTimer({super.key});
+
+  @override
+  CustomTimerState createState() => CustomTimerState();
+}
+
+
 
 class TimerView extends StatelessWidget {
-  final bool isSettingPressed; // Tambahkan parameter ini
+  final bool isSettingPressed;
 
   const TimerView({super.key, required this.isSettingPressed});
 
@@ -29,7 +42,7 @@ class TimerView extends StatelessWidget {
                     Container(
                       width: 60,
                       height: 60,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: heliotrope,
                       ),
@@ -55,6 +68,7 @@ class TimerView extends StatelessWidget {
                             style: const TextStyle(
                                 color: Colors.black,
                                 fontSize: 14,
+                                fontFamily: 'Nunito',
                                 fontWeight: FontWeight.w600),
                           ),
                           const SizedBox(height: 8),
@@ -87,11 +101,18 @@ class TimerView extends StatelessWidget {
                                   alignment: Alignment.topCenter,
                                   splashColor: Colors.transparent,
                                   highlightColor: Colors.transparent,
-                                  color: bluejeans,
+                                  color: blueJeans,
                                   padding: const EdgeInsets.only(
                                       left: 30.0, top: 10),
-                                  icon: const Icon(Icons.edit, size: 15),
-                                  onPressed: () {},
+                                  icon: const Icon(Icons.edit, size: 15),//Logic edit
+                                  onPressed: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return const DisplayModal(); // Menampilkan widget DisplayModal sebagai dialog
+                                      },
+                                    );
+                                  },
                                 ),
                               if (!isSettingPressed)
                                 IconButton(
@@ -126,10 +147,10 @@ class TimerView extends StatelessWidget {
                                                     height:100,
                                                   ),
                                                 ),
-                                                Text(
+                                                const Text(
                                                   "Hapus Timer",
                                                   style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
+                                                    fontFamily: 'Nunito-Bold',
                                                     fontSize: 18.0,
                                                     color: radial,
                                                   ),
@@ -151,13 +172,12 @@ class TimerView extends StatelessWidget {
                                                       height:40,
                                                       decoration: BoxDecoration(
                                                         borderRadius:BorderRadius.circular(10.0),
-                                                        color:customGrey,
+                                                        color:halfGrey,
                                                       ),
                                                       child: TextButton(
                                                         onPressed: () {
                                                           // delete logic here
-                                                            deleteTimer(timers);
-                                                          Navigator.of(context).pop();
+                                                          deleteData();
                                                         },
                                                         child: const Text("Ya",style: TextStyle(color:Colors.black),
                                                         ),
@@ -219,9 +239,7 @@ class TimerView extends StatelessWidget {
       },
     );
   }
-    void deleteTimer(Timers timer) {
-    // Hapus timer dari daftar
-    timerList.remove(timer);
-    }
+  void deleteData(){
+  }
 }
 

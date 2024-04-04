@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:list_timer/theme.dart';
+import 'package:mobile_time_minder/theme.dart';
 
 class ColorChanger extends StatefulWidget {
   final Function(bool) onChanged;

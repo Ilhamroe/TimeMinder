@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-import 'package:list_timer/list_timer.dart';
-=======
+// ignore: unused_import
 import 'package:mobile_time_minder/pages/custom_timer.dart';
-// import 'package:mobile_time_minder/pages/home_page.dart';
->>>>>>> 1a6b368e9373e2a9d8e1315dfa992cc58896dca3
+import 'package:mobile_time_minder/pages/list_timer.dart';
 
 void main() {
   runApp(const MainApp());
@@ -15,14 +12,9 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-<<<<<<< HEAD
-      theme: ThemeData(useMaterial3: false),
-      home: const ListTimer(),
-=======
-      home: CustomTimer(),
->>>>>>> 1a6b368e9373e2a9d8e1315dfa992cc58896dca3
+      home: ListTimer(),
     );
   }
 }

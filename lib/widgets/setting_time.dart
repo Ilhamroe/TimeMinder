@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_time_minder/theme.dart';
 
 class SettingTimeWidget extends StatefulWidget {
   final int initialCounter;
   final ValueChanged<int>? onChanged;
 
   const SettingTimeWidget({
-    Key? key,
+    super.key,
     required this.initialCounter,
     this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   SettingTimeWidgetState createState() => SettingTimeWidgetState();
@@ -51,12 +52,12 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
       children: [
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(4),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Color(0xFFFAF8EE),
+              color: offYellow,
               border: Border.all(
-                color: Color(0xFFFFBF1C),
+                color: ripeMango,
                 width: 1,
               ),
             ),
@@ -66,19 +67,19 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       border: Border(
                         right: BorderSide(
-                          color: Colors.white,
+                          color: offYellow,
                           width: 1,
                         ),
                       ),
                     ),
                     child: IconButton(
                       onPressed: _decrement,
-                      icon: Icon(Icons.remove),
+                      icon: const Icon(Icons.remove),
                       iconSize: 18,
-                      color: Color(0xFFFFBF1C),
+                      color: ripeMango,
                     ),
                   ),
                 ),
@@ -86,7 +87,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                   flex: 3,
                   child: Text(
                     '$_counterMainTime',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 14,
                       color: Colors.grey,
                     ),
@@ -96,19 +97,19 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       border: Border(
                         left: BorderSide(
-                          color: Colors.white,
+                          color: offYellow,
                           width: 1,
                         ),
                       ),
                     ),
                     child: IconButton(
                       onPressed: _increment,
-                      icon: Icon(Icons.add),
+                      icon: const Icon(Icons.add),
                       iconSize: 18,
-                      color: Color(0xFFFFBF1C),
+                      color: ripeMango,
                     ),
                   ),
                 ),

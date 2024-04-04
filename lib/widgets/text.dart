@@ -6,11 +6,11 @@ class CustomTextField extends StatelessWidget {
   final String fontFamily;
 
   const CustomTextField({
-    Key? key,
+    super.key,
     this.labelText = "Default Label",
     this.fontSize = 16,
     this.fontFamily = 'Nunito',
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class CustomTextField extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          labelText ?? "Default Label",
+          labelText,
           style: TextStyle(
             fontFamily: fontFamily,
             fontSize: fontSize,

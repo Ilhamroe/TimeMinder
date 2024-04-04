@@ -24,3 +24,5 @@ plugins {
 }
 
 include ":app"
+
+apply from: "${settings.ext.flutterSdkPath}/packages/flutter_tools/gradle/app_plugin_loader.gradle"
