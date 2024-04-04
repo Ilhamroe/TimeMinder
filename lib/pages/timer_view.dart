@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:ui';
-
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -8,10 +6,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
-import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/models/theme.dart';
-import 'package:mobile_time_minder/services/homepage.dart';
+import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
+import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/services/homepage.dart';
 
 class TimerView extends StatefulWidget {
   final int timerIndex;
@@ -24,8 +22,6 @@ class TimerView extends StatefulWidget {
 
 class _TimerState extends State<TimerView> {
   late Timer _timer;
-
-
   late int timeInSec;
  late String _waktuMentah;
  late String _judul;
@@ -36,15 +32,15 @@ class _TimerState extends State<TimerView> {
   bool isStarted = false;
   int focusedMins = 0;
 
-
   @override
   void initState() {
     super.initState();
     _getDataByID();
-   _convertTimeInSec(context, _jam, _menit, _detik);
+    _convertTimeInSec(context, _jam, _menit, _detik);
   }
 
-  void _getDataByID(){
+  void _getDataByID() {
+   _convertTimeInSec(context, _jam, _menit, _detik);
     _timer = Timerlist[widget.timerIndex];
     _waktuMentah = _timer.time;
     _judul = _timer.title;
@@ -58,7 +54,6 @@ class _TimerState extends State<TimerView> {
     _menit = int.parse(bagian[1]);
     _detik = int.parse(bagian[2]);
   }
-
 
   void _convertTimeInSec(BuildContext context, jam, menit, detik){
     setState(() {
@@ -75,7 +70,7 @@ class _TimerState extends State<TimerView> {
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(),
-        title:Column(
+        title: Column(
           children: [
             SizedBox(height: 20),
             Text(
@@ -85,7 +80,9 @@ class _TimerState extends State<TimerView> {
             ),
             Text(
               _deskripsi,
-              style: TextStyle(fontSize: 14, color: Colors.black), // Atur gaya teks deskripsi
+              style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.black),
             ),
           ],
         ),
@@ -99,44 +96,40 @@ class _TimerState extends State<TimerView> {
             horizontal: 24,
             vertical: 100,
           ),
-
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 CircularCountDownTimer(
-                  duration: timeInSec,
-                  initialDuration: 0,
-                  width: MediaQuery.of(context).size.width / 2,
-                  height: MediaQuery.of(context).size.height / 2,
-                  controller: _controller,
-                  ringColor: app_background,
-                  fillColor: _controller.isPaused ? red_timer : yellow_timer,
-                  strokeWidth: 20.0,
-                  isReverse: true,
-                  isReverseAnimation: true,
-                  strokeCap: StrokeCap.round,
-                  autoStart: true,
-                  textStyle: TextStyle(
-                    fontSize: 33.0,
-                    color: _controller.isPaused ? red_timer : tulisan,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  onComplete: (){
-                    // _showPopupEnd();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                        builder: (context) => const Homepage(),
-                        )
-                    );
-                  }
+                    duration: timeInSec,
+                    initialDuration: 0,
+                    width: MediaQuery.of(context).size.width / 2,
+                    height: MediaQuery.of(context).size.height / 2,
+                    controller: _controller,
+                    ringColor: offGrey,
+                    fillColor: _controller.isPaused ? red : ripeMango,
+                    strokeWidth: 20.0,
+                    isReverse: true,
+                    isReverseAnimation: true,
+                    strokeCap: StrokeCap.round,
+                    autoStart: true,
+                    textStyle: TextStyle(
+                      fontSize: 33.0,
+                      color: _controller.isPaused ? red : cetaceanBlue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    onComplete: () {
+                      // _showPopupEnd();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ));
+                    }
                     // Tindakan yang diambil ketika timer selesai
-                ),
-
+                    ),
                 SizedBox(height: 20),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -150,7 +143,7 @@ class _TimerState extends State<TimerView> {
                         },
                         child: Icon(
                           Icons.play_arrow_outlined,
-                          color: light_blue,
+                          color: blueJeans,
                           size: 40, // Mengatur ukuran ikon menjadi 40
                         ),
                       ),
@@ -164,7 +157,7 @@ class _TimerState extends State<TimerView> {
                         },
                         child: Icon(
                           Icons.pause,
-                          color: light_blue,
+                          color: blueJeans,
                           size: 40, // Mengatur ukuran ikon menjadi 40
                         ),
                       ),
@@ -172,7 +165,7 @@ class _TimerState extends State<TimerView> {
                     IconButton(
                       onPressed: _showPopup,
                       icon: Icon(Icons.check),
-                      color: light_blue,
+                      color: blueJeans,
                       iconSize: 40, // Mengatur ukuran ikon menjadi 40
                     ),
                   ],
@@ -184,22 +177,25 @@ class _TimerState extends State<TimerView> {
       ),
     );
   }
+
   void _showPopupEnd(){
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Center(
-            child: Icon (Icons.add ,),
+            child: Icon(
+              Icons.add,
+            ),
           ),
           content: Column(
-            mainAxisSize: MainAxisSize.min, // Menentukan ukuran minimum untuk Column
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               SizedBox(height: 30),
               Center(
                 child: Text(
                   "Kembali ke Beranda ?",
-                  textAlign: TextAlign.center, // Mengatur teks menjadi di tengah
+                  textAlign: TextAlign.center, 
                 ),
               ),
             ],
@@ -220,7 +216,7 @@ class _TimerState extends State<TimerView> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: yellow_timer, // Gunakan warna dari variabel state
+                    backgroundColor: ripeMango,
                   ),
                   child: Text("Oke"),
                 )
@@ -238,16 +234,19 @@ class _TimerState extends State<TimerView> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Center(
-            child: Icon (Icons.add ,),
+            child: Icon(
+              Icons.add,
+            ),
           ),
           content: Column(
-            mainAxisSize: MainAxisSize.min, // Menentukan ukuran minimum untuk Column
+            mainAxisSize:
+                MainAxisSize.min,
             children: <Widget>[
               SizedBox(height: 30),
               Center(
                 child: Text(
                   "Apakah Anda Yakin ?",
-                  textAlign: TextAlign.center, // Mengatur teks menjadi di tengah
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],
@@ -274,20 +273,21 @@ class _TimerState extends State<TimerView> {
                 ),
                 SizedBox(width: 30),
                 ElevatedButton(
-                  onPressed:(){
+                  onPressed: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                        builder: (context) => const Homepage(),
-                        )
-                    );
+                          builder: (context) => const HomePage(),
+                        ));
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: yellow_timer, // Gunakan warna dari variabel state
+                    backgroundColor:
+                        ripeMango, // Gunakan warna dari variabel state
                   ),
-                  child: Text("Iya",
+                  child: Text(
+                    "Iya",
                     style: TextStyle(
-                      backgroundColor: yellow_timer,
+                      backgroundColor: ripeMango,
                       color: Colors.white,
                     ),
                   ),
