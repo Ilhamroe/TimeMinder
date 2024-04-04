@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
+import 'package:mobile_time_minder/models/notif.dart';
+import 'package:mobile_time_minder/models/dnd.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
 
 class DetailTimer extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -22,6 +28,9 @@ class _DetailTimerState extends State<DetailTimer> {
   bool hideContainer = true;
   late List<Map<String, dynamic>> _allData = [];
   late CountdownController _controller; // Controller untuk Countdown widget
+  final player= AudioPlayer();
+  // late AudioPlayer _audioPlayer;
+  bool _isSoundPlayed= false;
 
   int get inTimeMinutes => widget.data['timer'];
   int get inRestMinutes => widget.data['rest'] ?? 0;
@@ -47,6 +56,8 @@ class _DetailTimerState extends State<DetailTimer> {
     super.initState();
     _refreshData();
     _controller = CountdownController();
+    Notif.initialize(flutterLocalNotificationsPlugin);
+    // _audioPlayer= AudioPlayer();
   }
 
   void _refreshData() async {
@@ -65,6 +76,17 @@ class _DetailTimerState extends State<DetailTimer> {
       _isTimerRunning = !_isTimerRunning;
     });
   }
+    void _showNotification(String message){
+    Notif.showBigTextNotification(
+      title: "TimeMinder", 
+      body: message, 
+      fln: flutterLocalNotificationsPlugin
+      );
+  }
+
+  // Future<void> _playNotificationSound(String soundPath) async{
+
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -90,13 +112,35 @@ class _DetailTimerState extends State<DetailTimer> {
               onFinished: () {
                 setState(() {
                   _isTimerRunning = false;
+                  _showNotification("Timer selesai");
+                  disableDndMode();
+                  player.play(AssetSource('sounds/end.wav'));
                 });
               },
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                _isTimerRunning ? _controller.pause() : _controller.start();
+                if(_isTimerRunning){  
+                  _controller.pause();
+                  _showNotification("Timer dijeda");
+                  disableDndMode();
+                  if(!_isSoundPlayed){
+                    player.stop();
+                  }
+                  player.play(AssetSource('sounds/pause.wav'));   
+                  _isSoundPlayed= false;                            
+                }else{
+                  _controller.start();
+                  _showNotification("Timer dimulai");
+                  enableDndMode();
+                  if(!_isSoundPlayed){
+                    // player.stop();
+                    player.play(AssetSource('sounds/start.wav'));
+                  _isSoundPlayed= true; 
+                  }
+                                         
+                }
                 _toggleTimer();
               },
               child: Text(_isTimerRunning ? 'Pause' : 'Play'),

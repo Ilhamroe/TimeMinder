@@ -18,10 +18,9 @@ class Notif{
       AndroidNotificationDetails androidPlatformChannelSpecifics=
       new AndroidNotificationDetails(
         'you_can_name_it_whatever', 
-        'channel_name',
-        
+        'channel_name',      
         playSound: true,
-        // sound: RawResourceAndroidNotificationSound('notification'),
+        sound: RawResourceAndroidNotificationSound('start'),
         importance: Importance.max,
         priority: Priority.high,
         );

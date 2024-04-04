@@ -17,6 +17,9 @@ dependencies:
   timer_count_down: ^2.2.2
   curved_labeled_navigation_bar: ^2.0.2
   flutter_local_notifications: ^17.0.0
+  flutter_dnd: ^0.1.4+1
+  audioplayers: ^6.0.0
+  audioplayers_web: ^5.0.0
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +31,7 @@ flutter:
   assets:
     - assets/images/
     - assets/fonts/
+    - assets/sounds/
   fonts:
     - family: Nunito-Bold
       fonts:
