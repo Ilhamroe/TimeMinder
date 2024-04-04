@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
-import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
@@ -27,15 +26,10 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
   //databases
   late List<Map<String, dynamic>> _allData = [];
 
-  int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
   bool _isLoading = true;
   bool statusSwitch = false;
   bool hideContainer = true;
 
-  TextEditingController _namaTimerController = TextEditingController();
-  TextEditingController _deskripsiController = TextEditingController();
 
   // show data
   void _refreshData() async {
@@ -47,6 +41,17 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       _allData = data;
       _isLoading = false;
     });
+  }
+
+  //delete data
+  void _deleteData(int id) async {
+    await SQLHelper.deleteData(id);
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      backgroundColor: Colors.redAccent,
+      content: Text("Data deleted"),
+      duration: Duration(milliseconds: 500),
+    ));
+    _refreshData();
   }
 
   @override
@@ -115,24 +120,28 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                     ),
                     trailing: Column(
                       children: [
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          _formatTime(_allData[index]['timer'] ?? 0),
-                          style: TextStyle(
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 8,
-                            color: darkGrey,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 8.0,
-                        ),
-                        SvgPicture.asset(
-                          'assets/images/button.svg',
-                        ),
+                        // SizedBox(
+                        //   height: 15,
+                        // ),
+                        // Text(
+                        //   _formatTime(_allData[index]['timer'] ?? 0),
+                        //   style: TextStyle(
+                        //     fontFamily: 'DMSans',
+                        //     fontWeight: FontWeight.w600,
+                        //     fontSize: 8,
+                        //     color: darkGrey,
+                        //   ),
+                        // ),
+                        // SizedBox(
+                        //   height: 8.0,
+                        // ),
+                        // SvgPicture.asset(
+                        //   'assets/images/button.svg',
+                        // ),
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () => _deleteData(_allData[index]['id']),
+                        )
                       ],
                     ),
                   ),

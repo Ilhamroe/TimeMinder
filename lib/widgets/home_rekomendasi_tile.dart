@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
-import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/timer_view.dart';
 import 'package:mobile_time_minder/theme.dart';
 
@@ -88,5 +87,17 @@ class HomeRekomendasiTile extends StatelessWidget {
         );
       },
     );
+  }
+
+  String _formatTime(int time) {
+    int hours = time ~/ 60;
+    int minutes = time % 60;
+    int seconds = 0;
+
+    String _padLeft(int value) {
+      return value.toString().padLeft(2, '0');
+    }
+
+    return '${_padLeft(hours)}:${_padLeft(minutes)}:${_padLeft(seconds)}';
   }
 }
