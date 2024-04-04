@@ -88,16 +88,4 @@ class HomeRekomendasiTile extends StatelessWidget {
       },
     );
   }
-
-  String _formatTime(int time) {
-    int hours = time ~/ 60;
-    int minutes = time % 60;
-    int seconds = 0;
-
-    String _padLeft(int value) {
-      return value.toString().padLeft(2, '0');
-    }
-
-    return '${_padLeft(hours)}:${_padLeft(minutes)}:${_padLeft(seconds)}';
-  }
 }

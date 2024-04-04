@@ -120,28 +120,24 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                     ),
                     trailing: Column(
                       children: [
-                        // SizedBox(
-                        //   height: 15,
-                        // ),
-                        // Text(
-                        //   _formatTime(_allData[index]['timer'] ?? 0),
-                        //   style: TextStyle(
-                        //     fontFamily: 'DMSans',
-                        //     fontWeight: FontWeight.w600,
-                        //     fontSize: 8,
-                        //     color: darkGrey,
-                        //   ),
-                        // ),
-                        // SizedBox(
-                        //   height: 8.0,
-                        // ),
-                        // SvgPicture.asset(
-                        //   'assets/images/button.svg',
-                        // ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () => _deleteData(_allData[index]['id']),
-                        )
+                        SizedBox(
+                          height: 15,
+                        ),
+                        Text(
+                          _formatTime(_allData[index]['timer'] ?? 0),
+                          style: TextStyle(
+                            fontFamily: 'DMSans',
+                            fontWeight: FontWeight.w600,
+                            fontSize: 8,
+                            color: darkGrey,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 8.0,
+                        ),
+                        SvgPicture.asset(
+                          'assets/images/button.svg',
+                        ),
                       ],
                     ),
                   ),
