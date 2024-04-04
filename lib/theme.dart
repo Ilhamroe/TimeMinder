@@ -10,7 +10,3 @@ const Color blueJeans = Color(0xFF59A7F2);
 const Color darkGrey = Color(0xFF838589);
 const Color halfGrey = Color(0xFFC4C5C4);
 const Color cetaceanBlue = Color(0xFF030A30);
-
-// warna timer
-Color app_background = const Color.fromRGBO(239, 245, 251, 1);
-Color tulisan = const Color.fromRGBO(3, 10, 48, 1);

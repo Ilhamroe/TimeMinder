@@ -105,7 +105,7 @@ class _DetailTimerState extends State<DetailTimer> {
                     width: MediaQuery.of(context).size.width / 2,
                     height: MediaQuery.of(context).size.height / 2,
                     controller: _controller,
-                    ringColor: app_background,
+                    ringColor: offGrey,
                     fillColor: _controller.isPaused ? red : ripeMango,
                     strokeWidth: 20.0,
                     isReverse: true,
@@ -114,7 +114,7 @@ class _DetailTimerState extends State<DetailTimer> {
                     autoStart: true,
                     textStyle: TextStyle(
                       fontSize: 33.0,
-                      color: _controller.isPaused ? red : tulisan,
+                      color: _controller.isPaused ? red : red,
                       fontWeight: FontWeight.bold,
                     ),
                     onComplete: () {
@@ -188,14 +188,14 @@ class _DetailTimerState extends State<DetailTimer> {
           ),
           content: Column(
             mainAxisSize:
-                MainAxisSize.min, // Menentukan ukuran minimum untuk Column
+                MainAxisSize.min, 
             children: <Widget>[
               SizedBox(height: 30),
               Center(
                 child: Text(
                   "Kembali ke Beranda ?",
                   textAlign:
-                      TextAlign.center, // Mengatur teks menjadi di tengah
+                      TextAlign.center, 
                 ),
               ),
             ],
@@ -215,7 +215,7 @@ class _DetailTimerState extends State<DetailTimer> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        ripeMango, // Gunakan warna dari variabel state
+                        ripeMango,
                   ),
                   child: Text("Oke"),
                 )
@@ -239,14 +239,14 @@ class _DetailTimerState extends State<DetailTimer> {
           ),
           content: Column(
             mainAxisSize:
-                MainAxisSize.min, // Menentukan ukuran minimum untuk Column
+                MainAxisSize.min,
             children: <Widget>[
               SizedBox(height: 30),
               Center(
                 child: Text(
                   "Apakah Anda Yakin ?",
                   textAlign:
-                      TextAlign.center, // Mengatur teks menjadi di tengah
+                      TextAlign.center,
                 ),
               ),
             ],
@@ -262,7 +262,7 @@ class _DetailTimerState extends State<DetailTimer> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        Colors.grey, // Gunakan warna dari variabel state
+                        Colors.grey, 
                   ),
                   child: Text(
                     "Tidak",
@@ -283,7 +283,7 @@ class _DetailTimerState extends State<DetailTimer> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor:
-                        ripeMango, // Gunakan warna dari variabel state
+                        ripeMango,
                   ),
                   child: Text(
                     "Iya",

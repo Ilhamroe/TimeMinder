@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +9,7 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/services/homepage.dart';
 
 class TimerView extends StatefulWidget {
   final int timerIndex;
@@ -22,11 +22,10 @@ class TimerView extends StatefulWidget {
 
 class _TimerState extends State<TimerView> {
   late Timer _timer;
-
   late int timeInSec;
-  late String _waktuMentah;
-  late String _judul;
-  late String _deskripsi;
+ late String _waktuMentah;
+ late String _judul;
+ late String _deskripsi;
   late int _jam;
   late int _menit;
   late int _detik;
@@ -41,6 +40,7 @@ class _TimerState extends State<TimerView> {
   }
 
   void _getDataByID() {
+   _convertTimeInSec(context, _jam, _menit, _detik);
     _timer = Timerlist[widget.timerIndex];
     _waktuMentah = _timer.time;
     _judul = _timer.title;
@@ -49,21 +49,20 @@ class _TimerState extends State<TimerView> {
   }
 
   void _parseWaktuMentah(String time) {
-    List<String> bagian = time.split(':');
+    List<String> bagian  = time.split(':');
     _jam = int.parse(bagian[0]);
     _menit = int.parse(bagian[1]);
     _detik = int.parse(bagian[2]);
   }
 
-  void _convertTimeInSec(BuildContext context, jam, menit, detik) {
+  void _convertTimeInSec(BuildContext context, jam, menit, detik){
     setState(() {
-      timeInSec = jam * 3600 + menit * 60 + detik;
+      timeInSec =  jam * 3600 + menit * 60 + detik;
     });
   }
-
   final CountDownController _controller = CountDownController();
-  void startTimer() {
-    const onesec = Duration(seconds: 1);
+  void startTimer(){
+      const onesec = Duration(seconds: 1);
   }
 
   @override
@@ -83,7 +82,7 @@ class _TimerState extends State<TimerView> {
               _deskripsi,
               style: TextStyle(
                   fontSize: 14,
-                  color: Colors.black), // Atur gaya teks deskripsi
+                  color: Colors.black),
             ),
           ],
         ),
@@ -108,7 +107,7 @@ class _TimerState extends State<TimerView> {
                     width: MediaQuery.of(context).size.width / 2,
                     height: MediaQuery.of(context).size.height / 2,
                     controller: _controller,
-                    ringColor: app_background,
+                    ringColor: offGrey,
                     fillColor: _controller.isPaused ? red : ripeMango,
                     strokeWidth: 20.0,
                     isReverse: true,
@@ -117,7 +116,7 @@ class _TimerState extends State<TimerView> {
                     autoStart: true,
                     textStyle: TextStyle(
                       fontSize: 33.0,
-                      color: _controller.isPaused ? red : tulisan,
+                      color: _controller.isPaused ? red : cetaceanBlue,
                       fontWeight: FontWeight.bold,
                     ),
                     onComplete: () {
@@ -138,7 +137,7 @@ class _TimerState extends State<TimerView> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            _controller.resume();
+                            _controller.resume() ;
                             isStarted = false;
                           });
                         },
@@ -179,7 +178,7 @@ class _TimerState extends State<TimerView> {
     );
   }
 
-  void _showPopupEnd() {
+  void _showPopupEnd(){
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -190,15 +189,13 @@ class _TimerState extends State<TimerView> {
             ),
           ),
           content: Column(
-            mainAxisSize:
-                MainAxisSize.min, // Menentukan ukuran minimum untuk Column
+            mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               SizedBox(height: 30),
               Center(
                 child: Text(
                   "Kembali ke Beranda ?",
-                  textAlign:
-                      TextAlign.center, // Mengatur teks menjadi di tengah
+                  textAlign: TextAlign.center, 
                 ),
               ),
             ],
@@ -207,18 +204,19 @@ class _TimerState extends State<TimerView> {
             SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: <Widget> [
                 ElevatedButton(
-                  onPressed: () {
+
+                  onPressed:(){
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ));
+                          builder: (context) => const Homepage(),
+                        )
+                    );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        ripeMango, // Gunakan warna dari variabel state
+                    backgroundColor: ripeMango,
                   ),
                   child: Text("Oke"),
                 )
@@ -242,14 +240,13 @@ class _TimerState extends State<TimerView> {
           ),
           content: Column(
             mainAxisSize:
-                MainAxisSize.min, // Menentukan ukuran minimum untuk Column
+                MainAxisSize.min,
             children: <Widget>[
               SizedBox(height: 30),
               Center(
                 child: Text(
                   "Apakah Anda Yakin ?",
-                  textAlign:
-                      TextAlign.center, // Mengatur teks menjadi di tengah
+                  textAlign: TextAlign.center,
                 ),
               ),
             ],
@@ -258,20 +255,19 @@ class _TimerState extends State<TimerView> {
             SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+              children: <Widget> [
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed:(){
                     Navigator.of(context).pop();
-                  },
+                  } ,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Colors.grey, // Gunakan warna dari variabel state
+                    backgroundColor: Colors.grey, // Gunakan warna dari variabel state
                   ),
                   child: Text(
-                    "Tidak",
+                      "Tidak",
                     style: TextStyle(
-                      backgroundColor: Colors.grey,
-                      color: Colors.white,
+                      backgroundColor: Colors.grey ,
+                      color: Colors.white ,
                     ),
                   ),
                 ),

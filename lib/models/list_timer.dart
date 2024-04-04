@@ -22,7 +22,7 @@ var Timerlist = [
     image: 'assets/images/cat1.svg',
     title: 'Belajar',
     description: 'Fokus belajar dengan time block',
-    time: '00:40:00',
+    time: '00:20:30',
   ),
   Timer(
     color: Color(0xFFE53E42),
