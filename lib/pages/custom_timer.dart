@@ -143,10 +143,8 @@ class _CustomTimerState extends State<CustomTimer> {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(_formatTime(_allData[index]['timer'] ?? 0) +
-                            " punya"),
-                        Text(_allData[index]['rest'].toString() +
-                            "x rest, selama"),
+                        Text(_formatTime(_allData[index]['timer'] ?? 0) + " punya"),
+                        Text(_allData[index]['rest'].toString() + "x rest, selama"),
                         Text(_allData[index]['interval'].toString() + "x"),
                         IconButton(
                           icon: Icon(Icons.edit),

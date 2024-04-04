@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/models/theme.dart';
@@ -17,7 +19,10 @@ class _DetailTimerState extends State<DetailTimer> {
   int _counter = 0;
   int _counterBreakTime = 0;
   int _counterInterval = 0;
+  int currentTimerValue= 0;
   bool _isLoading = false;
+  bool _isRest = false;
+
   bool _isTimerRunning = false; // Menyimpan status timer
   bool statusSwitch = false;
   bool hideContainer = true;
@@ -61,6 +66,8 @@ class _DetailTimerState extends State<DetailTimer> {
     });
   }
 
+  int get totalTime => inTimeBreak;
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> data = widget.data;
@@ -100,6 +107,7 @@ class _DetailTimerState extends State<DetailTimer> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 CircularCountDownTimer(
+                  // backgroundGradient: RadialGradient(),
                     duration: inTimeBreak,
                     initialDuration: 0,
                     width: MediaQuery.of(context).size.width / 2,
@@ -117,6 +125,14 @@ class _DetailTimerState extends State<DetailTimer> {
                       color: _controller.isPaused ? red_timer : tulisan,
                       fontWeight: FontWeight.bold,
                     ),
+                    onChange: (String timeStamp) {
+                      // Here, do whatever you want
+                      debugPrint('Countdown Changed $timeStamp');
+                      // int currentTime = int.tryParse(timeStamp) ?? 0;
+                      // setState(() {
+                      //   currentTimerValue = currentTime;
+                      // });
+                    },
                     onComplete: () {
                       _showPopupEnd();
                       Navigator.push(
@@ -175,6 +191,7 @@ class _DetailTimerState extends State<DetailTimer> {
       ),
     );
   }
+
 
   void _showPopupEnd() {
     showDialog(
