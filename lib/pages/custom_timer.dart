@@ -1,7 +1,6 @@
 import 'dart:math';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
@@ -10,24 +9,24 @@ import 'package:mobile_time_minder/theme.dart';
 typedef ModalCloseCallback = void Function(int? id);
 
 class CustomTimer extends StatefulWidget {
-  const CustomTimer({super.key});
+  const CustomTimer({Key? key}) : super(key: key);
 
   @override
-  CustomTimerState createState() => CustomTimerState();
+  _CustomTimerState createState() => _CustomTimerState();
 }
 
-class CustomTimerState extends State<CustomTimer> {
+class _CustomTimerState extends State<CustomTimer> {
   final List<Color> _customColors = [
     ripeMango,
     offOrange,
     offYellow,
     offGrey,
     heliotrope,
-    radial,
+    red,
     blueJeans,
     darkGrey,
     halfGrey,
-    catcBlue,
+    cetaceanBlue,
   ];
   Color _getRandomColor() {
     final Random random = Random();
@@ -36,38 +35,36 @@ class CustomTimerState extends State<CustomTimer> {
 
   late List<Map<String, dynamic>> _allData = [];
 
-  int counter = 0;
-  int counterBreakTime = 0;
-  int counterInterval = 0;
-  bool isLoading = false;
+  int _counter = 0;
+  int _counterBreakTime = 0;
+  int _counterInterval = 0;
+  bool _isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
 
-  final TextEditingController _namaTimerController = TextEditingController();
-  final TextEditingController _deskripsiController = TextEditingController();
+  TextEditingController _namaTimerController = TextEditingController();
+  TextEditingController _deskripsiController = TextEditingController();
 
   // refresh data
   void _refreshData() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
     final data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
   // delete data
   void _deleteData(int id) async {
     await SQLHelper.deleteData(id);
-    if(mounted){
     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
       backgroundColor: Colors.redAccent,
       content: Text("Data deleted"),
       duration: Duration(milliseconds: 500),
     ));
-    }
     _refreshData();
   }
 
@@ -77,22 +74,22 @@ class CustomTimerState extends State<CustomTimer> {
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      counter = existingData['time'] ?? 0;
-      counterBreakTime = existingData['rest'] ?? 0;
-      counterInterval = existingData['interval'] ?? 0;
+      _counter = existingData['time'] ?? 0;
+      _counterBreakTime = existingData['rest'] ?? 0;
+      _counterInterval = existingData['interval'] ?? 0;
     } else {
       // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      counter = 0;
-      counterBreakTime = 0;
-      counterInterval = 0;
+      _counter = 0;
+      _counterBreakTime = 0;
+      _counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
       context: context,
       builder: (_) => Container(
-        margin: const EdgeInsets.only(top: 170),
+        margin: EdgeInsets.only(top: 170),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(70),
         ),
@@ -115,8 +112,8 @@ class CustomTimerState extends State<CustomTimer> {
       appBar: AppBar(
         title: const Text("Modal Custom Timer"),
       ),
-      body: isLoading
-          ? const Center(
+      body: _isLoading
+          ? Center(
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
@@ -131,31 +128,33 @@ class CustomTimerState extends State<CustomTimer> {
                   );
                 },
                 child: Card(
-                  margin: const EdgeInsets.all(15),
+                  margin: EdgeInsets.all(15),
                   color: _getRandomColor(), // Set background color
                   child: ListTile(
                     title: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 5),
+                      padding: EdgeInsets.symmetric(vertical: 5),
                       child: Text(
                         _allData[index]['title'],
-                        style: const TextStyle(fontSize: 20),
+                        style: TextStyle(fontSize: 20),
                       ),
                     ),
                     subtitle: Text(_allData[index]['description']),
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text("${_formatTime(_allData[index]['timer'] ?? 0)} punya"),
-                        Text("${_allData[index]['rest']}x rest, selama"),
-                        Text("${_allData[index]['interval']}x"),
+                        Text(_formatTime(_allData[index]['timer'] ?? 0) +
+                            " punya"),
+                        Text(_allData[index]['rest'].toString() +
+                            "x rest, selama"),
+                        Text(_allData[index]['interval'].toString() + "x"),
                         IconButton(
-                          icon: const Icon(Icons.edit),
+                          icon: Icon(Icons.edit),
                           onPressed: () => _showModal((int? id) {
                             // Lakukan sesuatu dengan ID yang dikembalikan
                           }, _allData[index]['id']), // Pass id ke _showModal
                         ),
                         IconButton(
-                          icon: const Icon(Icons.delete),
+                          icon: Icon(Icons.delete),
                           onPressed: () => _deleteData(_allData[index]['id']),
                         )
                       ],
@@ -166,7 +165,7 @@ class CustomTimerState extends State<CustomTimer> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showModal((int? id) {}),
-        child: const Icon(Icons.add),
+        child: Icon(Icons.add),
       ),
     );
   }
@@ -176,10 +175,10 @@ class CustomTimerState extends State<CustomTimer> {
     int minutes = time % 60;
     int seconds = 0;
 
-    String padLeft(int value) {
+    String _padLeft(int value) {
       return value.toString().padLeft(2, '0');
     }
 
-    return '${padLeft(hours)}:${padLeft(minutes)}:${padLeft(seconds)}';
+    return '${_padLeft(hours)}:${_padLeft(minutes)}:${_padLeft(seconds)}';
   }
 }

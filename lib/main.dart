@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-// ignore: unused_import
-import 'package:mobile_time_minder/pages/custom_timer.dart';
-import 'package:mobile_time_minder/pages/list_timer.dart';
+import 'package:mobile_time_minder/services/onboarding_routes.dart';
 
 void main() {
   runApp(const MainApp());
@@ -14,7 +12,10 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: ListTimer(),
+      home: MaterialApp(
+        initialRoute: AppRoutes.splash,
+        onGenerateRoute: AppRoutes.generateRoute,
+      ),
     );
   }
 }

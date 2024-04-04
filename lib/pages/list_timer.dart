@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/widgets/timer_view.dart';
+import 'package:mobile_time_minder/widgets/list_view_timer.dart';
 import 'package:logger/logger.dart';
 
 final logger = Logger();
@@ -27,7 +27,7 @@ class _ListTimerState extends State<ListTimer>
     offYellow,
     offGrey,
     heliotrope,
-    radial,
+    red,
     blueJeans,
     darkGrey,
     halfGrey,
@@ -224,8 +224,8 @@ class _ListTimerState extends State<ListTimer>
         child: TabBarView(
           controller: tabController,
           children: [
-            TimerView(isSettingPressed: isSettingPressed), // Pass isSettingPressed to TimerView
-            TimerView(isSettingPressed: isSettingPressed), // Pass isSettingPressed to TimerView
+            // ListTimer(isSettingPressed: isSettingPressed), 
+            // ListTimer(isSettingPressed: isSettingPressed),
           ],
         ),
       ),

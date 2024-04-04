@@ -70,4 +70,6 @@ class SQLHelper {
     // ignore: empty_catches
     } catch (e) {}
   }
+
 }
+
