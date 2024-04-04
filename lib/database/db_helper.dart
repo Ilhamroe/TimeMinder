@@ -69,4 +69,6 @@ class SQLHelper {
       await db.delete('data', where: 'id = ?', whereArgs: [id]);
     } catch (e) {}
   }
+
 }
+
