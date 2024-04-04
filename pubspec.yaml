@@ -16,6 +16,8 @@ dependencies:
   sqflite: ^2.3.2
   shared_preferences: ^2.0.12
   timer_count_down: ^2.2.2
+  curved_labeled_navigation_bar: ^2.0.2
+  flutter_local_notifications: ^17.0.0
   circular_countdown_timer: ^0.2.3
 
 dev_dependencies:
