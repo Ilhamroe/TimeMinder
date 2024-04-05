@@ -196,6 +196,7 @@ class _DisplayModalState extends State<DisplayModal> {
                 CustomTextField(labelText: "Nama Timer : "),
                 TextField(
                   maxLength: 20,
+                  maxLines: 1,
                   controller: _namaTimerController,
                   decoration: InputDecoration(
                     counterText: '',
@@ -205,6 +206,7 @@ class _DisplayModalState extends State<DisplayModal> {
                 CustomTextField(labelText: "Deskripsi : "),
                 TextField(
                   maxLength: 30,
+                  maxLines: 1,
                   controller: _deskripsiController,
                   decoration: InputDecoration(
                     counterText: '',

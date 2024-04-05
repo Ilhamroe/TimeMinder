@@ -121,6 +121,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
             child: CircularProgressIndicator(),
           )
         : ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.all(8.0),
             shrinkWrap: true,
             itemCount: _allData.length,
@@ -172,69 +173,70 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                         fontSize: 10,
                       ),
                     ),
-                    trailing: Container(
-                      width: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              if (widget.isSettingPressed)
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      alignment: Alignment.topCenter,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      color: ripeMango,
-                                      icon: const Icon(CupertinoIcons.pencil_circle_fill,
-                                          size: 26),
-                                      onPressed: () => _showModal(
-                                          (int? id) {}, _allData[index]['id']),
-                                    ),
-                                    IconButton(
-                                      alignment: Alignment.topCenter,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      color: redDeep,
-                                      icon: const Icon(CupertinoIcons.delete_solid,
-                                          size: 26),
-                                      onPressed: () {
-                                        _showPopup();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              if (!widget.isSettingPressed)
+                    trailing: widget.isSettingPressed
+                        ? Container(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
                                 Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Text(
-                                      _formatTime(
-                                          _allData[index]['timer'] ?? 0),
-                                      style: TextStyle(
-                                        fontFamily: 'DMSans',
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 8,
-                                        color: darkGrey,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 8.0,
-                                    ),
-                                    SvgPicture.asset(
-                                      'assets/images/button.svg',
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          alignment: Alignment.topCenter,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          color: ripeMango,
+                                          icon: const Icon(
+                                              CupertinoIcons.pencil_circle_fill,
+                                              size: 26),
+                                          onPressed: () => _showModal(
+                                              (int? id) {},
+                                              _allData[index]['id']),
+                                        ),
+                                        IconButton(
+                                          alignment: Alignment.topCenter,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          color: redDeep,
+                                          icon: const Icon(
+                                              CupertinoIcons.delete_solid,
+                                              size: 26),
+                                          onPressed: () {
+                                            _showPopup();
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            children: [
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                _formatTime(_allData[index]['timer'] ?? 0),
+                                style: TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 8,
+                                  color: darkGrey,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                              SvgPicture.asset(
+                                'assets/images/button.svg',
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
               );
