@@ -6,6 +6,8 @@ import 'package:mobile_time_minder/models/notif.dart';
 import 'package:mobile_time_minder/models/dnd.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_dnd/flutter_dnd.dart';
+import 'package:mobile_time_minder/pages/tes.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
 
@@ -29,8 +31,10 @@ class _DetailTimerState extends State<DetailTimer> {
   late List<Map<String, dynamic>> _allData = [];
   late CountdownController _controller; // Controller untuk Countdown widget
   final player= AudioPlayer();
-  // late AudioPlayer _audioPlayer;
   bool _isSoundPlayed= false;
+  // String _filtername= '';
+  // bool? isNotificationAccessGranted = false;
+  // bool? isDNDActive= false;
 
   int get inTimeMinutes => widget.data['timer'];
   int get inRestMinutes => widget.data['rest'] ?? 0;
@@ -57,8 +61,19 @@ class _DetailTimerState extends State<DetailTimer> {
     _refreshData();
     _controller = CountdownController();
     Notif.initialize(flutterLocalNotificationsPlugin);
-    // _audioPlayer= AudioPlayer();
+    // FlutterDnd.initialize();
+    // WidgetsBinding.instance!.addObserver(this);
+    // updateUI();
   }
+
+  // void updateUI() async{
+  //   int? filter= await FlutterDnd.getCurrentInterruptionFilter();
+  //   if(filter != null){
+  //     String filtername= FlutterDnd.getFilterName(filter);
+  //     bool? isNotificationAccessGranted= 
+  //       await FlutterDnd.isNotificationPolicyAccessGranted;
+  //   }
+  // }
 
   void _refreshData() async {
     setState(() {
@@ -83,6 +98,20 @@ class _DetailTimerState extends State<DetailTimer> {
       fln: flutterLocalNotificationsPlugin
       );
   }
+
+    void _handleDndMode() async {
+      if(!_isTimerRunning){
+        if(!_isDndEnabled()){
+          enableDNdMode();
+        }else{
+          disableDndMode();
+        }
+      }
+    }
+
+    bool _isDndEnabled(){
+      return false;
+    }
 
   // Future<void> _playNotificationSound(String soundPath) async{
 
@@ -113,7 +142,7 @@ class _DetailTimerState extends State<DetailTimer> {
                 setState(() {
                   _isTimerRunning = false;
                   _showNotification("Timer selesai");
-                  disableDndMode();
+                 
                   player.play(AssetSource('sounds/end.wav'));
                 });
               },
@@ -124,7 +153,7 @@ class _DetailTimerState extends State<DetailTimer> {
                 if(_isTimerRunning){  
                   _controller.pause();
                   _showNotification("Timer dijeda");
-                  disableDndMode();
+                 disableDndMode();
                   if(!_isSoundPlayed){
                     player.stop();
                   }
@@ -133,7 +162,9 @@ class _DetailTimerState extends State<DetailTimer> {
                 }else{
                   _controller.start();
                   _showNotification("Timer dimulai");
-                  enableDndMode();
+                 enableDNdMode();
+                 
+
                   if(!_isSoundPlayed){
                     // player.stop();
                     player.play(AssetSource('sounds/start.wav'));
