@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 class DetailTimer extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -14,15 +16,12 @@ class DetailTimer extends StatefulWidget {
 }
 
 class _DetailTimerState extends State<DetailTimer> {
-  int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
   bool _isLoading = false;
   bool _isTimerRunning = false; // Menyimpan status timer
   bool statusSwitch = false;
   bool hideContainer = true;
   late List<Map<String, dynamic>> _allData = [];
-  late CountDownController _controller; // Controller untuk Countdown widget
+  late CountDownController _controller;
 
   int get inTimeMinutes => widget.data['timer'];
   int get inRestMinutes => widget.data['rest'] ?? 0;
@@ -67,24 +66,40 @@ class _DetailTimerState extends State<DetailTimer> {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(),
+        leading: GestureDetector(
+          onTap: () {
+            _showPopup();
+          },
+          child: Icon(
+            CupertinoIcons.lessthan_circle,
+            color: cetaceanBlue,
+          ),
+        ),
         title: Column(
           children: [
             SizedBox(height: 20),
             Text(
               data['title'],
-              style: TextStyle(),
+              style: TextStyle(
+                fontFamily: 'Nunito-Bold',
+                fontWeight: FontWeight.w600,
+                color: cetaceanBlue,
+              ),
               textAlign: TextAlign.center,
             ),
+            SizedBox(height: 10),
             Text(
               data['description'],
               style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black), // Atur gaya teks deskripsi
+                fontFamily: 'Nunito',
+                fontSize: 14,
+                color: Colors.black,
+              ),
             ),
           ],
         ),
         centerTitle: true,
+        toolbarHeight: 80,
       ),
       body: SafeArea(
         child: Container(
@@ -100,33 +115,32 @@ class _DetailTimerState extends State<DetailTimer> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 CircularCountDownTimer(
-                    duration: inTimeBreak,
-                    initialDuration: 0,
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: MediaQuery.of(context).size.height / 2,
-                    controller: _controller,
-                    ringColor: offGrey,
-                    fillColor: _controller.isPaused ? red : ripeMango,
-                    strokeWidth: 20.0,
-                    isReverse: true,
-                    isReverseAnimation: true,
-                    strokeCap: StrokeCap.round,
-                    autoStart: true,
-                    textStyle: TextStyle(
-                      fontSize: 33.0,
-                      color: _controller.isPaused ? red : red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    onComplete: () {
-                      _showPopupEnd();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ));
-                    }
-                    // Tindakan yang diambil ketika timer selesai
-                    ),
+                  duration: inTimeBreak,
+                  initialDuration: 0,
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.height / 2,
+                  controller: _controller,
+                  ringColor: offGrey,
+                  fillColor: _controller.isPaused ? red : ripeMango,
+                  strokeWidth: 20.0,
+                  isReverse: true,
+                  isReverseAnimation: true,
+                  strokeCap: StrokeCap.round,
+                  autoStart: true,
+                  textStyle: TextStyle(
+                    fontSize: 33.0,
+                    color: _controller.isPaused ? red : red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  onComplete: () {
+                    _showPopup();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(),
+                        ));
+                  },
+                ),
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -142,7 +156,7 @@ class _DetailTimerState extends State<DetailTimer> {
                         child: Icon(
                           Icons.play_arrow_outlined,
                           color: blueJeans,
-                          size: 40, // Mengatur ukuran ikon menjadi 40
+                          size: 40,
                         ),
                       ),
                     if (!_isTimerRunning)
@@ -156,7 +170,7 @@ class _DetailTimerState extends State<DetailTimer> {
                         child: Icon(
                           Icons.pause,
                           color: blueJeans,
-                          size: 40, // Mengatur ukuran ikon menjadi 40
+                          size: 40,
                         ),
                       ),
                     SizedBox(width: 100),
@@ -164,7 +178,7 @@ class _DetailTimerState extends State<DetailTimer> {
                       onPressed: _showPopup,
                       icon: Icon(Icons.check),
                       color: blueJeans,
-                      iconSize: 40, // Mengatur ukuran ikon menjadi 40
+                      iconSize: 40,
                     ),
                   ],
                 ),
@@ -176,127 +190,11 @@ class _DetailTimerState extends State<DetailTimer> {
     );
   }
 
-  void _showPopupEnd() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: Icon(
-              Icons.add,
-            ),
-          ),
-          content: Column(
-            mainAxisSize:
-                MainAxisSize.min, 
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Kembali ke Beranda ?",
-                  textAlign:
-                      TextAlign.center, 
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        ripeMango,
-                  ),
-                  child: Text("Oke"),
-                )
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   void _showPopup() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: Icon(
-              Icons.add,
-            ),
-          ),
-          content: Column(
-            mainAxisSize:
-                MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Apakah Anda Yakin ?",
-                  textAlign:
-                      TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Colors.grey, 
-                  ),
-                  child: Text(
-                    "Tidak",
-                    style: TextStyle(
-                      backgroundColor: Colors.grey,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        ripeMango,
-                  ),
-                  child: Text(
-                    "Iya",
-                    style: TextStyle(
-                      backgroundColor: ripeMango,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ],
-        );
+        return ModalConfirm();
       },
     );
   }

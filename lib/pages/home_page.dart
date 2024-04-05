@@ -8,7 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/detail_list_timer.dart';
+import 'package:mobile_time_minder/pages/list_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
@@ -34,6 +34,7 @@ class _HomePageState extends State<HomePage> {
   bool _isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
+  bool isSettingPressed = false;
 
   TextEditingController _namaTimerController = TextEditingController();
   TextEditingController _deskripsiController = TextEditingController();
@@ -102,25 +103,43 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: ripeMango,
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
-        index: 0,
-        height: 76.0,
+        index: _page,
+        height: 69.0,
         items: [
           CurvedNavigationBarItem(
-              child: SvgPicture.asset("assets/images/solar.svg",
-                  width: 35, height: 35),
-              label: "BERANDA",
-              labelStyle:
-                  TextStyle(color: labelColors[0], fontFamily: 'Nunito')),
+            child: SvgPicture.asset(
+              "assets/images/solar.svg",
+              width: 25,
+              height: 25,
+            ),
+            label: "BERANDA",
+            labelStyle: TextStyle(
+              color: labelColors[0],
+              fontFamily: 'Nunito',
+            ),
+          ),
           CurvedNavigationBarItem(
-              child: const Icon(Icons.add, size: 35),
-              label: "TAMBAH",
-              labelStyle:
-                  TextStyle(color: labelColors[1], fontFamily: 'Nunito')),
+            child: const Icon(
+              Icons.add,
+              size: 25,
+            ),
+            label: "TAMBAH",
+            labelStyle: TextStyle(
+              color: labelColors[1],
+              fontFamily: 'Nunito',
+            ),
+          ),
           CurvedNavigationBarItem(
-              child: const Icon(Icons.hourglass_empty_rounded, size: 35),
-              label: "TIMER",
-              labelStyle:
-                  TextStyle(color: labelColors[2], fontFamily: 'Nunito')),
+            child: const Icon(
+              Icons.hourglass_empty_rounded,
+              size: 25,
+            ),
+            label: "TIMER",
+            labelStyle: TextStyle(
+              color: labelColors[2],
+              fontFamily: 'Nunito',
+            ),
+          ),
         ],
         backgroundColor: Colors.white,
         color: offOrange,
@@ -138,16 +157,15 @@ class _HomePageState extends State<HomePage> {
                   MaterialPageRoute(builder: (context) => const HomePage()),
                 );
                 break;
-
               case 1:
                 _showModal((int? id) {});
                 break;
-
               case 2:
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const DetailListTimer()),
+                    builder: (context) => const DetailListTimer(),
+                  ),
                 );
                 break;
             }
@@ -203,7 +221,6 @@ class _HomePageState extends State<HomePage> {
                           ],
                         ),
                       ),
-
                       Transform.translate(
                         offset: const Offset(-20, 10),
                         child: Container(
@@ -261,7 +278,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                    HomeRekomendasiTile(),
+                    HomeRekomendasiTile(isSettingPressed: isSettingPressed),
                     Container(
                       padding: EdgeInsets.symmetric(vertical: 8.0),
                       margin: EdgeInsets.only(left: 8.0, right: 10.0),
@@ -302,11 +319,11 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                    HomeTimermuTile(),
+                    HomeTimermuTile(isSettingPressed: isSettingPressed),
                   ],
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -4,8 +4,6 @@ import 'package:mobile_time_minder/pages/onboarding_page.dart';
 import 'package:mobile_time_minder/pages/splash_screen.dart';
 
 class AppRoutes {
-//from this route class we will manage all navigation direction in our app
-
   static const String splash = "/";
   static const String onboard = "/onboard";
   static const String home = "/home";
@@ -14,15 +12,21 @@ class AppRoutes {
     switch (settings.name) {
       case AppRoutes.splash:
         return MaterialPageRoute(
-            settings: settings, builder: (_) => const SplashScreen());
+          settings: settings,
+          builder: (_) => const SplashScreen(),
+        );
 
       case AppRoutes.onboard:
         return MaterialPageRoute(
-            settings: settings, builder: (_) => const OnboardingPage());
+          settings: settings,
+          builder: (_) => const OnboardingPage(),
+        );
 
       case AppRoutes.home:
         return MaterialPageRoute(
-            settings: settings, builder: (_) => const HomePage());
+          settings: settings,
+          builder: (_) => const HomePage(),
+        );
 
       default:
         return MaterialPageRoute(

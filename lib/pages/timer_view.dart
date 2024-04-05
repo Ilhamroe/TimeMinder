@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
@@ -10,7 +9,7 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/services/homepage.dart';
+import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 class TimerView extends StatefulWidget {
   final int timerIndex;
@@ -23,10 +22,11 @@ class TimerView extends StatefulWidget {
 
 class _TimerState extends State<TimerView> {
   late Timer _timer;
+
   late int timeInSec;
- late String _waktuMentah;
- late String _judul;
- late String _deskripsi;
+  late String _waktuMentah;
+  late String _judul;
+  late String _deskripsi;
   late int _jam;
   late int _menit;
   late int _detik;
@@ -41,7 +41,6 @@ class _TimerState extends State<TimerView> {
   }
 
   void _getDataByID() {
-   _convertTimeInSec(context, _jam, _menit, _detik);
     _timer = Timerlist[widget.timerIndex];
     _waktuMentah = _timer.time;
     _judul = _timer.title;
@@ -50,44 +49,70 @@ class _TimerState extends State<TimerView> {
   }
 
   void _parseWaktuMentah(String time) {
-    List<String> bagian  = time.split(':');
+    List<String> bagian = time.split(':');
     _jam = int.parse(bagian[0]);
     _menit = int.parse(bagian[1]);
     _detik = int.parse(bagian[2]);
   }
 
-  void _convertTimeInSec(BuildContext context, jam, menit, detik){
+  void _convertTimeInSec(BuildContext context, jam, menit, detik) {
     setState(() {
-      timeInSec =  jam * 3600 + menit * 60 + detik;
+      timeInSec = jam * 3600 + menit * 60 + detik;
     });
   }
+
   final CountDownController _controller = CountDownController();
-  void startTimer(){
-      const onesec = Duration(seconds: 1);
+  void startTimer() {
+    const onesec = Duration(seconds: 1);
+  }
+
+  void _showPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalConfirm();
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(),
+        leading: GestureDetector(
+          onTap: () {
+            _showPopup();
+          },
+          child: Icon(
+            CupertinoIcons.lessthan_circle,
+            color: cetaceanBlue,
+          ),
+        ),
         title: Column(
           children: [
             SizedBox(height: 20),
             Text(
               _judul,
-              style: TextStyle(),
+              style: TextStyle(
+                fontFamily: 'Nunito-Bold',
+                fontWeight: FontWeight.w600,
+                color: cetaceanBlue,
+              ),
               textAlign: TextAlign.center,
             ),
+            SizedBox(height: 10),
             Text(
               _deskripsi,
               style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black),
+                fontFamily: 'Nunito',
+                fontSize: 14,
+                color: Colors.black,
+              ),
             ),
           ],
         ),
         centerTitle: true,
+        toolbarHeight: 80,
       ),
       body: SafeArea(
         child: Container(
@@ -121,7 +146,7 @@ class _TimerState extends State<TimerView> {
                       fontWeight: FontWeight.bold,
                     ),
                     onComplete: () {
-                      // _showPopupEnd();
+                      _showPopup();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -138,14 +163,14 @@ class _TimerState extends State<TimerView> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            _controller.resume() ;
+                            _controller.resume();
                             isStarted = false;
                           });
                         },
                         child: Icon(
                           Icons.play_arrow_outlined,
                           color: blueJeans,
-                          size: 40, // Mengatur ukuran ikon menjadi 40
+                          size: 40,
                         ),
                       ),
                     if (!isStarted)
@@ -159,7 +184,7 @@ class _TimerState extends State<TimerView> {
                         child: Icon(
                           Icons.pause,
                           color: blueJeans,
-                          size: 40, // Mengatur ukuran ikon menjadi 40
+                          size: 40,
                         ),
                       ),
                     SizedBox(width: 100),
@@ -167,7 +192,7 @@ class _TimerState extends State<TimerView> {
                       onPressed: _showPopup,
                       icon: Icon(Icons.check),
                       color: blueJeans,
-                      iconSize: 40, // Mengatur ukuran ikon menjadi 40
+                      iconSize: 40,
                     ),
                   ],
                 ),
@@ -176,128 +201,6 @@ class _TimerState extends State<TimerView> {
           ),
         ),
       ),
-    );
-  }
-
-  void _showPopupEnd(){
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: Icon(
-              Icons.add,
-            ),
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Kembali ke Beranda ?",
-                  textAlign: TextAlign.center, 
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget> [
-                ElevatedButton(
-
-                  onPressed:(){
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const Homepage(),
-                        )
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: ripeMango,
-                  ),
-                  child: Text("Oke"),
-                )
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: Icon(
-              Icons.add,
-            ),
-          ),
-          content: Column(
-            mainAxisSize:
-                MainAxisSize.min,
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Apakah Anda Yakin ?",
-                  textAlign: TextAlign.center,
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget> [
-                ElevatedButton(
-                  onPressed:(){
-                    Navigator.of(context).pop();
-                  } ,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey, // Gunakan warna dari variabel state
-                  ),
-                  child: Text(
-                      "Tidak",
-                    style: TextStyle(
-                      backgroundColor: Colors.grey ,
-                      color: Colors.white ,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        ripeMango, // Gunakan warna dari variabel state
-                  ),
-                  child: Text(
-                    "Iya",
-                    style: TextStyle(
-                      backgroundColor: ripeMango,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ],
-        );
-      },
     );
   }
 }

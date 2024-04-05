@@ -8,7 +8,7 @@ class CustomTextField extends StatelessWidget {
   const CustomTextField({
     super.key,
     this.labelText = "Default Label",
-    this.fontSize = 16,
+    this.fontSize = 14,
     this.fontFamily = 'Nunito',
   });
 

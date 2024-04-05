@@ -29,7 +29,7 @@ class ColorChangerState extends State<ColorChanger> {
           alignment: Alignment.center,
           child: Text(
             widget.isSelected ? 'Timer Anda' : 'Semua',
-            style: TextStyle(color: widget.isSelected ? Colors.white : catcBlue),
+            style: TextStyle(color: widget.isSelected ? Colors.white : cetaceanBlue),
           ),
         ),
       ),

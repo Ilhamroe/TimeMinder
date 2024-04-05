@@ -28,6 +28,7 @@ var Timerlist = [
     color: Color(0xFFE53E42),
     image: 'assets/images/cat1.svg',
     title: 'Pomodoro',
+<<<<<<< HEAD
     description: 'Belajar dengan metode pomodoro',
     time: '00:40:00',
   ),

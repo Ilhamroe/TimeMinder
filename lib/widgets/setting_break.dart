@@ -128,7 +128,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             ),
           ),
         ),
-        SizedBox(width: 20),
+        SizedBox(width: 15),
         Expanded(
           child: Container(
             padding: EdgeInsets.all(2),
