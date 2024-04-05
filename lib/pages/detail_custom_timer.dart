@@ -134,7 +134,7 @@ class _DetailTimerState extends State<DetailTimer> {
                   ),
                   onComplete: () {
                     _showPopup();
-                    Navigator.push(
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const HomePage(),
