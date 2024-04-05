@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_time_minder/theme.dart';
 
 class SettingBreakWidget extends StatefulWidget {
   final bool statusSwitch;
@@ -66,11 +67,11 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: widget.statusSwitch
-                  ? Color(0xFFFAF8EE)
-                  : const Color(0xFFEDEDED),
+                  ? offYellow
+                  : offGrey,
               border: Border.all(
                 color:
-                    widget.statusSwitch ? Color(0xFFFFBF1C) : Color(0xFFC4C5C4),
+                    widget.statusSwitch ? ripeMango : halfGrey,
                 width: 1,
               ),
             ),
@@ -91,7 +92,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     icon: Icon(Icons.remove),
                     iconSize: 16,
                     color: widget.statusSwitch
-                        ? Color(0xFFFFBF1C)
+                        ? ripeMango
                         : Color(0xFF838589),
                   ),
                 ),
@@ -119,7 +120,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     icon: Icon(Icons.add),
                     iconSize: 16,
                     color: widget.statusSwitch
-                        ? Color(0xFFFFBF1C)
+                        ? ripeMango
                         : Color(0xFF838589),
                   ),
                 ),
@@ -127,7 +128,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             ),
           ),
         ),
-        SizedBox(width: 20),
+        SizedBox(width: 15),
         Expanded(
           child: Container(
             padding: EdgeInsets.all(2),
@@ -135,11 +136,11 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: widget.statusSwitch
-                  ? Color(0xFFFAF8EE)
-                  : const Color(0xFFEDEDED),
+                  ? offYellow
+                  : offGrey,
               border: Border.all(
                 color:
-                    widget.statusSwitch ? Color(0xFFFFBF1C) : Color(0xFFC4C5C4),
+                    widget.statusSwitch ? ripeMango : halfGrey,
                 width: 1,
               ),
             ),
@@ -160,7 +161,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     icon: Icon(Icons.remove),
                     iconSize: 16,
                     color: widget.statusSwitch
-                        ? Color(0xFFFFBF1C)
+                        ? ripeMango
                         : Color(0xFF838589),
                   ),
                 ),
@@ -188,7 +189,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     icon: Icon(Icons.add),
                     iconSize: 16,
                     color: widget.statusSwitch
-                        ? Color(0xFFFFBF1C)
+                        ? ripeMango
                         : Color(0xFF838589),
                   ),
                 ),

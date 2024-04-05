@@ -1,15 +1,20 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
 class HomeTimermuTile extends StatefulWidget {
-  const HomeTimermuTile({super.key});
+  final bool isSettingPressed;
+
+  const HomeTimermuTile({Key? key, required this.isSettingPressed})
+      : super(key: key);
 
   @override
   State<HomeTimermuTile> createState() => _HomeTimermuTileState();
@@ -27,26 +32,80 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
   //databases
   late List<Map<String, dynamic>> _allData = [];
 
-  int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
-  bool _isLoading = true;
+  int counter = 0;
+  int counterBreakTime = 0;
+  int counterInterval = 0;
+  bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
 
-  TextEditingController _namaTimerController = TextEditingController();
-  TextEditingController _deskripsiController = TextEditingController();
+  final TextEditingController _namaTimerController = TextEditingController();
+  final TextEditingController _deskripsiController = TextEditingController();
 
-  // show data
+  // refresh data
   void _refreshData() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     final data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      _isLoading = false;
+      isLoading = false;
     });
+  }
+
+  // delete data
+  void _deleteData(int id) async {
+    await SQLHelper.deleteData(id);
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        backgroundColor: Colors.redAccent,
+        content: Text("Data deleted"),
+        duration: Duration(milliseconds: 500),
+      ));
+    }
+    _refreshData();
+  }
+
+  void _showModal(ModalCloseCallback onClose, [int? id]) async {
+    if (id != null) {
+      final existingData =
+          _allData.firstWhere((element) => element['id'] == id);
+      _namaTimerController.text = existingData['title'];
+      _deskripsiController.text = existingData['description'];
+      counter = existingData['time'] ?? 0;
+      counterBreakTime = existingData['rest'] ?? 0;
+      counterInterval = existingData['interval'] ?? 0;
+    } else {
+      // Jika data baru, reset nilai controller
+      _namaTimerController.text = '';
+      _deskripsiController.text = '';
+      counter = 0;
+      counterBreakTime = 0;
+      counterInterval = 0;
+    }
+
+    final newData = await showCupertinoModalPopup(
+      context: context,
+      builder: (_) => Container(
+        margin: const EdgeInsets.only(top: 170),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(70),
+        ),
+        child: DisplayModal(id: id),
+      ),
+    );
+    onClose(newData);
+    _refreshData();
+  }
+
+  void _showPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalConfirm();
+      },
+    );
   }
 
   @override
@@ -57,7 +116,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
+    return isLoading
         ? Center(
             child: CircularProgressIndicator(),
           )
@@ -113,27 +172,68 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                         fontSize: 10,
                       ),
                     ),
-                    trailing: Column(
-                      children: [
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Text(
-                          _formatTime(_allData[index]['timer'] ?? 0),
-                          style: TextStyle(
-                            fontFamily: 'DMSans',
-                            fontWeight: FontWeight.w600,
-                            fontSize: 8,
-                            color: darkGrey,
+                    trailing: Container(
+                      width: 100,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              if (widget.isSettingPressed)
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      alignment: Alignment.topCenter,
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      color: ripeMango,
+                                      icon: const Icon(CupertinoIcons.pencil_circle_fill,
+                                          size: 26),
+                                      onPressed: () => _showModal(
+                                          (int? id) {}, _allData[index]['id']),
+                                    ),
+                                    IconButton(
+                                      alignment: Alignment.topCenter,
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      color: redDeep,
+                                      icon: const Icon(CupertinoIcons.delete_solid,
+                                          size: 26),
+                                      onPressed: () {
+                                        _showPopup();
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              if (!widget.isSettingPressed)
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                      height: 15,
+                                    ),
+                                    Text(
+                                      _formatTime(
+                                          _allData[index]['timer'] ?? 0),
+                                      style: TextStyle(
+                                        fontFamily: 'DMSans',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 8,
+                                        color: darkGrey,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 8.0,
+                                    ),
+                                    SvgPicture.asset(
+                                      'assets/images/button.svg',
+                                    ),
+                                  ],
+                                ),
+                            ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 8.0,
-                        ),
-                        SvgPicture.asset(
-                          'assets/images/button.svg',
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),

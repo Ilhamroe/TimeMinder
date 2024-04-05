@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mobile_time_minder/theme.dart';
 
 class SettingTimeWidget extends StatefulWidget {
   final int initialCounter;
@@ -16,17 +17,34 @@ class SettingTimeWidget extends StatefulWidget {
 
 class SettingTimeWidgetState extends State<SettingTimeWidget> {
   late int _counterMainTime;
+  late TextEditingController _textController;
 
   @override
   void initState() {
     super.initState();
     _counterMainTime = widget.initialCounter;
+    _textController = TextEditingController(text: _counterMainTime.toString());
+    _textController.addListener(_onTextChanged);
+  }
+
+  void _onTextChanged() {
+    final newText = _textController.text;
+    if (newText.isNotEmpty) {
+      final newValue = int.tryParse(newText);
+      if (newValue != null) {
+        setState(() {
+          _counterMainTime = newValue;
+          widget.onChanged?.call(_counterMainTime);
+        });
+      }
+    }
   }
 
   void _increment() {
     setState(() {
       _counterMainTime++;
-      widget.onChanged?.call(_counterMainTime); 
+      _textController.text = _counterMainTime.toString();
+      widget.onChanged?.call(_counterMainTime);
     });
   }
 
@@ -34,7 +52,8 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
     setState(() {
       if (_counterMainTime > 0) {
         _counterMainTime--;
-        widget.onChanged?.call(_counterMainTime); 
+        _textController.text = _counterMainTime.toString();
+        widget.onChanged?.call(_counterMainTime);
       }
     });
   }
@@ -42,6 +61,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
   void resetCounter() {
     setState(() {
       _counterMainTime = 0;
+      _textController.text = _counterMainTime.toString();
     });
   }
 
@@ -54,9 +74,9 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
             padding: EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              color: Color(0xFFFAF8EE),
+              color: offYellow,
               border: Border.all(
-                color: Color(0xFFFFBF1C),
+                color: ripeMango,
                 width: 1,
               ),
             ),
@@ -69,7 +89,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     decoration: BoxDecoration(
                       border: Border(
                         right: BorderSide(
-                          color: Colors.white,
+                          color: offYellow,
                           width: 1,
                         ),
                       ),
@@ -78,19 +98,21 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                       onPressed: _decrement,
                       icon: Icon(Icons.remove),
                       iconSize: 18,
-                      color: Color(0xFFFFBF1C),
+                      color: ripeMango,
                     ),
                   ),
                 ),
                 Expanded(
                   flex: 3,
-                  child: Text(
-                    '$_counterMainTime',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey,
-                    ),
+                  child: TextFormField(
+                    controller: _textController,
+                    keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 14, color: Colors.grey),
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
                   ),
                 ),
                 Flexible(
@@ -99,7 +121,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     decoration: BoxDecoration(
                       border: Border(
                         left: BorderSide(
-                          color: Colors.white,
+                          color: offYellow,
                           width: 1,
                         ),
                       ),
@@ -108,7 +130,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                       onPressed: _increment,
                       icon: Icon(Icons.add),
                       iconSize: 18,
-                      color: Color(0xFFFFBF1C),
+                      color: ripeMango,
                     ),
                   ),
                 ),

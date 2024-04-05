@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +9,7 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 class TimerView extends StatefulWidget {
   final int timerIndex;
@@ -66,28 +66,53 @@ class _TimerState extends State<TimerView> {
     const onesec = Duration(seconds: 1);
   }
 
+  void _showPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalConfirm();
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(),
+        leading: GestureDetector(
+          onTap: () {
+            _showPopup();
+          },
+          child: Icon(
+            CupertinoIcons.lessthan_circle,
+            color: cetaceanBlue,
+          ),
+        ),
         title: Column(
           children: [
             SizedBox(height: 20),
             Text(
               _judul,
-              style: TextStyle(),
+              style: TextStyle(
+                fontFamily: 'Nunito-Bold',
+                fontWeight: FontWeight.w600,
+                color: cetaceanBlue,
+              ),
               textAlign: TextAlign.center,
             ),
+            SizedBox(height: 10),
             Text(
               _deskripsi,
               style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black), // Atur gaya teks deskripsi
+                fontFamily: 'Nunito',
+                fontSize: 14,
+                color: Colors.black,
+              ),
             ),
           ],
         ),
         centerTitle: true,
+        toolbarHeight: 80,
       ),
       body: SafeArea(
         child: Container(
@@ -108,7 +133,7 @@ class _TimerState extends State<TimerView> {
                     width: MediaQuery.of(context).size.width / 2,
                     height: MediaQuery.of(context).size.height / 2,
                     controller: _controller,
-                    ringColor: app_background,
+                    ringColor: offGrey,
                     fillColor: _controller.isPaused ? red : ripeMango,
                     strokeWidth: 20.0,
                     isReverse: true,
@@ -117,11 +142,11 @@ class _TimerState extends State<TimerView> {
                     autoStart: true,
                     textStyle: TextStyle(
                       fontSize: 33.0,
-                      color: _controller.isPaused ? red : tulisan,
+                      color: _controller.isPaused ? red : cetaceanBlue,
                       fontWeight: FontWeight.bold,
                     ),
                     onComplete: () {
-                      // _showPopupEnd();
+                      _showPopup();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -145,7 +170,7 @@ class _TimerState extends State<TimerView> {
                         child: Icon(
                           Icons.play_arrow_outlined,
                           color: blueJeans,
-                          size: 40, // Mengatur ukuran ikon menjadi 40
+                          size: 40,
                         ),
                       ),
                     if (!isStarted)
@@ -159,7 +184,7 @@ class _TimerState extends State<TimerView> {
                         child: Icon(
                           Icons.pause,
                           color: blueJeans,
-                          size: 40, // Mengatur ukuran ikon menjadi 40
+                          size: 40,
                         ),
                       ),
                     SizedBox(width: 100),
@@ -167,7 +192,7 @@ class _TimerState extends State<TimerView> {
                       onPressed: _showPopup,
                       icon: Icon(Icons.check),
                       color: blueJeans,
-                      iconSize: 40, // Mengatur ukuran ikon menjadi 40
+                      iconSize: 40,
                     ),
                   ],
                 ),
@@ -176,131 +201,6 @@ class _TimerState extends State<TimerView> {
           ),
         ),
       ),
-    );
-  }
-
-  void _showPopupEnd() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: Icon(
-              Icons.add,
-            ),
-          ),
-          content: Column(
-            mainAxisSize:
-                MainAxisSize.min, // Menentukan ukuran minimum untuk Column
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Kembali ke Beranda ?",
-                  textAlign:
-                      TextAlign.center, // Mengatur teks menjadi di tengah
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        ripeMango, // Gunakan warna dari variabel state
-                  ),
-                  child: Text("Oke"),
-                )
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: Icon(
-              Icons.add,
-            ),
-          ),
-          content: Column(
-            mainAxisSize:
-                MainAxisSize.min, // Menentukan ukuran minimum untuk Column
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Apakah Anda Yakin ?",
-                  textAlign:
-                      TextAlign.center, // Mengatur teks menjadi di tengah
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Colors.grey, // Gunakan warna dari variabel state
-                  ),
-                  child: Text(
-                    "Tidak",
-                    style: TextStyle(
-                      backgroundColor: Colors.grey,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        ripeMango, // Gunakan warna dari variabel state
-                  ),
-                  child: Text(
-                    "Iya",
-                    style: TextStyle(
-                      backgroundColor: ripeMango,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ],
-        );
-      },
     );
   }
 }
