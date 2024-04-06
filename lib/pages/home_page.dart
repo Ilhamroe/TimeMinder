@@ -36,8 +36,8 @@ class _HomePageState extends State<HomePage> {
   bool hideContainer = true;
   bool isSettingPressed = false;
 
-  TextEditingController _namaTimerController = TextEditingController();
-  TextEditingController _deskripsiController = TextEditingController();
+  final TextEditingController _namaTimerController = TextEditingController();
+  final TextEditingController _deskripsiController = TextEditingController();
 
   List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
 
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
     final newData = await showCupertinoModalPopup(
       context: context,
       builder: (_) => Container(
-        margin: EdgeInsets.only(top: 170),
+        margin: const EdgeInsets.only(top: 170),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(70),
         ),
@@ -100,7 +100,193 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ripeMango,
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.center,
+            stops: [0.5, 1],
+            colors: [ripeMango, pureWhite],
+          ),
+        ),
+        child: CustomScrollView(
+        slivers: <Widget>[
+          // SizedBox(height: 10),
+          SliverAppBar(
+            title: const SizedBox.shrink(),
+            floating: true, // Membuat app bar tetap muncul saat discroll
+            snap: true, // Mengaktifkan efek snap saat discroll
+            backgroundColor: ripeMango,
+            elevation: 0, // Menghilangkan shadow di app bar
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Transform.translate(
+                          offset: const Offset(15, 0),
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Hi Kawan!',
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  color: Colors.black,
+                                  fontSize: 31.55,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                'Yuk, capai target',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontFamily: 'Nunito-Bold',
+                                    color: Colors.black,
+                                    fontSize: 19.68,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                'fokusmu hari ini dan',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontFamily: 'Nunito-Bold',
+                                    color: Colors.black,
+                                    fontSize: 19.68,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                              Text(
+                                'Selamat beraktivitas!',
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontFamily: 'Nunito-Bold',
+                                    color: Colors.black,
+                                    fontSize: 19.68,
+                                    fontWeight: FontWeight.w500),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Transform.translate(
+                          offset: const Offset(-20, 10),
+                          child: Container(
+                            width: 100,
+                            padding:
+                                const EdgeInsets.only(top: 5.0, bottom: 10.0),
+                            margin: const EdgeInsets.only(top: 15.0),
+                            child: SvgPicture.asset(
+                              "assets/images/cat3.svg",
+                              width: 150.0,
+                              height: 150.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            expandedHeight: 200.0, // Tinggi ekspansi maksimum untuk app bar
+            pinned: true, // Membuat app bar menempel di bagian atas saat discroll
+          ),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (BuildContext context, int index) {
+                return Container(
+                  decoration: const BoxDecoration(
+                    color: pureWhite,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(24.0),
+                      topRight: Radius.circular(24.0),
+                    ),
+                  ),
+                  padding: const EdgeInsets.only(left: 15.0, top: 50.0, right: 15.0),
+                  child: Column(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8.0),
+                        margin: const EdgeInsets.only(left: 8.0),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              "assets/images/star.svg",
+                            ),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            const Text(
+                              "Rekomendasi",
+                              style: TextStyle(
+                                fontFamily: 'Nunito-Bold',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                                color: heliotrope,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      HomeRekomendasiTile(isSettingPressed: isSettingPressed),
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        margin: const EdgeInsets.only(left: 8.0, right: 10.0),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.hourglass_empty,
+                              color: ripeMango,
+                            ),
+                            const SizedBox(width: 8),
+                            const Text(
+                              "Timer Mu",
+                              style: TextStyle(
+                                fontFamily: 'Nunito-Bold',
+                                fontSize: 14,
+                                fontWeight: FontWeight.w900,
+                                color: ripeMango,
+                              ),
+                            ),
+                            const Spacer(),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const DetailListTimer(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                "Lihat Semua",
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: ripeMango,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      HomeTimermuTile(isSettingPressed: isSettingPressed),
+                    ],
+                  ),
+                );
+              },
+              childCount: 1, // Hanya satu item dalam SliverList
+            ),
+          ),
+        ],
+      ),
+      ),
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
         index: _page,
@@ -154,7 +340,7 @@ class _HomePageState extends State<HomePage> {
               case 0:
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
+                  MaterialPageRoute(builder: (context) => const HomePage(),),
                 );
                 break;
               case 1:
@@ -163,9 +349,7 @@ class _HomePageState extends State<HomePage> {
               case 2:
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const DetailListTimer(),
-                  ),
+                  MaterialPageRoute(builder: (context) => const DetailListTimer(),),
                 );
                 break;
             }
@@ -173,172 +357,7 @@ class _HomePageState extends State<HomePage> {
         },
         letIndexChange: (index) => true,
       ),
-      body: CustomScrollView(
-        slivers: <Widget>[
-          // SizedBox(height: 10),
-          SliverAppBar(
-            title: SizedBox.shrink(),
-            floating: true, // Membuat app bar tetap muncul saat discroll
-            snap: true, // Mengaktifkan efek snap saat discroll
-            backgroundColor: ripeMango,
-            elevation: 0, // Menghilangkan shadow di app bar
-            flexibleSpace: FlexibleSpaceBar(
-              background: Container(
-                padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Transform.translate(
-                          offset: const Offset(15, 0),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Halo Mindy',
-                                style: TextStyle(
-                                  fontFamily: 'Nunito-Bold',
-                                  color: Colors.black,
-                                  fontSize: 31.55,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 5,
-                              ),
-                              Text(
-                                'Yuk, capai target',
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontFamily: 'Nunito-Bold',
-                                    color: Colors.black,
-                                    fontSize: 19.68,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                              Text(
-                                'fokusmu hari ini!',
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontFamily: 'Nunito-Bold',
-                                    color: Colors.black,
-                                    fontSize: 19.68,
-                                    fontWeight: FontWeight.w500),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Transform.translate(
-                          offset: const Offset(-20, 10),
-                          child: Container(
-                            width: 100,
-                            padding:
-                                const EdgeInsets.only(top: 5.0, bottom: 10.0),
-                            margin: const EdgeInsets.only(top: 15.0),
-                            child: SvgPicture.asset(
-                              "assets/images/cat3.svg",
-                              width: 150.0,
-                              height: 150.0,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            expandedHeight: 200.0, // Tinggi ekspansi maksimum untuk app bar
-            pinned: true, // Membuat app bar menempel di bagian atas saat discroll
-          ),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return Container(
-                  decoration: BoxDecoration(
-                    color: pureWhite,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(24.0),
-                      topRight: Radius.circular(24.0),
-                    ),
-                  ),
-                  padding: EdgeInsets.only(left: 15.0, top: 50.0, right: 15.0),
-                  child: Column(
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(8.0),
-                        margin: EdgeInsets.only(left: 8.0),
-                        child: Row(
-                          children: [
-                            SvgPicture.asset(
-                              "assets/images/star.svg",
-                            ),
-                            SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              "Rekomendasi",
-                              style: TextStyle(
-                                fontFamily: 'Nunito-Bold',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w900,
-                                color: heliotrope,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      HomeRekomendasiTile(isSettingPressed: isSettingPressed),
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 8.0),
-                        margin: EdgeInsets.only(left: 8.0, right: 10.0),
-                        child: Row(
-                          children: [
-                            Icon(
-                              Icons.hourglass_empty,
-                              color: ripeMango,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              "Timer Mu",
-                              style: TextStyle(
-                                fontFamily: 'Nunito-Bold',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w900,
-                                color: ripeMango,
-                              ),
-                            ),
-                            Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DetailListTimer(),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                "Lihat Semua",
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: ripeMango,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      HomeTimermuTile(isSettingPressed: isSettingPressed),
-                    ],
-                  ),
-                );
-              },
-              childCount: 1, // Hanya satu item dalam SliverList
-            ),
-          ),
-        ],
-      ),
+
     );
   }
 }

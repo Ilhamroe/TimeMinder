@@ -70,27 +70,27 @@ class _DetailTimerState extends State<DetailTimer> {
           onTap: () {
             _showPopup();
           },
-          child: Icon(
+          child: const Icon(
             CupertinoIcons.lessthan_circle,
             color: cetaceanBlue,
           ),
         ),
         title: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               data['title'],
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Nunito-Bold',
                 fontWeight: FontWeight.w600,
                 color: cetaceanBlue,
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               data['description'],
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Nunito',
                 fontSize: 14,
                 color: Colors.black,
@@ -141,7 +141,7 @@ class _DetailTimerState extends State<DetailTimer> {
                         ));
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -153,7 +153,7 @@ class _DetailTimerState extends State<DetailTimer> {
                             _isTimerRunning = false;
                           });
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.play_arrow_outlined,
                           color: blueJeans,
                           size: 40,
@@ -167,16 +167,16 @@ class _DetailTimerState extends State<DetailTimer> {
                             _isTimerRunning = true;
                           });
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.pause,
                           color: blueJeans,
                           size: 40,
                         ),
                       ),
-                    SizedBox(width: 100),
+                    const SizedBox(width: 100),
                     IconButton(
                       onPressed: _showPopup,
-                      icon: Icon(Icons.check),
+                      icon: const Icon(Icons.check),
                       color: blueJeans,
                       iconSize: 40,
                     ),
@@ -194,7 +194,7 @@ class _DetailTimerState extends State<DetailTimer> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ModalConfirm();
+        return const ModalConfirm();
       },
     );
   }

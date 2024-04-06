@@ -1,11 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/models/timers.dart';
 import 'package:mobile_time_minder/pages/custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
-import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:flutter/cupertino.dart';
 
 class ListTimer extends StatefulWidget {
   const ListTimer({Key? key});
@@ -15,20 +14,21 @@ class ListTimer extends StatefulWidget {
 }
 
 class _ListTimerState extends State<ListTimer>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late TabController tabController;
   late List<Map<String, dynamic>> _allData = [];
   int _counter = 0;
   int _counterBreakTime = 0;
   int _counterInterval = 0;
   bool _isLoading = false;
-  bool isSemuaSelected = true;
+  int selectedIndex = 1;
+  bool isPageSemuaSelected = true;
   bool isSettingPressed = false;
   bool statusSwitch = false;
   bool hideContainer = true;
 
-  TextEditingController _namaTimerController = TextEditingController();
-  TextEditingController _deskripsiController = TextEditingController();
+  final TextEditingController _namaTimerController = TextEditingController();
+  final TextEditingController _deskripsiController = TextEditingController();
 
   // refresh data
   void _refreshData() async {
@@ -74,7 +74,7 @@ class _ListTimerState extends State<ListTimer>
     final newData = await showCupertinoModalPopup(
       context: context,
       builder: (_) => Container(
-        margin: EdgeInsets.only(top: 170),
+        margin: const EdgeInsets.only(top: 170),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(70),
         ),

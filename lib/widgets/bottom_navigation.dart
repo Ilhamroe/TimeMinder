@@ -31,8 +31,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
   bool statusSwitch = false;
   bool hideContainer = true;
 
-  TextEditingController _namaTimerController = TextEditingController();
-  TextEditingController _deskripsiController = TextEditingController();
+  final TextEditingController _namaTimerController = TextEditingController();
+  final TextEditingController _deskripsiController = TextEditingController();
 
   List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
 
@@ -75,7 +75,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     final newData = await showCupertinoModalPopup(
       context: context,
       builder: (_) => Container(
-        margin: EdgeInsets.only(top: 170),
+        margin: const EdgeInsets.only(top: 170),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(70),
         ),
