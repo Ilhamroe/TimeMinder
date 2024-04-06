@@ -35,12 +35,15 @@ class _DetailListTimerState extends State<DetailListTimer>
     labelColors[selectedIndex] = offOrange;
   }
 
+  late TabController tabController;
   int counter = 0;
   int counterBreakTime = 0;
   int counterInterval = 0;
   bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
+  bool isSemuaSelected = true;
+  bool isSettingPressed = false;
 
   final TextEditingController _namaTimerController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
@@ -102,10 +105,6 @@ class _DetailListTimerState extends State<DetailListTimer>
     _refreshData();
   }
 
-  late TabController tabController;
-  bool isSemuaSelected = true;
-  bool isSettingPressed = false;
-
   @override
   void initState() {
     super.initState();
@@ -132,13 +131,13 @@ class _DetailListTimerState extends State<DetailListTimer>
       bottomNavigationBar: CurvedNavigationBar(
         key: _bottomNavigationKey,
         index: _page,
-        height: 69.0,
+        height: 50.0,
         items: [
           CurvedNavigationBarItem(
             child: SvgPicture.asset(
               "assets/images/solar.svg",
-              width: 30,
-              height: 30,
+              width: 20,
+              height: 20,
             ),
             label: "BERANDA",
             labelStyle: TextStyle(
@@ -149,7 +148,7 @@ class _DetailListTimerState extends State<DetailListTimer>
           CurvedNavigationBarItem(
             child: const Icon(
               Icons.add,
-              size: 30,
+              size: 20,
             ),
             label: "TAMBAH",
             labelStyle: TextStyle(
@@ -160,7 +159,7 @@ class _DetailListTimerState extends State<DetailListTimer>
           CurvedNavigationBarItem(
             child: const Icon(
               Icons.hourglass_empty_rounded,
-              size: 30,
+              size: 20,
             ),
             label: "TIMER",
             labelStyle: TextStyle(

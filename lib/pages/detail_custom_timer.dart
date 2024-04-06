@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
@@ -17,7 +18,7 @@ class DetailTimer extends StatefulWidget {
 
 class _DetailTimerState extends State<DetailTimer> {
   bool _isLoading = false;
-  bool _isTimerRunning = false; // Menyimpan status timer
+  bool _isTimerRunning = false;
   bool statusSwitch = false;
   bool hideContainer = true;
   late List<Map<String, dynamic>> _allData = [];
@@ -66,12 +67,14 @@ class _DetailTimerState extends State<DetailTimer> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
+        leading: IconButton(
+          onPressed: () {
             _showPopup();
           },
-          child: Icon(
-            CupertinoIcons.lessthan_circle,
+          icon: SvgPicture.asset(
+            "assets/images/button_back.svg",
+            width: 30,
+            height: 30,
             color: cetaceanBlue,
           ),
         ),
