@@ -21,6 +21,11 @@ class HomeRekomendasiTile extends StatefulWidget {
 }
 
 class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
+  final List<Color> _customColors = [
+    heliotrope,
+    red,
+  ];
+
   late List<Map<String, dynamic>> _allData = [];
 
   int counter = 0;
@@ -43,19 +48,6 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
       _allData = data;
       isLoading = false;
     });
-  }
-
-  // delete data
-  void _deleteData(int id) async {
-    await SQLHelper.deleteData(id);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text("Data deleted"),
-        duration: Duration(milliseconds: 500),
-      ));
-    }
-    _refreshData();
   }
 
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
@@ -99,10 +91,12 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      padding: EdgeInsets.all(8.0),
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(8.0),
       shrinkWrap: true,
       itemCount: Timerlist.length,
       itemBuilder: (context, index) {
+        final color = _customColors[index % _customColors.length];
         return GestureDetector(
           onTap: () {
             Navigator.push(
@@ -113,19 +107,19 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
             );
           },
           child: Container(
-            margin: EdgeInsets.only(bottom: 13.0),
+            margin: const EdgeInsets.only(bottom: 13.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.0),
               color: offOrange,
             ),
             child: ListTile(
               contentPadding:
-                  EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                  color: Timerlist[index].color,
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                  color: color,
                   child: SvgPicture.asset(
                     Timerlist[index].image,
                     height: 30,
@@ -134,7 +128,7 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
               ),
               title: Text(
                 Timerlist[index].title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Nunito-Bold',
                   fontWeight: FontWeight.w900,
                   fontSize: 12,
@@ -142,46 +136,33 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
               ),
               subtitle: Text(
                 Timerlist[index].description,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Nunito',
                   fontWeight: FontWeight.w600,
                   fontSize: 10,
                 ),
               ),
-              trailing: Container(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              Timerlist[index].time,
-                              style: TextStyle(
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 8,
-                                color: darkGrey,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 8.0,
-                            ),
-                            SvgPicture.asset(
-                              'assets/images/button.svg',
-                            ),
-                          ],
-                        ),
-                      ],
+              trailing: Column(
+                children: [
+                  const SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    Timerlist[index].time,
+                    style: const TextStyle(
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 8,
+                      color: darkGrey,
                     ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(
+                    height: 8.0,
+                  ),
+                  SvgPicture.asset(
+                    'assets/images/button.svg',
+                  ),
+                ],
               ),
             ),
           ),

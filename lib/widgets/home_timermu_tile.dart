@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -87,25 +89,30 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
 
     final newData = await showCupertinoModalPopup(
       context: context,
-      builder: (_) => Container(
-        margin: const EdgeInsets.only(top: 170),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(70),
-        ),
-        child: DisplayModal(id: id),
+      builder: (_) => Stack(
+        children: [
+          BackdropFilter(
+            filter: ImageFilter.blur(
+                sigmaX: 50, sigmaY: 50),
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+          // Modal content
+          Center(
+            child: Container(
+              margin: const EdgeInsets.only(top: 170),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(70),
+              ),
+              child: DisplayModal(id: id),
+            ),
+          ),
+        ],
       ),
     );
     onClose(newData);
     _refreshData();
-  }
-
-  void _showPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ModalConfirm();
-      },
-    );
   }
 
   @override
@@ -117,11 +124,12 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(),
           )
         : ListView.builder(
-            padding: EdgeInsets.all(8.0),
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(8.0),
             shrinkWrap: true,
             itemCount: _allData.length,
             itemBuilder: (context, int index) {
@@ -136,19 +144,19 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                   );
                 },
                 child: Container(
-                  margin: EdgeInsets.only(bottom: 13.0),
+                  margin: const EdgeInsets.only(bottom: 13.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16.0),
                     color: offOrange,
                   ),
                   child: ListTile(
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 5.0, horizontal: 15.0),
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8, horizontal: 10),
                         color: color,
                         child: SvgPicture.asset(
                           'assets/images/cat1.svg',
@@ -158,7 +166,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                     ),
                     title: Text(
                       _allData[index]['title'],
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Nunito-Bold',
                         fontWeight: FontWeight.w900,
                         fontSize: 12,
@@ -166,75 +174,195 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                     ),
                     subtitle: Text(
                       _allData[index]['description'],
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Nunito',
                         fontWeight: FontWeight.w600,
                         fontSize: 10,
                       ),
                     ),
-                    trailing: Container(
-                      width: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              if (widget.isSettingPressed)
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      alignment: Alignment.topCenter,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      color: ripeMango,
-                                      icon: const Icon(CupertinoIcons.pencil_circle_fill,
-                                          size: 26),
-                                      onPressed: () => _showModal(
-                                          (int? id) {}, _allData[index]['id']),
-                                    ),
-                                    IconButton(
-                                      alignment: Alignment.topCenter,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      color: redDeep,
-                                      icon: const Icon(CupertinoIcons.delete_solid,
-                                          size: 26),
-                                      onPressed: () {
-                                        _showPopup();
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              if (!widget.isSettingPressed)
+                    trailing: widget.isSettingPressed
+                        ? SizedBox(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
                                 Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Text(
-                                      _formatTime(
-                                          _allData[index]['timer'] ?? 0),
-                                      style: TextStyle(
-                                        fontFamily: 'DMSans',
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 8,
-                                        color: darkGrey,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 8.0,
-                                    ),
-                                    SvgPicture.asset(
-                                      'assets/images/button.svg',
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          alignment: Alignment.topCenter,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          color: ripeMango,
+                                          icon: const Icon(
+                                              CupertinoIcons.pencil_circle_fill,
+                                              size: 26),
+                                          onPressed: () => _showModal(
+                                              (int? id) {},
+                                              _allData[index]['id']),
+                                        ),
+                                        IconButton(
+                                          alignment: Alignment.topCenter,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          color: redDeep,
+                                          icon: const Icon(
+                                              CupertinoIcons.delete_solid,
+                                              size: 26),
+                                          onPressed: () {
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            10.0),
+                                                  ),
+                                                  content: SizedBox(
+                                                    width: 100,
+                                                    height: 300,
+                                                    child: Column(
+                                                      mainAxisSize:
+                                                          MainAxisSize.min,
+                                                      children: [
+                                                        SizedBox(
+                                                          height: 120.0,
+                                                          child: Image.asset(
+                                                            'assets/images/confirm_popup.png',
+                                                            fit: BoxFit.contain,
+                                                            width: 100,
+                                                            height: 100,
+                                                          ),
+                                                        ),
+                                                        const Text(
+                                                          "Timer akan dihapus,",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Nunito',
+                                                            fontSize: 21,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20.0),
+                                                            const Text(
+                                                          "Apakah Anda yakin?",
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontFamily:
+                                                                'Nunito',
+                                                            fontSize: 26,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            height: 20.0),
+                                                        Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10.0),
+                                                                color: halfGrey,
+                                                              ),
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  Navigator.of(
+                                                                          context)
+                                                                      .pop();
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                  "Tidak",
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          offGrey),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 30),
+                                                            Container(
+                                                              decoration:
+                                                                  BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            10.0),
+                                                                color:
+                                                                    ripeMango,
+                                                              ),
+                                                              child: TextButton(
+                                                                onPressed: () {
+                                                                  if (index !=
+                                                                      null) {
+                                                                    _deleteData(
+                                                                        _allData[index]
+                                                                            [
+                                                                            'id']);
+                                                                    Navigator.of(
+                                                                            context)
+                                                                        .pop();
+                                                                  }
+                                                                },
+                                                                child:
+                                                                    const Text(
+                                                                  "Ya",
+                                                                  style: TextStyle(
+                                                                      color:
+                                                                          offGrey),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            children: [
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                _formatTime(_allData[index]['timer'] ?? 0),
+                                style: const TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 8,
+                                  color: darkGrey,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 8.0,
+                              ),
+                              SvgPicture.asset(
+                                'assets/images/button.svg',
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
               );

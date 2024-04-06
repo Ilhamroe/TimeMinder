@@ -1,5 +1,8 @@
+import 'dart:ffi';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:timer_count_down/timer_controller.dart';
 import 'package:timer_count_down/timer_count_down.dart';
@@ -10,6 +13,10 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:mobile_time_minder/pages/tes.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:mobile_time_minder/pages/custom_timer.dart';
+import 'package:mobile_time_minder/services/onboarding_routes.dart';
+import 'package:mobile_time_minder/theme.dart';
+import 'package:flutter/animation.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/modal_confim.dart';
@@ -27,8 +34,13 @@ class DetailTimer extends StatefulWidget {
 }
 
 class _DetailTimerState extends State<DetailTimer> {
+  int _counter = 0;
+  int _counterBreakTime = 0;
+  int _counterInterval = 0;
+  int currentTimerValue = 0;
   bool _isLoading = false;
-  bool _isTimerRunning = false; // Menyimpan status timer
+
+  bool _isTimerRunning = false;
   bool statusSwitch = false;
   bool hideContainer = true;
   late List<Map<String, dynamic>> _allData = [];
@@ -94,116 +106,48 @@ class _DetailTimerState extends State<DetailTimer> {
     });
   }
 
-  void _toggleTimer() {
-    setState(() {
-      _isTimerRunning = !_isTimerRunning;
-    });
-  }
-    void _showNotification(String message){
-    Notif.showBigTextNotification(
-      title: "TimeMinder", 
-      body: message, 
-      fln: flutterLocalNotificationsPlugin
-      );
-  }
-
-    void _handleDndMode() async {
-      if(!_isTimerRunning){
-        if(!_isDndEnabled()){
-          enableDNdMode();
-        }else{
-          disableDndMode();
-        }
-      }
-    }
-
-    bool _isDndEnabled(){
-      return false;
-    }
-
-  // Future<void> _playNotificationSound(String soundPath) async{
-
-  // }
-
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> data = widget.data;
 
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
+        leading: IconButton(
+          onPressed: () {
             _showPopup();
           },
-          child: Icon(
-            CupertinoIcons.lessthan_circle,
+          icon: SvgPicture.asset(
+            "assets/images/button_back.svg",
+            width: 30,
+            height: 30,
             color: cetaceanBlue,
           ),
         ),
         title: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               data['title'],
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Nunito-Bold',
                 fontWeight: FontWeight.w600,
                 color: cetaceanBlue,
               ),
             textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               data['description'],
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Nunito',
                 fontSize: 14,
                 color: Colors.black,
               ),
-           ),
-
-            //   onFinished: () {
-            //     setState(() {
-            //       _isTimerRunning = false;
-            //       _showNotification("Timer selesai");
-                 
-            //       player.play(AssetSource('sounds/end.wav'));
-            //     });
-            //   },
-            // ),
-            // SizedBox(height: 20),
-            // ElevatedButton(
-            //   onPressed: () {
-            //     if(_isTimerRunning){  
-            //       _controller.pause();
-            //       _showNotification("Timer dijeda");
-            //      disableDndMode();
-            //       if(!_isSoundPlayed){
-            //         player.stop();
-            //       }
-            //       player.play(AssetSource('sounds/pause.wav'));   
-            //       _isSoundPlayed= false;                            
-            //     }else{
-            //       _controller.start();
-            //       _showNotification("Timer dimulai");
-            //      enableDNdMode();
-                 
-
-            //       if(!_isSoundPlayed){
-            //         // player.stop();
-            //         player.play(AssetSource('sounds/start.wav'));
-            //       _isSoundPlayed= true; 
-            //       }
-                                         
-            //     }
-            //     _toggleTimer();
-            //   },
-            //   child: Text(_isTimerRunning ? 'Pause' : 'Play'),
-
-  
+            ),
           ],
         ),
         centerTitle: true,
+        backgroundColor: pureWhite,
         toolbarHeight: 80,
       ),
       body: SafeArea(
@@ -224,7 +168,7 @@ class _DetailTimerState extends State<DetailTimer> {
                   initialDuration: 0,
                   width: MediaQuery.of(context).size.width / 2,
                   height: MediaQuery.of(context).size.height / 2,
-                  controller:_controller,
+                  controller: _controller,
                   ringColor: offGrey,
                   fillColor: _controller.isPaused ? red : ripeMango,
                   strokeWidth: 20.0,
@@ -237,14 +181,7 @@ class _DetailTimerState extends State<DetailTimer> {
                     color: _controller.isPaused ? red : red,
                     fontWeight: FontWeight.bold,
                   ),
-                  onStart: () {
-                    _showNotification("Timer dimulai");
-                    player.play(AssetSource('sounds/end.wav'));
-                    _isSoundPlayed= true;
-                  },
                   onComplete: () {
-                  _showNotification("Timer selesai");
-                  player.play(AssetSource('sounds/end.wav'));
                     _showPopup();
                     Navigator.push(
                         context,
@@ -262,15 +199,7 @@ class _DetailTimerState extends State<DetailTimer> {
                         onTap: () {
                           setState(() {
                             _controller.resume();
-                            _showNotification("Timer dimulai");
                             _isTimerRunning = false;
-
-                                                         
-                            player.play(AssetSource('sounds/start.wav'));
-                               _isSoundPlayed= true;  
-                             player.stop();     
-                                              
-                                                                
                           });
                         },
                         child: Icon(
@@ -285,14 +214,6 @@ class _DetailTimerState extends State<DetailTimer> {
                           setState(() {
                             _controller.pause();
                             _isTimerRunning = true;
-                            _showNotification("Timer dijeda"); 
-                                                      
-                            player.stop();
-                            player.play(AssetSource('sounds/pause.wav'));
-                            _isSoundPlayed= false;  
-                       
-                            
-                                       
                           });
                         },
                         child: Icon(
@@ -322,7 +243,7 @@ class _DetailTimerState extends State<DetailTimer> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ModalConfirm();
+        return const ModalConfirm();
       },
     );
   }

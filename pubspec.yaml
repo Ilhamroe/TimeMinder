@@ -24,6 +24,7 @@ dependencies:
   audioplayers: ^6.0.0
   audioplayers_web: ^5.0.0
   circular_countdown_timer: ^0.2.3
+  flutter_native_timezone: ^2.0.0
 
 
 dev_dependencies:

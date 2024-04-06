@@ -1,11 +1,12 @@
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/models/timers.dart';
 import 'package:mobile_time_minder/pages/custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
-import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:flutter/cupertino.dart';
 
 class ListTimer extends StatefulWidget {
   const ListTimer({Key? key});
@@ -15,20 +16,21 @@ class ListTimer extends StatefulWidget {
 }
 
 class _ListTimerState extends State<ListTimer>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late TabController tabController;
   late List<Map<String, dynamic>> _allData = [];
   int _counter = 0;
   int _counterBreakTime = 0;
   int _counterInterval = 0;
   bool _isLoading = false;
-  bool isSemuaSelected = true;
+  int selectedIndex = 1;
+  bool isPageSemuaSelected = true;
   bool isSettingPressed = false;
   bool statusSwitch = false;
   bool hideContainer = true;
 
-  TextEditingController _namaTimerController = TextEditingController();
-  TextEditingController _deskripsiController = TextEditingController();
+  final TextEditingController _namaTimerController = TextEditingController();
+  final TextEditingController _deskripsiController = TextEditingController();
 
   // refresh data
   void _refreshData() async {
@@ -73,12 +75,26 @@ class _ListTimerState extends State<ListTimer>
 
     final newData = await showCupertinoModalPopup(
       context: context,
-      builder: (_) => Container(
-        margin: EdgeInsets.only(top: 170),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(70),
-        ),
-        child: DisplayModal(id: id),
+      builder: (_) => Stack(
+        children: [
+          BackdropFilter(
+            filter: ImageFilter.blur(
+                sigmaX: 100, sigmaY: 100),
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+          // Modal content
+          Center(
+            child: Container(
+              margin: const EdgeInsets.only(top: 170),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(70),
+              ),
+              child: DisplayModal(id: id),
+            ),
+          ),
+        ],
       ),
     );
     onClose(newData);
@@ -177,7 +193,7 @@ class _ListTimerState extends State<ListTimer>
                                   padding: const EdgeInsets.only(
                                       left: 30.0, top: 10),
                                   icon: const Icon(Icons.edit,
-                                      size: 15), //Logic edit
+                                      size: 15),
                                   onPressed: () {
                                     showDialog(
                                       context: context,
