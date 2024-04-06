@@ -164,7 +164,7 @@ class _DisplayModalState extends State<DisplayModal> {
   Widget build(BuildContext context) {
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -175,7 +175,7 @@ class _DisplayModalState extends State<DisplayModal> {
             borderRadius: BorderRadius.circular(20.0),
           ),
           width: double.infinity,
-          padding: EdgeInsets.fromLTRB(26, 15, 26, 21),
+          padding: const EdgeInsets.fromLTRB(26, 15, 26, 21),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,7 +183,7 @@ class _DisplayModalState extends State<DisplayModal> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomTextField(
+                    const CustomTextField(
                       labelText: 'Tambah waktumu sendiri',
                       fontSize: 16,
                       fontFamily: 'Nunito-Bold',
@@ -192,36 +192,36 @@ class _DisplayModalState extends State<DisplayModal> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.close),
+                      icon: const Icon(Icons.close),
                     ),
                   ],
                 ),
-                SizedBox(height: 7),
-                CustomTextField(labelText: "Nama Timer : "),
+                const SizedBox(height: 7),
+                const CustomTextField(labelText: "Nama Timer : "),
                 TextField(
                   maxLength: 20,
                   maxLines: 1,
                   controller: _namaTimerController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     counterText: '',
                   ),
                 ),
-                SizedBox(height: 7),
-                CustomTextField(labelText: "Deskripsi : "),
+                const SizedBox(height: 7),
+                const CustomTextField(labelText: "Deskripsi : "),
                 TextField(
                   maxLength: 30,
                   maxLines: 1,
                   controller: _deskripsiController,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     counterText: '',
                   ),
                 ),
-                SizedBox(height: 7),
+                const SizedBox(height: 7),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextField(labelText: "Waktu (dalam menit)"),
-                    SizedBox(height: 15),
+                    const CustomTextField(labelText: "Waktu (dalam menit)"),
+                    const SizedBox(height: 15),
                     SettingTimeWidget(
                       key: _settingTimeWidgetKey,
                       initialCounter: _counter,
@@ -231,35 +231,35 @@ class _DisplayModalState extends State<DisplayModal> {
                         });
                       },
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        CustomTextField(labelText: "Opsi Lainnya"),
+                        const CustomTextField(labelText: "Opsi Lainnya"),
                         IconButton(
                           onPressed: _namaTimerController.text.isNotEmpty &&
                                   _deskripsiController.text.isNotEmpty &&
                                   _counter != 0
                               ? _openIconButtonPressed
                               : null,
-                          icon: Icon(Icons.arrow_drop_down_circle_outlined),
+                          icon: const Icon(Icons.arrow_drop_down_circle_outlined),
                         ),
                       ],
                     ),
                     AnimatedContainer(
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       height: hideContainer ? 0 : null,
                       child: Column(
                         children: [
-                          Divider(
+                          const Divider(
                             color: Colors.grey,
                             thickness: 1,
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              CustomTextField(
+                              const CustomTextField(
                                   labelText: "Aktifkan mode istirahat"),
                               CupertinoSwitchAdaptiveWidget(
                                 statusSwitch: statusSwitch,
@@ -271,15 +271,15 @@ class _DisplayModalState extends State<DisplayModal> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 10),
-                          Divider(
+                          const SizedBox(height: 10),
+                          const Divider(
                             color: Colors.grey,
                             thickness: 1,
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
+                              const Row(
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
@@ -292,7 +292,7 @@ class _DisplayModalState extends State<DisplayModal> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 8),
                               SettingBreakWidget(
                                 key: _settingBreakWidgetKey,
                                 statusSwitch: statusSwitch,
@@ -304,7 +304,7 @@ class _DisplayModalState extends State<DisplayModal> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

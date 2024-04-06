@@ -71,7 +71,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
       children: [
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(4),
+            padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: offYellow,
@@ -86,7 +86,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       border: Border(
                         right: BorderSide(
                           color: offYellow,
@@ -96,7 +96,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     ),
                     child: IconButton(
                       onPressed: _decrement,
-                      icon: Icon(Icons.remove),
+                      icon: const Icon(Icons.remove),
                       iconSize: 18,
                       color: ripeMango,
                     ),
@@ -108,8 +108,8 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     controller: _textController,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14, color: Colors.grey),
-                    decoration: InputDecoration(
+                    style: const TextStyle(fontSize: 14, color: Colors.grey),
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                     ),
@@ -118,7 +118,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       border: Border(
                         left: BorderSide(
                           color: offYellow,
@@ -128,7 +128,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     ),
                     child: IconButton(
                       onPressed: _increment,
-                      icon: Icon(Icons.add),
+                      icon: const Icon(Icons.add),
                       iconSize: 18,
                       color: ripeMango,
                     ),

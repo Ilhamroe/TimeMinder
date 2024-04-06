@@ -103,7 +103,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ModalConfirm();
+        return const ModalConfirm();
       },
     );
   }
@@ -117,12 +117,12 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
   @override
   Widget build(BuildContext context) {
     return isLoading
-        ? Center(
+        ? const Center(
             child: CircularProgressIndicator(),
           )
         : ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            padding: EdgeInsets.all(8.0),
+            physics: const NeverScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(8.0),
             shrinkWrap: true,
             itemCount: _allData.length,
             itemBuilder: (context, int index) {
@@ -137,19 +137,19 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                   );
                 },
                 child: Container(
-                  margin: EdgeInsets.only(bottom: 13.0),
+                  margin: const EdgeInsets.only(bottom: 13.0),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16.0),
                     color: offOrange,
                   ),
                   child: ListTile(
                     contentPadding:
-                        EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+                        const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
                     leading: ClipRRect(
                       borderRadius: BorderRadius.circular(100),
                       child: Container(
                         padding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                            const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                         color: color,
                         child: SvgPicture.asset(
                           'assets/images/cat1.svg',
@@ -159,7 +159,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                     ),
                     title: Text(
                       _allData[index]['title'],
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Nunito-Bold',
                         fontWeight: FontWeight.w900,
                         fontSize: 12,
@@ -167,14 +167,14 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                     ),
                     subtitle: Text(
                       _allData[index]['description'],
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Nunito',
                         fontWeight: FontWeight.w600,
                         fontSize: 10,
                       ),
                     ),
                     trailing: widget.isSettingPressed
-                        ? Container(
+                        ? SizedBox(
                             width: 100,
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.end,
@@ -217,19 +217,19 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                           )
                         : Column(
                             children: [
-                              SizedBox(
+                              const SizedBox(
                                 height: 15,
                               ),
                               Text(
                                 _formatTime(_allData[index]['timer'] ?? 0),
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontFamily: 'DMSans',
                                   fontWeight: FontWeight.w600,
                                   fontSize: 8,
                                   color: darkGrey,
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 8.0,
                               ),
                               SvgPicture.asset(

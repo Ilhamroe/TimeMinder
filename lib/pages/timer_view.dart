@@ -70,7 +70,7 @@ class _TimerState extends State<TimerView> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ModalConfirm();
+        return const ModalConfirm();
       },
     );
   }
@@ -83,27 +83,27 @@ class _TimerState extends State<TimerView> {
           onTap: () {
             _showPopup();
           },
-          child: Icon(
+          child: const Icon(
             CupertinoIcons.lessthan_circle,
             color: cetaceanBlue,
           ),
         ),
         title: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               _judul,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Nunito-Bold',
                 fontWeight: FontWeight.w600,
                 color: cetaceanBlue,
               ),
               textAlign: TextAlign.center,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(
               _deskripsi,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Nunito',
                 fontSize: 14,
                 color: Colors.black,
@@ -155,7 +155,7 @@ class _TimerState extends State<TimerView> {
                     }
                     // Tindakan yang diambil ketika timer selesai
                     ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -167,7 +167,7 @@ class _TimerState extends State<TimerView> {
                             isStarted = false;
                           });
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.play_arrow_outlined,
                           color: blueJeans,
                           size: 40,
@@ -181,16 +181,16 @@ class _TimerState extends State<TimerView> {
                             isStarted = true;
                           });
                         },
-                        child: Icon(
+                        child: const Icon(
                           Icons.pause,
                           color: blueJeans,
                           size: 40,
                         ),
                       ),
-                    SizedBox(width: 100),
+                    const SizedBox(width: 100),
                     IconButton(
                       onPressed: _showPopup,
-                      icon: Icon(Icons.check),
+                      icon: const Icon(Icons.check),
                       color: blueJeans,
                       iconSize: 40,
                     ),
