@@ -1,6 +1,4 @@
-import 'dart:async';
 import 'dart:ui';
-
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -10,11 +8,13 @@ import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/models/theme.dart';
 import 'package:mobile_time_minder/pages/custom_timer.dart';
-import 'package:mobile_time_minder/services/homepage.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/pages/home_page.dart';
+import 'package:mobile_time_minder/models/list_timer.dart';
+import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 class TimerView extends StatefulWidget {
   final int timerIndex;
@@ -31,26 +31,24 @@ class _TimerState extends State<TimerView> {
   Color iconColor = blueJeans;
   Color backgroundColor = offGrey;
 
-
   late int timeInSec;
- late String _waktuMentah;
- late String _judul;
- late String _deskripsi;
+  late String _waktuMentah;
+  late String _judul;
+  late String _deskripsi;
   late int _jam;
   late int _menit;
   late int _detik;
   bool isStarted = false;
   int focusedMins = 0;
 
-
   @override
   void initState() {
     super.initState();
     _getDataByID();
-   _convertTimeInSec(context, _jam, _menit, _detik);
+    _convertTimeInSec(context, _jam, _menit, _detik);
   }
 
-  void _getDataByID(){
+  void _getDataByID() {
     _timer = Timerlist[widget.timerIndex];
     _waktuMentah = _timer.time;
     _judul = _timer.title;
@@ -59,43 +57,70 @@ class _TimerState extends State<TimerView> {
   }
 
   void _parseWaktuMentah(String time) {
-    List<String> bagian  = time.split(':');
+    List<String> bagian = time.split(':');
     _jam = int.parse(bagian[0]);
     _menit = int.parse(bagian[1]);
     _detik = int.parse(bagian[2]);
   }
 
-
-  void _convertTimeInSec(BuildContext context, jam, menit, detik){
+  void _convertTimeInSec(BuildContext context, jam, menit, detik) {
     setState(() {
-      timeInSec =  jam * 3600 + menit * 60 + detik;
+      timeInSec = jam * 3600 + menit * 60 + detik;
     });
   }
+
   final CountDownController _controller = CountDownController();
-  void startTimer(){
-      const onesec = Duration(seconds: 1);
+  void startTimer() {
+    const onesec = Duration(seconds: 1);
+  }
+
+  void _showPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const ModalConfirm();
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(),
-        title:Column(
+        leading: GestureDetector(
+          onTap: () {
+            _showPopup();
+          },
+          child: const Icon(
+            CupertinoIcons.lessthan_circle,
+            color: cetaceanBlue,
+          ),
+        ),
+        title: Column(
           children: [
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Text(
               _judul,
-              style: TextStyle(),
+              style: const TextStyle(
+                fontFamily: 'Nunito-Bold',
+                fontWeight: FontWeight.w600,
+                color: cetaceanBlue,
+              ),
               textAlign: TextAlign.center,
             ),
+            const SizedBox(height: 10),
             Text(
               _deskripsi,
-              style: TextStyle(fontSize: 14, color: Colors.black), // Atur gaya teks deskripsi
+              style: const TextStyle(
+                fontFamily: 'Nunito',
+                fontSize: 14,
+                color: Colors.black,
+              ),
             ),
           ],
         ),
         centerTitle: true,
+        toolbarHeight: 80,
       ),
       body: SafeArea(
         child: Container(
@@ -105,7 +130,6 @@ class _TimerState extends State<TimerView> {
             horizontal: 24,
             vertical: 100,
           ),
-
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -117,12 +141,15 @@ class _TimerState extends State<TimerView> {
                   width: MediaQuery.of(context).size.width / 2,
                   height: MediaQuery.of(context).size.height / 2,
                   controller: _controller,
-                  ringColor: app_background,
-                  fillColor: _controller.isPaused? merah : ripeMango,
+                  ringColor: ripeMango,
+                  fillColor: _controller.isPaused ? red : ripeMango,
                   fillGradient: LinearGradient(
                     begin: Alignment.bottomLeft,
                     end: Alignment.topRight,
-                    colors: [_controller.isPaused? merah : ripeMango, offOrange], // Your gradient colors
+                    colors: [
+                      _controller.isPaused ? red : ripeMango,
+                      offOrange
+                    ], // Your gradient colors
                   ),
                   strokeWidth: 20.0,
                   isReverse: true,
@@ -131,7 +158,7 @@ class _TimerState extends State<TimerView> {
                   autoStart: true,
                   textStyle: TextStyle(
                     fontSize: 33.0,
-                    color: _controller.isPaused ? merah : cetaceanBlue,
+                    color: _controller.isPaused ? red : cetaceanBlue,
                     fontWeight: FontWeight.bold,
                   ),
                   onChange: (String timeStamp) {
@@ -143,7 +170,7 @@ class _TimerState extends State<TimerView> {
                     // });
                   },
                   onComplete: () {
-                    _showPopupEnd();
+                    _showPopup();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -161,14 +188,12 @@ class _TimerState extends State<TimerView> {
                         onTap: () {
                           setState(() {
                             _controller.resume();
-                            // Update warna saat tombol pause ditekan
-                            iconColor = blueJeans;
-                            backgroundColor = merah;
+                            isStarted = false;
                           });
                         },
-                        child: Icon(
-                          Icons.play_arrow_rounded,
-                          color: iconColor,
+                        child: const Icon(
+                          Icons.play_arrow_outlined,
+                          color: blueJeans,
                           size: 40,
                         ),
                       ),
@@ -178,7 +203,7 @@ class _TimerState extends State<TimerView> {
                           setState(() {
                             _controller.pause();
                             // Update warna saat tombol pause ditekan
-                            iconColor = merah;
+                            iconColor = red;
                             backgroundColor = ripeMango;
                           });
                         },
@@ -188,10 +213,10 @@ class _TimerState extends State<TimerView> {
                           size: 40,
                         ),
                       ),
-                    SizedBox(width: 100),
+                    const SizedBox(width: 100),
                     IconButton(
                       onPressed: _showPopup,
-                      icon: Icon(Icons.check),
+                      icon: const Icon(Icons.check),
                       color: blueJeans,
                       iconSize: 40,
                     ),
@@ -202,129 +227,6 @@ class _TimerState extends State<TimerView> {
           ),
         ),
       ),
-    );
-  }
-  void _showPopupEnd() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: SvgPicture.asset("assets/images/cat3.svg"),
-          ),
-          content: Column(
-            mainAxisSize:
-            MainAxisSize.min, // Menentukan ukuran minimum untuk Column
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Kembali ke Beranda ?",
-                  textAlign:
-                  TextAlign.center, // Mengatur teks menjadi di tengah
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CustomTimer(),
-                        ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    yellow_timer, // Gunakan warna dari variabel state
-                  ),
-                  child: Text("Oke"),
-                )
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  void _showPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: SvgPicture.asset("assets/images/cat3.svg"),
-          ),
-          content: Column(
-            mainAxisSize:
-            MainAxisSize.min, // Menentukan ukuran minimum untuk Column
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Apakah Anda Yakin ?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  // Mengatur teks menjadi di tengah
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    Colors.grey, // Gunakan warna dari variabel state
-                  ),
-                  child: Text(
-                    "Tidak",
-                    style: TextStyle(
-                      backgroundColor: Colors.grey,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CustomTimer(),
-                        ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    yellow_timer, // Gunakan warna dari variabel state
-                  ),
-                  child: Text(
-                    "Iya",
-                    style: TextStyle(
-                      backgroundColor: yellow_timer,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ],
-        );
-      },
     );
   }
 }

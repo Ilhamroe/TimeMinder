@@ -62,8 +62,8 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
       children: [
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(2),
-            margin: EdgeInsets.only(right: 4),
+            padding: const EdgeInsets.all(2),
+            margin: const EdgeInsets.only(right: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: widget.statusSwitch
@@ -79,27 +79,19 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _decrement1 : null,
-                    icon: Icon(Icons.remove),
+                    icon: const Icon(Icons.remove),
                     iconSize: 16,
                     color: widget.statusSwitch
                         ? ripeMango
-                        : Color(0xFF838589),
+                        : const Color(0xFF838589),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     '$_counterBreakTime',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF838589),
                     ),
@@ -107,32 +99,24 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _increment1 : null,
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                     iconSize: 16,
                     color: widget.statusSwitch
                         ? ripeMango
-                        : Color(0xFF838589),
+                        : const Color(0xFF838589),
                   ),
                 ),
               ],
             ),
           ),
         ),
-        SizedBox(width: 20),
+        SizedBox(width: 10),
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(2),
-            margin: EdgeInsets.only(right: 4),
+            padding: const EdgeInsets.all(2),
+            margin: const EdgeInsets.only(right: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: widget.statusSwitch
@@ -148,27 +132,19 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _decrement2 : null,
-                    icon: Icon(Icons.remove),
+                    icon: const Icon(Icons.remove),
                     iconSize: 16,
                     color: widget.statusSwitch
                         ? ripeMango
-                        : Color(0xFF838589),
+                        : const Color(0xFF838589),
                   ),
                 ),
                 Expanded(
                   child: Text(
                     '$_counterInterval',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: Color(0xFF838589),
                     ),
@@ -176,21 +152,13 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _increment2 : null,
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                     iconSize: 16,
                     color: widget.statusSwitch
                         ? ripeMango
-                        : Color(0xFF838589),
+                        : const Color(0xFF838589),
                   ),
                 ),
               ],

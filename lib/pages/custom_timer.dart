@@ -22,7 +22,7 @@ class _CustomTimerState extends State<CustomTimer> {
     offYellow,
     offGrey,
     heliotrope,
-    merah,
+    red,
     blueJeans,
     darkGrey,
     halfGrey,
@@ -89,7 +89,7 @@ class _CustomTimerState extends State<CustomTimer> {
     final newData = await showCupertinoModalPopup(
       context: context,
       builder: (_) => Container(
-        margin: EdgeInsets.only(top: 170),
+        margin: const EdgeInsets.only(top: 170),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(70),
         ),
@@ -107,14 +107,13 @@ class _CustomTimerState extends State<CustomTimer> {
   }
 
   @override
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Modal Custom Timer"),
       ),
       body: _isLoading
-          ? Center(
+          ? const Center(
               child: CircularProgressIndicator(),
             )
           : ListView.builder(
@@ -129,14 +128,14 @@ class _CustomTimerState extends State<CustomTimer> {
                   );
                 },
                 child: Card(
-                  margin: EdgeInsets.all(15),
+                  margin: const EdgeInsets.all(15),
                   color: _getRandomColor(), // Set background color
                   child: ListTile(
                     title: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 5),
+                      padding: const EdgeInsets.symmetric(vertical: 5),
                       child: Text(
                         _allData[index]['title'],
-                        style: TextStyle(fontSize: 20),
+                        style: const TextStyle(fontSize: 20),
                       ),
                     ),
                     subtitle: Text(_allData[index]['description']),
@@ -147,13 +146,13 @@ class _CustomTimerState extends State<CustomTimer> {
                         Text(_allData[index]['rest'].toString() + "x rest, selama"),
                         Text(_allData[index]['interval'].toString() + "x"),
                         IconButton(
-                          icon: Icon(Icons.edit),
+                          icon: const Icon(Icons.edit),
                           onPressed: () => _showModal((int? id) {
                             // Lakukan sesuatu dengan ID yang dikembalikan
                           }, _allData[index]['id']), // Pass id ke _showModal
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () => _deleteData(_allData[index]['id']),
                         )
                       ],
@@ -164,7 +163,7 @@ class _CustomTimerState extends State<CustomTimer> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showModal((int? id) {}),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
