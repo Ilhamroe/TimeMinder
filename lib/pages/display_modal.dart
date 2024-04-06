@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/cupertino_switch.dart';
@@ -29,6 +30,7 @@ class _DisplayModalState extends State<DisplayModal> {
   bool _isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
+  bool isOptionOpen = false;
 
   TextEditingController _namaTimerController = TextEditingController();
   TextEditingController _deskripsiController = TextEditingController();
@@ -117,6 +119,7 @@ class _DisplayModalState extends State<DisplayModal> {
 
   void _openIconButtonPressed() {
     setState(() {
+      isOptionOpen = !isOptionOpen;
       hideContainer = !hideContainer;
       statusSwitch = false;
     });
@@ -124,7 +127,6 @@ class _DisplayModalState extends State<DisplayModal> {
 
   // add data
   Future<void> _addData() async {
-    if (id == null) {
       await SQLHelper.createData(
           _namaTimerController.text,
           _deskripsiController.text,
@@ -132,9 +134,6 @@ class _DisplayModalState extends State<DisplayModal> {
           _counterBreakTime,
           _counterInterval);
       _refreshData();
-  } else {
-      _refreshData();
-    }
   }
 
   // edit data
@@ -149,22 +148,13 @@ class _DisplayModalState extends State<DisplayModal> {
     _refreshData();
   }
 
-  // delete data
-  void _deleteData(int id) async {
-    await SQLHelper.deleteData(id);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      backgroundColor: Colors.redAccent,
-      content: Text("Data deleted"),
-      duration: Duration(milliseconds: 500),
-    ));
-    _refreshData();
-  }
-
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
+
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -174,8 +164,8 @@ class _DisplayModalState extends State<DisplayModal> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
           ),
-          width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(26, 15, 26, 21),
+          width: screenSize.width * 0.9,
+          padding: EdgeInsets.fromLTRB(26, 15, 26, 21),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -183,45 +173,47 @@ class _DisplayModalState extends State<DisplayModal> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const CustomTextField(
-                      labelText: 'Tambah waktumu sendiri',
-                      fontSize: 16,
-                      fontFamily: 'Nunito-Bold',
+                    Expanded(
+                      child: CustomTextField(
+                        labelText: 'Tambah waktumu sendiri',
+                        fontSize: 16,
+                        fontFamily: 'Nunito-Bold',
+                      ),
                     ),
                     IconButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(Icons.close),
+                      icon: Icon(Icons.close),
                     ),
                   ],
                 ),
-                const SizedBox(height: 7),
-                const CustomTextField(labelText: "Nama Timer : "),
+                SizedBox(height: 7),
+                CustomTextField(labelText: "Nama Timer : "),
                 TextField(
                   maxLength: 20,
                   maxLines: 1,
                   controller: _namaTimerController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     counterText: '',
                   ),
                 ),
-                const SizedBox(height: 7),
-                const CustomTextField(labelText: "Deskripsi : "),
+                SizedBox(height: 7),
+                CustomTextField(labelText: "Deskripsi : "),
                 TextField(
                   maxLength: 30,
                   maxLines: 1,
                   controller: _deskripsiController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     counterText: '',
                   ),
                 ),
-                const SizedBox(height: 7),
+                SizedBox(height: 7),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const CustomTextField(labelText: "Waktu (dalam menit)"),
-                    const SizedBox(height: 15),
+                    CustomTextField(labelText: "Waktu (dalam menit)"),
+                    SizedBox(height: 15),
                     SettingTimeWidget(
                       key: _settingTimeWidgetKey,
                       initialCounter: _counter,
@@ -231,36 +223,51 @@ class _DisplayModalState extends State<DisplayModal> {
                         });
                       },
                     ),
-                    const SizedBox(height: 10),
+                    SizedBox(height: 10),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        const CustomTextField(labelText: "Opsi Lainnya"),
+                        Expanded(
+                          child: CustomTextField(labelText: "Opsi Lainnya"),
+                        ),
                         IconButton(
                           onPressed: _namaTimerController.text.isNotEmpty &&
                                   _deskripsiController.text.isNotEmpty &&
                                   _counter != 0
                               ? _openIconButtonPressed
                               : null,
-                          icon: const Icon(Icons.arrow_drop_down_circle_outlined),
+                          icon: isOptionOpen
+                              ? SvgPicture.asset(
+                                  "assets/images/option_up.svg",
+                                  width: 30,
+                                  height: 30,
+                                )
+                              : SvgPicture.asset(
+                                  "assets/images/option_down.svg",
+                                  width: 30,
+                                  height: 30,
+                                  color: darkGrey,
+                                ),
                         ),
                       ],
                     ),
                     AnimatedContainer(
-                      duration: const Duration(milliseconds: 500),
+                      duration: Duration(milliseconds: 500),
                       height: hideContainer ? 0 : null,
                       child: Column(
                         children: [
-                          const Divider(
+                          Divider(
                             color: Colors.grey,
                             thickness: 1,
                           ),
-                          const SizedBox(height: 10),
+                          SizedBox(height: 10),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              const CustomTextField(
-                                  labelText: "Aktifkan mode istirahat"),
+                              Expanded(
+                                child: CustomTextField(
+                                    labelText: "Aktifkan mode istirahat"),
+                              ),
                               CupertinoSwitchAdaptiveWidget(
                                 statusSwitch: statusSwitch,
                                 onChanged: (value) {
@@ -271,15 +278,15 @@ class _DisplayModalState extends State<DisplayModal> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
-                          const Divider(
+                          SizedBox(height: 10),
+                          Divider(
                             color: Colors.grey,
                             thickness: 1,
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const Row(
+                              Row(
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
@@ -292,7 +299,7 @@ class _DisplayModalState extends State<DisplayModal> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 8),
+                              SizedBox(height: 8),
                               SettingBreakWidget(
                                 key: _settingBreakWidgetKey,
                                 statusSwitch: statusSwitch,
@@ -304,7 +311,7 @@ class _DisplayModalState extends State<DisplayModal> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: 15),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -319,9 +326,9 @@ class _DisplayModalState extends State<DisplayModal> {
                         CustomButton(
                           text: 'Terapkan',
                           primaryColor: ripeMango,
-                          onPrimaryColor: cetaceanBlue,
+                          onPrimaryColor: pureWhite,
                           borderSideColor: Colors.transparent,
-                          onPressed: () => _submitSetting(),
+                          onPressed: _submitSetting,
                         ),
                       ],
                     ),

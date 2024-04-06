@@ -49,7 +49,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
     });
   }
 
-   void resetCounter() {
+  void resetCounter() {
     setState(() {
       _counterBreakTime = 0;
       _counterInterval = 0;
@@ -58,20 +58,23 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    // Menentukan lebar container berdasarkan ukuran layar
+    final containerWidth = screenWidth * 0.45; // Misalnya, 45% dari lebar layar
+
     return Row(
       children: [
         Expanded(
           child: Container(
+            width: containerWidth,
             padding: const EdgeInsets.all(2),
             margin: const EdgeInsets.only(right: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: widget.statusSwitch
-                  ? offYellow
-                  : offGrey,
+              color: widget.statusSwitch ? offYellow : offGrey,
               border: Border.all(
-                color:
-                    widget.statusSwitch ? ripeMango : halfGrey,
+                color: widget.statusSwitch ? ripeMango : halfGrey,
                 width: 1,
               ),
             ),
@@ -112,19 +115,17 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             ),
           ),
         ),
-        SizedBox(width: 10),
+        SizedBox(width: screenWidth * 0.02), // Jarak antara dua container
         Expanded(
           child: Container(
+            width: containerWidth,
             padding: const EdgeInsets.all(2),
             margin: const EdgeInsets.only(right: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
-              color: widget.statusSwitch
-                  ? offYellow
-                  : offGrey,
+              color: widget.statusSwitch ? offYellow : offGrey,
               border: Border.all(
-                color:
-                    widget.statusSwitch ? ripeMango : halfGrey,
+                color: widget.statusSwitch ? ripeMango : halfGrey,
                 width: 1,
               ),
             ),

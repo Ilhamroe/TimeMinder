@@ -18,30 +18,35 @@ class CustomButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final verticalPadding = screenHeight * 0.025;
+    final horizontalPadding = screenWidth * 0.12;
+
     return Center(
-      child: FittedBox(
-        child: ElevatedButton(
-          onPressed: onPressed,
-          style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
-            foregroundColor: MaterialStateProperty.all<Color>(onPrimaryColor),
-            side: MaterialStateProperty.all<BorderSide>(
-              BorderSide(
-                width: 1,
-                color: borderSideColor,
-              ),
-            ),
-            padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-              const EdgeInsets.symmetric(vertical: 20, horizontal: 47),
-            ),
-            shape: MaterialStateProperty.all<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
+      child: ElevatedButton(
+        onPressed: onPressed,
+        style: ButtonStyle(
+          backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
+          foregroundColor: MaterialStateProperty.all<Color>(onPrimaryColor),
+          side: MaterialStateProperty.all<BorderSide>(
+            BorderSide(
+              width: 1,
+              color: borderSideColor,
             ),
           ),
-          child: Text(text),
+          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+            EdgeInsets.symmetric(
+                vertical: verticalPadding, horizontal: horizontalPadding),
+          ),
+          shape: MaterialStateProperty.all<OutlinedBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
         ),
+        child: Text(text),
       ),
     );
   }

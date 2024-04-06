@@ -14,6 +14,10 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final adjustedFontSize = screenWidth * 0.04;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -21,7 +25,7 @@ class CustomTextField extends StatelessWidget {
           labelText,
           style: TextStyle(
             fontFamily: fontFamily,
-            fontSize: fontSize,
+            fontSize: adjustedFontSize,
           ),
         ),
       ],

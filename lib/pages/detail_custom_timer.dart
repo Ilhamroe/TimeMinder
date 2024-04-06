@@ -127,9 +127,9 @@ class _DetailTimerState extends State<DetailTimer> {
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 100,
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.1,
+              vertical: MediaQuery.of(context).size.height * 0.1,
             ),
             child: Center(
               child: Column(
@@ -139,8 +139,8 @@ class _DetailTimerState extends State<DetailTimer> {
                   CircularCountDownTimer(
                     duration: inTimeBreak,
                     initialDuration: 0,
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: MediaQuery.of(context).size.height / 2,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.4,
                     controller: _controller,
                     ringColor: ring,
                     fillColor: _controller.isPaused ? red : ripeMango,
@@ -150,7 +150,7 @@ class _DetailTimerState extends State<DetailTimer> {
                       colors: [
                         _controller.isPaused ? red : ripeMango,
                         offOrange
-                      ], // Your gradient colors
+                      ],
                     ),
                     strokeWidth: 20.0,
                     isReverse: true,
@@ -158,24 +158,17 @@ class _DetailTimerState extends State<DetailTimer> {
                     strokeCap: StrokeCap.round,
                     autoStart: true,
                     textStyle: TextStyle(
-                      fontSize: 33.0,
+                      fontSize: MediaQuery.of(context).size.width * 0.1,
                       color: _controller.isPaused ? red : cetaceanBlue,
                       fontWeight: FontWeight.bold,
                     ),
-                    onChange: (String timeStamp) {
-                      // Here, do whatever you want
-                      // debugPrint('Countdown Changed $timeStamp');
-                      // int currentTime = int.tryParse(timeStamp) ?? 0;
-                      // setState(() {
-                      //   currentTimerValue = currentTime;
-                      // });
-                    },
+                    onChange: (String timeStamp) {},
                     onComplete: () {
                       Navigator.popUntil(
                           context, ModalRoute.withName(AppRoutes.home));
                     },
                   ),
-                  SizedBox(height: 20),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -184,8 +177,8 @@ class _DetailTimerState extends State<DetailTimer> {
                           alignment: Alignment.center,
                           children: [
                             Container(
-                              width: 60,
-                              height: 60,
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              height: MediaQuery.of(context).size.width * 0.15,
                               decoration: BoxDecoration(
                                 color: offBlue,
                                 borderRadius: BorderRadius.circular(20),
@@ -200,8 +193,9 @@ class _DetailTimerState extends State<DetailTimer> {
                               },
                               child: SvgPicture.asset(
                                 "assets/images/play.svg",
-                                width: 30,
-                                height: 30,
+                                width: MediaQuery.of(context).size.width * 0.07,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.07,
                                 color: blueJeans,
                               ),
                             ),
@@ -212,8 +206,8 @@ class _DetailTimerState extends State<DetailTimer> {
                           alignment: Alignment.center,
                           children: [
                             Container(
-                              width: 60,
-                              height: 60,
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              height: MediaQuery.of(context).size.width * 0.15,
                               decoration: BoxDecoration(
                                 color: offBlue,
                                 borderRadius: BorderRadius.circular(20),
@@ -228,20 +222,21 @@ class _DetailTimerState extends State<DetailTimer> {
                               },
                               child: SvgPicture.asset(
                                 "assets/images/pause.svg",
-                                width: 30,
-                                height: 30,
+                                width: MediaQuery.of(context).size.width * 0.07,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.07,
                                 color: blueJeans,
                               ),
                             ),
                           ],
                         ),
-                      SizedBox(width: 100),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.2),
                       Stack(
                         alignment: Alignment.center,
                         children: [
                           Container(
-                            width: 60,
-                            height: 60,
+                            width: MediaQuery.of(context).size.width * 0.15,
+                            height: MediaQuery.of(context).size.width * 0.15,
                             decoration: BoxDecoration(
                               color: offBlue,
                               borderRadius: BorderRadius.circular(20),
@@ -251,8 +246,8 @@ class _DetailTimerState extends State<DetailTimer> {
                             onPressed: _showPopup,
                             icon: SvgPicture.asset(
                               "assets/images/check.svg",
-                              width: 30,
-                              height: 30,
+                              width: MediaQuery.of(context).size.width * 0.07,
+                              height: MediaQuery.of(context).size.width * 0.07,
                               color: blueJeans,
                             ),
                             color: blueJeans,

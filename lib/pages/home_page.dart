@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +91,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       counterInterval = 0;
     }
 
-    final newData = await showCupertinoModalPopup(
+    // Create a Completer
+    Completer<void> completer = Completer<void>();
+
+    await showCupertinoModalPopup(
       context: context,
       builder: (_) => Stack(
         children: [
@@ -112,9 +116,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ],
       ),
-    );
-    onClose(newData);
-    _refreshData();
+    ).then((newData) {
+      completer.complete();
+      onClose(newData);
+      _refreshData();
+    });
+    await completer.future;
   }
 
   late String _greeting;
@@ -145,6 +152,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -159,24 +167,25 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         child: CustomScrollView(
           slivers: <Widget>[
-            // SizedBox(height: 10),
             SliverAppBar(
               title: const SizedBox.shrink(),
-              floating: true, // Membuat app bar tetap muncul saat discroll
-              snap: true, // Mengaktifkan efek snap saat discroll
+              floating: true,
+              snap: true,
               backgroundColor: ripeMango,
-              elevation: 0, // Menghilangkan shadow di app bar
+              elevation: 0,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 25.0, vertical: 15.0),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenSize.width * 0.1,
+                    vertical: screenSize.height * 0.02,
+                  ),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Transform.translate(
-                            offset: const Offset(15, 0),
+                            offset: Offset(screenSize.width * 0.03, 0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -185,54 +194,63 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   style: TextStyle(
                                     fontFamily: 'Nunito-Bold',
                                     color: Colors.black,
-                                    fontSize: 31.55,
+                                    fontSize: screenSize.width * 0.08,
                                     fontWeight: FontWeight.w900,
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 5,
+                                  height: screenSize.height * 0.005,
                                 ),
                                 Text(
                                   'Yuk, capai target',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: 19.68,
-                                      fontWeight: FontWeight.w500),
+                                    fontFamily: 'Nunito-Bold',
+                                    color: Colors.black,
+                                    fontSize: screenSize.width * 0.05,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                                 Text(
                                   'fokusmu hari ini dan',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: 19.68,
-                                      fontWeight: FontWeight.w500),
+                                    fontFamily: 'Nunito-Bold',
+                                    color: Colors.black,
+                                    fontSize: screenSize.width * 0.05,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                                 Text(
                                   'Selamat beraktivitas!',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: 19.68,
-                                      fontWeight: FontWeight.w500),
+                                    fontFamily: 'Nunito-Bold',
+                                    color: Colors.black,
+                                    fontSize: screenSize.width * 0.05,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                           Transform.translate(
-                            offset: const Offset(-20, 10),
+                            offset: Offset(screenSize.width * -0.03,
+                                screenSize.height * 0.01),
                             child: Container(
-                              width: 100,
-                              padding:
-                                  const EdgeInsets.only(top: 5.0, bottom: 10.0),
-                              margin: const EdgeInsets.only(top: 15.0),
+                              width: screenSize.width * 0.3,
+                              height: screenSize.height * 0.2,
+                              padding: EdgeInsets.only(
+                                top: screenSize.height * 0.01,
+                                bottom: screenSize.height * 0.02,
+                                left: screenSize.width * 0.07,
+                              ),
+                              margin: EdgeInsets.only(
+                                  top: screenSize.height * 0.01),
                               child: SvgPicture.asset(
                                 "assets/images/cat3.svg",
-                                width: 150.0,
-                                height: 150.0,
+                                width: screenSize.width * 0.3,
+                                height: screenSize.width * 0.3,
                               ),
                             ),
                           ),
@@ -242,7 +260,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              expandedHeight: 200.0,
+              expandedHeight: screenSize.height * 0.22,
               pinned: true,
             ),
             SliverList(
@@ -280,6 +298,28 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   color: heliotrope,
                                 ),
                               ),
+                              const Spacer(),
+                              const Text(
+                                "Refresh",
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w900,
+                                  color: ripeMango,
+                                ),
+                              ),
+                              IconButton(
+                                  onPressed: () async {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    final data = await SQLHelper.getAllData();
+                                    setState(() {
+                                      _allData = data;
+                                      isLoading = false;
+                                    });
+                                  },
+                                  icon: Icon(Icons.refresh)),
                             ],
                           ),
                         ),

@@ -7,7 +7,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
@@ -103,7 +102,6 @@ class _DetailListTimerState extends State<DetailListTimer>
               color: Colors.transparent,
             ),
           ),
-          // Modal content
           Center(
             child: Container(
               margin: const EdgeInsets.only(top: 170),
@@ -131,6 +129,7 @@ class _DetailListTimerState extends State<DetailListTimer>
     tabController =
         TabController(initialIndex: selectedIndex, length: 2, vsync: this);
     tabController.animation?.addListener(() {
+      if (!mounted) return; // Ensure widget is still mounted
       if (!tapIsBeingExecuted &&
           !swipeIsInProgress &&
           (tabController.offset >= 0.5 || tabController.offset <= -0.5)) {
@@ -155,6 +154,7 @@ class _DetailListTimerState extends State<DetailListTimer>
       }
     });
     tabController.addListener(() {
+      if (!mounted) return; // Ensure widget is still mounted
       swipeIsInProgress = false;
       setState(() {
         selectedIndex = tabController.index;
@@ -167,13 +167,13 @@ class _DetailListTimerState extends State<DetailListTimer>
         }
       }
     });
+    _refreshData();
   }
 
   @override
   void dispose() {
     tabController.dispose();
     super.dispose();
-    _refreshData();
   }
 
   @override
@@ -232,6 +232,7 @@ class _DetailListTimerState extends State<DetailListTimer>
               case 0:
                 Navigator.popUntil(
                     context, ModalRoute.withName(AppRoutes.home));
+                _refreshData();
                 break;
               case 1:
                 _showModal((int? id) {});

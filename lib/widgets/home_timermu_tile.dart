@@ -1,14 +1,12 @@
+import 'dart:async';
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -86,14 +84,14 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       counterBreakTime = 0;
       counterInterval = 0;
     }
+    Completer<void> completer = Completer<void>();
 
-    final newData = await showCupertinoModalPopup(
+    await showCupertinoModalPopup(
       context: context,
       builder: (_) => Stack(
         children: [
           BackdropFilter(
-            filter: ImageFilter.blur(
-                sigmaX: 50, sigmaY: 50),
+            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
             child: Container(
               color: Colors.transparent,
             ),
@@ -110,15 +108,12 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
           ),
         ],
       ),
-    );
-    onClose(newData);
-    _refreshData();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
+    ).then((newData) {
+      completer.complete();
+      onClose(newData);
+      _refreshData();
+    });
+    await completer.future;
   }
 
   @override
@@ -222,19 +217,39 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                                             10.0),
                                                   ),
                                                   content: SizedBox(
-                                                    width: 100,
-                                                    height: 300,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.68,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.42,
                                                     child: Column(
                                                       mainAxisSize:
                                                           MainAxisSize.min,
                                                       children: [
                                                         SizedBox(
-                                                          height: 120.0,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.2,
                                                           child: Image.asset(
                                                             'assets/images/confirm_popup.png',
                                                             fit: BoxFit.contain,
-                                                            width: 100,
-                                                            height: 100,
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.2,
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.2,
                                                           ),
                                                         ),
                                                         const Text(
@@ -244,19 +259,19 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                                           style: TextStyle(
                                                             fontFamily:
                                                                 'Nunito',
-                                                            fontSize: 21,
+                                                            fontSize: 15,
                                                           ),
                                                         ),
                                                         const SizedBox(
                                                             height: 20.0),
-                                                            const Text(
+                                                        const Text(
                                                           "Apakah Anda yakin?",
                                                           textAlign:
                                                               TextAlign.center,
                                                           style: TextStyle(
                                                             fontFamily:
                                                                 'Nunito',
-                                                            fontSize: 26,
+                                                            fontSize: 21,
                                                           ),
                                                         ),
                                                         const SizedBox(
