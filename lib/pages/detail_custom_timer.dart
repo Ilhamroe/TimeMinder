@@ -1,22 +1,17 @@
-<<<<<<< HEAD
 import 'dart:ffi';
-
-=======
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
->>>>>>> main
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
-<<<<<<< HEAD
+import 'package:mobile_time_minder/pages/custom_timer.dart';
+import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:flutter/animation.dart';
-=======
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/modal_confim.dart';
->>>>>>> main
 
 class DetailTimer extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -28,26 +23,17 @@ class DetailTimer extends StatefulWidget {
 }
 
 class _DetailTimerState extends State<DetailTimer> {
-<<<<<<< HEAD
   int _counter = 0;
   int _counterBreakTime = 0;
   int _counterInterval = 0;
-  int currentTimerValue= 0;
+  int currentTimerValue = 0;
   bool _isLoading = false;
 
-  Color iconColor = blueJeans;
-  Color backgroundColor = offGrey;
-
-  bool _isTimerRunning = false; // Menyimpan status timer
-=======
-  bool _isLoading = false;
   bool _isTimerRunning = false;
->>>>>>> main
   bool statusSwitch = false;
   bool hideContainer = true;
   late List<Map<String, dynamic>> _allData = [];
   late CountDownController _controller;
-
 
   int get inTimeMinutes => widget.data['timer'];
   int get inRestMinutes => widget.data['rest'] ?? 0;
@@ -110,27 +96,18 @@ class _DetailTimerState extends State<DetailTimer> {
             const SizedBox(height: 20),
             Text(
               data['title'],
-<<<<<<< HEAD
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-=======
               style: const TextStyle(
                 fontFamily: 'Nunito-Bold',
                 fontWeight: FontWeight.w600,
                 color: cetaceanBlue,
->>>>>>> main
               ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 10),
             Text(
               data['description'],
-<<<<<<< HEAD
-              style: TextStyle(
-=======
               style: const TextStyle(
                 fontFamily: 'Nunito',
->>>>>>> main
                 fontSize: 14,
                 color: Colors.black,
               ),
@@ -139,19 +116,14 @@ class _DetailTimerState extends State<DetailTimer> {
           ],
         ),
         centerTitle: true,
-<<<<<<< HEAD
-        backgroundColor:offGrey, // Ganti sesuai dengan warna yang sesuai dari gradient
-=======
+        backgroundColor: pureWhite,
         toolbarHeight: 80,
->>>>>>> main
       ),
-
       body: SafeArea(
         child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: offGrey,
+          decoration: const BoxDecoration(
+            color: pureWhite,
           ),
-<<<<<<< HEAD
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: MediaQuery.of(context).size.height,
@@ -170,12 +142,15 @@ class _DetailTimerState extends State<DetailTimer> {
                     width: MediaQuery.of(context).size.width / 2,
                     height: MediaQuery.of(context).size.height / 2,
                     controller: _controller,
-                    ringColor: app_background,
-                    fillColor: _controller.isPaused? merah : ripeMango,
+                    ringColor: ring,
+                    fillColor: _controller.isPaused ? red : ripeMango,
                     fillGradient: LinearGradient(
                       begin: Alignment.bottomLeft,
                       end: Alignment.topRight,
-                      colors: [_controller.isPaused? merah : ripeMango, offOrange], // Your gradient colors
+                      colors: [
+                        _controller.isPaused ? red : ripeMango,
+                        offOrange
+                      ], // Your gradient colors
                     ),
                     strokeWidth: 20.0,
                     isReverse: true,
@@ -184,25 +159,20 @@ class _DetailTimerState extends State<DetailTimer> {
                     autoStart: true,
                     textStyle: TextStyle(
                       fontSize: 33.0,
-                      color: _controller.isPaused ? merah : cetaceanBlue,
+                      color: _controller.isPaused ? red : cetaceanBlue,
                       fontWeight: FontWeight.bold,
                     ),
                     onChange: (String timeStamp) {
                       // Here, do whatever you want
-                      debugPrint('Countdown Changed $timeStamp');
+                      // debugPrint('Countdown Changed $timeStamp');
                       // int currentTime = int.tryParse(timeStamp) ?? 0;
                       // setState(() {
                       //   currentTimerValue = currentTime;
                       // });
                     },
                     onComplete: () {
-                      _showPopupEnd();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CustomTimer(),
-                        ),
-                      );
+                      Navigator.popUntil(
+                          context, ModalRoute.withName(AppRoutes.home));
                     },
                   ),
                   SizedBox(height: 20),
@@ -210,127 +180,89 @@ class _DetailTimerState extends State<DetailTimer> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       if (_isTimerRunning)
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _controller.resume();
-                              _isTimerRunning = false;
-                              // Update warna saat tombol pause ditekan
-                              iconColor = blueJeans;
-                              backgroundColor = merah;
-                            });
-                          },
-                          child: Icon(
-                            Icons.play_arrow_rounded,
-                            color: iconColor,
-                            size: 40,
-                          ),
-=======
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                CircularCountDownTimer(
-                  duration: inTimeBreak,
-                  initialDuration: 0,
-                  width: MediaQuery.of(context).size.width / 2,
-                  height: MediaQuery.of(context).size.height / 2,
-                  controller: _controller,
-                  ringColor: offGrey,
-                  fillColor: _controller.isPaused ? red : ripeMango,
-                  strokeWidth: 20.0,
-                  isReverse: true,
-                  isReverseAnimation: true,
-                  strokeCap: StrokeCap.round,
-                  autoStart: true,
-                  textStyle: TextStyle(
-                    fontSize: 33.0,
-                    color: _controller.isPaused ? red : red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  onComplete: () {
-                    _showPopup();
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ));
-                  },
-                ),
-                const SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    if (_isTimerRunning)
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _controller.resume();
-                            _isTimerRunning = false;
-                          });
-                        },
-                        child: const Icon(
-                          Icons.play_arrow_outlined,
-                          color: blueJeans,
-                          size: 40,
-                        ),
-                      ),
-                    if (!_isTimerRunning)
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _controller.pause();
-                            _isTimerRunning = true;
-                          });
-                        },
-                        child: const Icon(
-                          Icons.pause,
-                          color: blueJeans,
-                          size: 40,
->>>>>>> main
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: offBlue,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _controller.resume();
+                                  _isTimerRunning = false;
+                                });
+                              },
+                              child: SvgPicture.asset(
+                                "assets/images/play.svg",
+                                width: 30,
+                                height: 30,
+                                color: blueJeans,
+                              ),
+                            ),
+                          ],
                         ),
                       if (!_isTimerRunning)
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _controller.pause();
-                              _isTimerRunning = true;
-                              // Update warna saat tombol pause ditekan
-                              iconColor = merah;
-                              backgroundColor = ripeMango;
-                            });
-                          },
-                          child: Icon(
-                            Icons.pause_rounded,
-                            color: iconColor,
-                            size: 40,
-                          ),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: 60,
+                              height: 60,
+                              decoration: BoxDecoration(
+                                color: offBlue,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _controller.pause();
+                                  _isTimerRunning = true;
+                                });
+                              },
+                              child: SvgPicture.asset(
+                                "assets/images/pause.svg",
+                                width: 30,
+                                height: 30,
+                                color: blueJeans,
+                              ),
+                            ),
+                          ],
                         ),
                       SizedBox(width: 100),
-                      IconButton(
-                        onPressed: _showPopup,
-                        icon: Icon(Icons.check),
-                        color: blueJeans,
-                        iconSize: 40,
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: offBlue,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: _showPopup,
+                            icon: SvgPicture.asset(
+                              "assets/images/check.svg",
+                              width: 30,
+                              height: 30,
+                              color: blueJeans,
+                            ),
+                            color: blueJeans,
+                          ),
+                        ],
                       ),
-<<<<<<< HEAD
                     ],
                   ),
                 ],
               ),
-=======
-                    const SizedBox(width: 100),
-                    IconButton(
-                      onPressed: _showPopup,
-                      icon: const Icon(Icons.check),
-                      color: blueJeans,
-                      iconSize: 40,
-                    ),
-                  ],
-                ),
-              ],
->>>>>>> main
             ),
           ),
         ),
@@ -338,136 +270,12 @@ class _DetailTimerState extends State<DetailTimer> {
     );
   }
 
-<<<<<<< HEAD
-
-  void _showPopupEnd() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Center(
-            child: SvgPicture.asset("assets/images/cat3.svg"),
-          ),
-          content: Column(
-            mainAxisSize:
-            MainAxisSize.min, // Menentukan ukuran minimum untuk Column
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Kembali ke Beranda ?",
-                  textAlign:
-                  TextAlign.center, // Mengatur teks menjadi di tengah
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CustomTimer(),
-                        ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    yellow_timer, // Gunakan warna dari variabel state
-                  ),
-                  child: Text("Oke"),
-                )
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-=======
->>>>>>> main
   void _showPopup() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-<<<<<<< HEAD
-        return AlertDialog(
-          title: Center(
-            child: SvgPicture.asset("assets/images/cat3.svg"),
-          ),
-          content: Column(
-            mainAxisSize:
-            MainAxisSize.min, // Menentukan ukuran minimum untuk Column
-            children: <Widget>[
-              SizedBox(height: 30),
-              Center(
-                child: Text(
-                  "Apakah Anda Yakin ?",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                  ),
-                  // Mengatur teks menjadi di tengah
-                ),
-              ),
-            ],
-          ),
-          actions: [
-            SizedBox(height: 30),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    Colors.grey, // Gunakan warna dari variabel state
-                  ),
-                  child: Text(
-                    "Tidak",
-                    style: TextStyle(
-                      backgroundColor: Colors.grey,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 30),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const CustomTimer(),
-                        ));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                    yellow_timer, // Gunakan warna dari variabel state
-                  ),
-                  child: Text(
-                    "Iya",
-                    style: TextStyle(
-                      backgroundColor: yellow_timer,
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ],
-        );
-=======
         return const ModalConfirm();
->>>>>>> main
       },
     );
   }
-
 }

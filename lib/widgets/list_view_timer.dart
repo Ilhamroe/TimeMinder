@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
@@ -73,12 +75,26 @@ class _ListTimerState extends State<ListTimer>
 
     final newData = await showCupertinoModalPopup(
       context: context,
-      builder: (_) => Container(
-        margin: const EdgeInsets.only(top: 170),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(70),
-        ),
-        child: DisplayModal(id: id),
+      builder: (_) => Stack(
+        children: [
+          BackdropFilter(
+            filter: ImageFilter.blur(
+                sigmaX: 100, sigmaY: 100),
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+          // Modal content
+          Center(
+            child: Container(
+              margin: const EdgeInsets.only(top: 170),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(70),
+              ),
+              child: DisplayModal(id: id),
+            ),
+          ),
+        ],
       ),
     );
     onClose(newData);
@@ -177,7 +193,7 @@ class _ListTimerState extends State<ListTimer>
                                   padding: const EdgeInsets.only(
                                       left: 30.0, top: 10),
                                   icon: const Icon(Icons.edit,
-                                      size: 15), //Logic edit
+                                      size: 15),
                                   onPressed: () {
                                     showDialog(
                                       context: context,

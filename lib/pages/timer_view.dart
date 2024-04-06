@@ -7,12 +7,9 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/custom_timer.dart';
-import 'package:mobile_time_minder/models/list_timer.dart';
-import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
+import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
@@ -27,9 +24,6 @@ class TimerView extends StatefulWidget {
 
 class _TimerState extends State<TimerView> {
   late Timer _timer;
-
-  Color iconColor = blueJeans;
-  Color backgroundColor = offGrey;
 
   late int timeInSec;
   late String _waktuMentah;
@@ -78,7 +72,7 @@ class _TimerState extends State<TimerView> {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const ModalConfirm();
+        return ModalConfirm();
       },
     );
   }
@@ -87,18 +81,20 @@ class _TimerState extends State<TimerView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: GestureDetector(
-          onTap: () {
+        leading: IconButton(
+          onPressed: () {
             _showPopup();
           },
-          child: const Icon(
-            CupertinoIcons.lessthan_circle,
+          icon: SvgPicture.asset(
+            "assets/images/button_back.svg",
+            width: 30,
+            height: 30,
             color: cetaceanBlue,
           ),
         ),
         title: Column(
           children: [
-            const SizedBox(height: 20),
+            SizedBox(height: 20),
             Text(
               _judul,
               style: const TextStyle(
@@ -108,7 +104,7 @@ class _TimerState extends State<TimerView> {
               ),
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10),
             Text(
               _deskripsi,
               style: const TextStyle(
@@ -120,10 +116,14 @@ class _TimerState extends State<TimerView> {
           ],
         ),
         centerTitle: true,
+        backgroundColor: pureWhite,
         toolbarHeight: 80,
       ),
       body: SafeArea(
         child: Container(
+          decoration: const BoxDecoration(
+            color: pureWhite,
+          ),
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           padding: const EdgeInsets.symmetric(
@@ -141,7 +141,7 @@ class _TimerState extends State<TimerView> {
                   width: MediaQuery.of(context).size.width / 2,
                   height: MediaQuery.of(context).size.height / 2,
                   controller: _controller,
-                  ringColor: ripeMango,
+                  ringColor: ring,
                   fillColor: _controller.isPaused ? red : ripeMango,
                   fillGradient: LinearGradient(
                     begin: Alignment.bottomLeft,
@@ -163,20 +163,15 @@ class _TimerState extends State<TimerView> {
                   ),
                   onChange: (String timeStamp) {
                     // Here, do whatever you want
-                    debugPrint('Countdown Changed $timeStamp');
+                    // debugPrint('Countdown Changed $timeStamp');
                     // int currentTime = int.tryParse(timeStamp) ?? 0;
                     // setState(() {
                     //   currentTimerValue = currentTime;
                     // });
                   },
                   onComplete: () {
-                    _showPopup();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const CustomTimer(),
-                      ),
-                    );
+                    Navigator.popUntil(
+                        context, ModalRoute.withName(AppRoutes.home));
                   },
                 ),
                 SizedBox(height: 20),
@@ -184,41 +179,84 @@ class _TimerState extends State<TimerView> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     if (isStarted)
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _controller.resume();
-                            isStarted = false;
-                          });
-                        },
-                        child: const Icon(
-                          Icons.play_arrow_outlined,
-                          color: blueJeans,
-                          size: 40,
-                        ),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: offBlue,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _controller.resume();
+                                isStarted = false;
+                              });
+                            },
+                            child: SvgPicture.asset(
+                              "assets/images/play.svg",
+                              width: 30,
+                              height: 30,
+                              color: blueJeans,
+                            ),
+                          ),
+                        ],
                       ),
                     if (!isStarted)
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _controller.pause();
-                            // Update warna saat tombol pause ditekan
-                            iconColor = red;
-                            backgroundColor = ripeMango;
-                          });
-                        },
-                        child: Icon(
-                          Icons.pause_rounded,
-                          color: iconColor,
-                          size: 40,
-                        ),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              color: offBlue,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _controller.pause();
+                                isStarted = true;
+                              });
+                            },
+                            child: SvgPicture.asset(
+                              "assets/images/pause.svg",
+                              width: 30,
+                              height: 30,
+                              color: blueJeans,
+                            ),
+                          ),
+                        ],
                       ),
-                    const SizedBox(width: 100),
-                    IconButton(
-                      onPressed: _showPopup,
-                      icon: const Icon(Icons.check),
-                      color: blueJeans,
-                      iconSize: 40,
+                    SizedBox(width: 100),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: offBlue,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: _showPopup,
+                          icon: SvgPicture.asset(
+                            "assets/images/check.svg",
+                            width: 30,
+                            height: 30,
+                            color: blueJeans,
+                          ),
+                          color: blueJeans,
+                        ),
+                      ],
                     ),
                   ],
                 ),

@@ -17,7 +17,7 @@ var Timerlist = [
     image: 'assets/images/cat1.svg',
     title: 'Belajar',
     description: 'Fokus belajar dengan time block',
-    time: '00:20:30',
+    time: '00:15:00',
   ),
   Timer(
     image: 'assets/images/cat1.svg',
