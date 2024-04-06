@@ -5,8 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
+import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -67,7 +67,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     _refreshData();
   }
 
-  void _showModal(ModalCloseCallback onClose, [int? id]) async {
+  void _showModal(ModalCloseCallback onClose, int? id) async {
     if (id != null) {
       final existingData =
           _allData.firstWhere((element) => element['id'] == id);
@@ -99,15 +99,6 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     _refreshData();
   }
 
-  void _showPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ModalConfirm();
-      },
-    );
-  }
-
   @override
   void initState() {
     super.initState();
@@ -121,6 +112,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
             child: CircularProgressIndicator(),
           )
         : ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
             padding: EdgeInsets.all(8.0),
             shrinkWrap: true,
             itemCount: _allData.length,
@@ -188,7 +180,8 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                       splashColor: Colors.transparent,
                                       highlightColor: Colors.transparent,
                                       color: ripeMango,
-                                      icon: const Icon(CupertinoIcons.pencil_circle_fill,
+                                      icon: const Icon(
+                                          CupertinoIcons.pencil_circle_fill,
                                           size: 26),
                                       onPressed: () => _showModal(
                                           (int? id) {}, _allData[index]['id']),
@@ -198,10 +191,123 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                       splashColor: Colors.transparent,
                                       highlightColor: Colors.transparent,
                                       color: redDeep,
-                                      icon: const Icon(CupertinoIcons.delete_solid,
+                                      icon: const Icon(
+                                          CupertinoIcons.delete_solid,
                                           size: 26),
                                       onPressed: () {
-                                        _showPopup();
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return AlertDialog(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                              ),
+                                              content: SizedBox(
+                                                width: 100,
+                                                height: 300,
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 120.0,
+                                                      child: Image.asset(
+                                                        'assets/images/confirm_popup.png',
+                                                        fit: BoxFit.contain,
+                                                        width: 100,
+                                                        height: 100,
+                                                      ),
+                                                    ),
+                                                    const Text(
+                                                      "Apakah Anda yakin?",
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                      style: TextStyle(
+                                                        fontFamily: 'Nunito',
+                                                        fontSize: 26,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(
+                                                        height: 20.0),
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                            color: halfGrey,
+                                                          ),
+                                                          child: TextButton(
+                                                            onPressed: () {
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            child: const Text(
+                                                              "Tidak",
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      offGrey),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                            width: 30),
+                                                        Container(
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                            color: ripeMango,
+                                                          ),
+                                                          child: TextButton(
+                                                            onPressed: () {
+                                                              if (_allData
+                                                                  .isNotEmpty) {
+                                                                _deleteData(
+                                                                    _allData[0]
+                                                                        ['id']);
+                                                                _refreshData();
+                                                              } else {
+                                                                Navigator
+                                                                    .pushReplacement(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            HomePage(),
+                                                                  ),
+                                                                );
+                                                              }
+                                                              Navigator.of(
+                                                                      context)
+                                                                  .pop();
+                                                            },
+                                                            child: const Text(
+                                                              "Ya",
+                                                              style: TextStyle(
+                                                                  color:
+                                                                      offGrey),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                        );
                                       },
                                     ),
                                   ],

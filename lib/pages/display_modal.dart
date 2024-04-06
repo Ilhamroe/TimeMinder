@@ -34,7 +34,7 @@ class _DisplayModalState extends State<DisplayModal> {
   TextEditingController _deskripsiController = TextEditingController();
 
   //databases
-  List<Map<String, dynamic>> _allData = [];
+  late List<Map<String, dynamic>> _allData = [];
 
   @override
   void initState() {
@@ -124,13 +124,17 @@ class _DisplayModalState extends State<DisplayModal> {
 
   // add data
   Future<void> _addData() async {
-    await SQLHelper.createData(
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    _refreshData();
+    if (id == null) {
+      await SQLHelper.createData(
+          _namaTimerController.text,
+          _deskripsiController.text,
+          _counter,
+          _counterBreakTime,
+          _counterInterval);
+      _refreshData();
+  } else {
+      _refreshData();
+    }
   }
 
   // edit data
@@ -300,6 +304,7 @@ class _DisplayModalState extends State<DisplayModal> {
                     ),
                     SizedBox(height: 15),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CustomButton(
                           text: '  Reset  ',
@@ -308,13 +313,13 @@ class _DisplayModalState extends State<DisplayModal> {
                           borderSideColor: cetaceanBlue,
                           onPressed: _resetSetting,
                         ),
-                        SizedBox(width: 20),
+                        SizedBox(width: 15),
                         CustomButton(
                           text: 'Terapkan',
                           primaryColor: ripeMango,
                           onPrimaryColor: cetaceanBlue,
                           borderSideColor: Colors.transparent,
-                          onPressed: _submitSetting,
+                          onPressed: () => _submitSetting(),
                         ),
                       ],
                     ),

@@ -99,6 +99,7 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
       padding: EdgeInsets.all(8.0),
       shrinkWrap: true,
       itemCount: Timerlist.length,

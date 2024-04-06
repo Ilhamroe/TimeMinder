@@ -79,14 +79,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
+                  
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _decrement1 : null,
                     icon: Icon(Icons.remove),
@@ -107,14 +100,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
+                  
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _increment1 : null,
                     icon: Icon(Icons.add),
@@ -128,7 +114,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             ),
           ),
         ),
-        SizedBox(width: 15),
+        SizedBox(width: 10),
         Expanded(
           child: Container(
             padding: EdgeInsets.all(2),
@@ -148,14 +134,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
+                  
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _decrement2 : null,
                     icon: Icon(Icons.remove),
@@ -176,14 +155,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
+                  
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _increment2 : null,
                     icon: Icon(Icons.add),
