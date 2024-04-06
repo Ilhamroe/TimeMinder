@@ -49,7 +49,7 @@ class _NotifViewState extends State<NotifView> {
                     body: "Terimakasih sudah menggunakan TimeMinder!", 
                     fln: flutterLocalNotificationsPlugin);
                 }, 
-                child: Text("click")),
+                child: const Text("click")),
             ),
           ),
       ),

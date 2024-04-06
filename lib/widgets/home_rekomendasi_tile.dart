@@ -91,8 +91,8 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
-      padding: EdgeInsets.all(8.0),
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.all(8.0),
       shrinkWrap: true,
       itemCount: Timerlist.length,
       itemBuilder: (context, index) {
@@ -107,18 +107,18 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
             );
           },
           child: Container(
-            margin: EdgeInsets.only(bottom: 13.0),
+            margin: const EdgeInsets.only(bottom: 13.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.0),
               color: offOrange,
             ),
             child: ListTile(
               contentPadding:
-                  EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 15.0),
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                   color: color,
                   child: SvgPicture.asset(
                     Timerlist[index].image,
@@ -128,7 +128,7 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
               ),
               title: Text(
                 Timerlist[index].title,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Nunito-Bold',
                   fontWeight: FontWeight.w900,
                   fontSize: 12,
@@ -136,7 +136,7 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
               ),
               subtitle: Text(
                 Timerlist[index].description,
-                style: TextStyle(
+                style: const TextStyle(
                   fontFamily: 'Nunito',
                   fontWeight: FontWeight.w600,
                   fontSize: 10,
@@ -144,19 +144,19 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
               ),
               trailing: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 15,
                   ),
                   Text(
                     Timerlist[index].time,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w600,
                       fontSize: 8,
                       color: darkGrey,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 8.0,
                   ),
                   SvgPicture.asset(

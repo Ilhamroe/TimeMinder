@@ -2,8 +2,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class Notif{
     static Future initialize(FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin) async{
-      var androidInitialize= new AndroidInitializationSettings('mipmap/logo');
-      var iOSInitialize= new DarwinInitializationSettings();
+      var androidInitialize= const AndroidInitializationSettings('mipmap/logo');
+      var iOSInitialize= const DarwinInitializationSettings();
       var initializationSettings= new InitializationSettings(android: androidInitialize);
       await flutterLocalNotificationsPlugin.initialize(initializationSettings);
     }
@@ -16,7 +16,7 @@ class Notif{
       required FlutterLocalNotificationsPlugin fln
       }) async{
       AndroidNotificationDetails androidPlatformChannelSpecifics=
-      new AndroidNotificationDetails(
+      const AndroidNotificationDetails(
         'you_can_name_it_whatever', 
         'channel_name',
         
@@ -27,7 +27,7 @@ class Notif{
         );
 
     var not= NotificationDetails(android: androidPlatformChannelSpecifics, 
-        iOS: DarwinNotificationDetails()
+        iOS: const DarwinNotificationDetails()
     );
     await fln.show(id, title, body, not);
     }
