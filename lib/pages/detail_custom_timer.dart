@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:timer_count_down/timer_controller.dart';
@@ -8,8 +9,13 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:mobile_time_minder/pages/tes.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:mobile_time_minder/pages/home_page.dart';
+import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
+
 
 class DetailTimer extends StatefulWidget {
   final Map<String, dynamic> data;
@@ -21,15 +27,12 @@ class DetailTimer extends StatefulWidget {
 }
 
 class _DetailTimerState extends State<DetailTimer> {
-  int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
   bool _isLoading = false;
   bool _isTimerRunning = false; // Menyimpan status timer
   bool statusSwitch = false;
   bool hideContainer = true;
   late List<Map<String, dynamic>> _allData = [];
-  late CountdownController _controller; // Controller untuk Countdown widget
+  late CountDownController _controller; // Controller untuk Countdown widget
   final player= AudioPlayer();
   bool _isSoundPlayed= false;
   // String _filtername= '';
@@ -59,8 +62,13 @@ class _DetailTimerState extends State<DetailTimer> {
   void initState() {
     super.initState();
     _refreshData();
-    _controller = CountdownController();
+    _controller = CountDownController();
     Notif.initialize(flutterLocalNotificationsPlugin);
+    player.onPlayerComplete.listen((event) {
+      setState(() {
+        _isSoundPlayed= false;
+      });
+    });
     // FlutterDnd.initialize();
     // WidgetsBinding.instance!.addObserver(this);
     // updateUI();
@@ -123,66 +131,199 @@ class _DetailTimerState extends State<DetailTimer> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(data['title']),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+        leading: GestureDetector(
+          onTap: () {
+            _showPopup();
+          },
+          child: Icon(
+            CupertinoIcons.lessthan_circle,
+            color: cetaceanBlue,
+          ),
+        ),
+        title: Column(
           children: [
-            Text(data['description']),
             SizedBox(height: 20),
-            Countdown(
-              controller: _controller,
-              seconds: inTimeBreak,
-              build: (_, double time) => Text(
-                'Time left: ${time.toInt()}',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              data['title'],
+              style: TextStyle(
+                fontFamily: 'Nunito-Bold',
+                fontWeight: FontWeight.w600,
+                color: cetaceanBlue,
               ),
-              onFinished: () {
-                setState(() {
-                  _isTimerRunning = false;
-                  _showNotification("Timer selesai");
-                 
-                  player.play(AssetSource('sounds/end.wav'));
-                });
-              },
+            textAlign: TextAlign.center,
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if(_isTimerRunning){  
-                  _controller.pause();
-                  _showNotification("Timer dijeda");
-                 disableDndMode();
-                  if(!_isSoundPlayed){
-                    player.stop();
-                  }
-                  player.play(AssetSource('sounds/pause.wav'));   
-                  _isSoundPlayed= false;                            
-                }else{
-                  _controller.start();
-                  _showNotification("Timer dimulai");
-                 enableDNdMode();
+            SizedBox(height: 10),
+            Text(
+              data['description'],
+              style: TextStyle(
+                fontFamily: 'Nunito',
+                fontSize: 14,
+                color: Colors.black,
+              ),
+           ),
+
+            //   onFinished: () {
+            //     setState(() {
+            //       _isTimerRunning = false;
+            //       _showNotification("Timer selesai");
+                 
+            //       player.play(AssetSource('sounds/end.wav'));
+            //     });
+            //   },
+            // ),
+            // SizedBox(height: 20),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     if(_isTimerRunning){  
+            //       _controller.pause();
+            //       _showNotification("Timer dijeda");
+            //      disableDndMode();
+            //       if(!_isSoundPlayed){
+            //         player.stop();
+            //       }
+            //       player.play(AssetSource('sounds/pause.wav'));   
+            //       _isSoundPlayed= false;                            
+            //     }else{
+            //       _controller.start();
+            //       _showNotification("Timer dimulai");
+            //      enableDNdMode();
                  
 
-                  if(!_isSoundPlayed){
-                    // player.stop();
-                    player.play(AssetSource('sounds/start.wav'));
-                  _isSoundPlayed= true; 
-                  }
+            //       if(!_isSoundPlayed){
+            //         // player.stop();
+            //         player.play(AssetSource('sounds/start.wav'));
+            //       _isSoundPlayed= true; 
+            //       }
                                          
-                }
-                _toggleTimer();
-              },
-              child: Text(_isTimerRunning ? 'Pause' : 'Play'),
-            ),
-            SizedBox(height: 20),
-            Text("Timer: ${data['timer']}"),
-            Text("Rest: ${data['rest']}"),
-            Text("Interval: ${data['interval']}"),
+            //     }
+            //     _toggleTimer();
+            //   },
+            //   child: Text(_isTimerRunning ? 'Pause' : 'Play'),
+
+  
           ],
         ),
+        centerTitle: true,
+        toolbarHeight: 80,
       ),
+      body: SafeArea(
+        child: Container(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          padding: const EdgeInsets.symmetric(
+            horizontal: 24,
+            vertical: 100,
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                CircularCountDownTimer(
+                  duration: inTimeBreak,
+                  initialDuration: 0,
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.height / 2,
+                  controller:_controller,
+                  ringColor: offGrey,
+                  fillColor: _controller.isPaused ? red : ripeMango,
+                  strokeWidth: 20.0,
+                  isReverse: true,
+                  isReverseAnimation: true,
+                  strokeCap: StrokeCap.round,
+                  autoStart: true,
+                  textStyle: TextStyle(
+                    fontSize: 33.0,
+                    color: _controller.isPaused ? red : red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  onStart: () {
+                    _showNotification("Timer dimulai");
+                    player.play(AssetSource('sounds/end.wav'));
+                    _isSoundPlayed= true;
+                  },
+                  onComplete: () {
+                  _showNotification("Timer selesai");
+                  player.play(AssetSource('sounds/end.wav'));
+                    _showPopup();
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(),
+                        ));
+                  },
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    if (_isTimerRunning)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _controller.resume();
+                            _showNotification("Timer dimulai");
+                            _isTimerRunning = false;
+
+                                                         
+                            player.play(AssetSource('sounds/start.wav'));
+                               _isSoundPlayed= true;  
+                             player.stop();     
+                                              
+                                                                
+                          });
+                        },
+                        child: Icon(
+                          Icons.play_arrow_outlined,
+                          color: blueJeans,
+                          size: 40,
+                        ),
+                      ),
+                    if (!_isTimerRunning)
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _controller.pause();
+                            _isTimerRunning = true;
+                            _showNotification("Timer dijeda"); 
+                                                      
+                            player.stop();
+                            player.play(AssetSource('sounds/pause.wav'));
+                            _isSoundPlayed= false;  
+                       
+                            
+                                       
+                          });
+                        },
+                        child: Icon(
+                          Icons.pause,
+                          color: blueJeans,
+                          size: 40,
+                        ),
+                      ),
+                    SizedBox(width: 100),
+                    IconButton(
+                      onPressed: _showPopup,
+                      icon: Icon(Icons.check),
+                      color: blueJeans,
+                      iconSize: 40,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalConfirm();
+      },
     );
   }
 }

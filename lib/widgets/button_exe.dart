@@ -8,13 +8,13 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
 
 const CustomButton({
-    Key? key,
+    super.key,
     required this.text,
     required this.primaryColor,
     required this.onPrimaryColor,
     required this.borderSideColor,
     required this.onPressed,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,7 @@ const CustomButton({
             ),
           ),
           padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-            EdgeInsets.symmetric(vertical: 20, horizontal: 47)
+            const EdgeInsets.symmetric(vertical: 20, horizontal: 47)
           ),
           shape: MaterialStateProperty.all<OutlinedBorder>(
             RoundedRectangleBorder(
@@ -44,3 +44,4 @@ const CustomButton({
     );
   }
 }
+

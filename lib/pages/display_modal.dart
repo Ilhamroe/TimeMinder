@@ -181,7 +181,7 @@ class _DisplayModalState extends State<DisplayModal> {
                   children: [
                     CustomTextField(
                       labelText: 'Tambah waktumu sendiri',
-                      fontSize: 21,
+                      fontSize: 16,
                       fontFamily: 'Nunito-Bold',
                     ),
                     IconButton(
@@ -204,7 +204,7 @@ class _DisplayModalState extends State<DisplayModal> {
                 SizedBox(height: 7),
                 CustomTextField(labelText: "Deskripsi : "),
                 TextField(
-                  maxLength: 33,
+                  maxLength: 30,
                   controller: _deskripsiController,
                   decoration: InputDecoration(
                     counterText: '',
@@ -254,7 +254,7 @@ class _DisplayModalState extends State<DisplayModal> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               CustomTextField(
-                                  labelText: "Aktifkan Mode Belajar"),
+                                  labelText: "Aktifkan mode istirahat"),
                               CupertinoSwitchAdaptiveWidget(
                                 statusSwitch: statusSwitch,
                                 onChanged: (value) {

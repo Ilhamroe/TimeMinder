@@ -22,7 +22,7 @@ class _CustomTimerState extends State<CustomTimer> {
     offYellow,
     offGrey,
     heliotrope,
-    merah,
+    red,
     blueJeans,
     darkGrey,
     halfGrey,
@@ -106,7 +106,6 @@ class _CustomTimerState extends State<CustomTimer> {
     _refreshData();
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     return Scaffold(
