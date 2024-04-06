@@ -11,7 +11,7 @@ import 'package:mobile_time_minder/pages/list_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:intl/intl.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       builder: (_) => Stack(
         children: [
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 200, sigmaY: 200),
+            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
             child: Container(
               color: Colors.transparent,
             ),
@@ -126,12 +126,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _initializeGreeting();
   }
 
-  // Inisialisasi salam sesuai dengan waktu lokal
-  Future<void> _initializeGreeting() async {
+  void _initializeGreeting() {
     final currentTime = DateTime.now();
-    final timeZone = await FlutterNativeTimezone.getLocalTimezone();
-    final timeZoneOffset = currentTime.timeZoneOffset;
-    final currentHour = (currentTime.hour + timeZoneOffset.inHours) % 24;
+    final currentHour = currentTime.hour;
 
     setState(() {
       if (currentHour >= 5 && currentHour < 12) {
@@ -184,7 +181,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '$_greeting, Mindy',
+                                  '$_greeting',
                                   style: TextStyle(
                                     fontFamily: 'Nunito-Bold',
                                     color: Colors.black,
