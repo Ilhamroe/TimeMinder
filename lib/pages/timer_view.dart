@@ -6,6 +6,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile_time_minder/database/db_helper.dart';
+import 'package:mobile_time_minder/pages/custom_timer.dart';
+import 'package:mobile_time_minder/models/list_timer.dart';
+import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
 import 'package:mobile_time_minder/theme.dart';
@@ -22,6 +27,9 @@ class TimerView extends StatefulWidget {
 
 class _TimerState extends State<TimerView> {
   late Timer _timer;
+
+  Color iconColor = blueJeans;
+  Color backgroundColor = offGrey;
 
   late int timeInSec;
   late String _waktuMentah;
@@ -128,34 +136,50 @@ class _TimerState extends State<TimerView> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 CircularCountDownTimer(
-                    duration: timeInSec,
-                    initialDuration: 0,
-                    width: MediaQuery.of(context).size.width / 2,
-                    height: MediaQuery.of(context).size.height / 2,
-                    controller: _controller,
-                    ringColor: offGrey,
-                    fillColor: _controller.isPaused ? red : ripeMango,
-                    strokeWidth: 20.0,
-                    isReverse: true,
-                    isReverseAnimation: true,
-                    strokeCap: StrokeCap.round,
-                    autoStart: true,
-                    textStyle: TextStyle(
-                      fontSize: 33.0,
-                      color: _controller.isPaused ? red : cetaceanBlue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    onComplete: () {
-                      _showPopup();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ));
-                    }
-                    // Tindakan yang diambil ketika timer selesai
-                    ),
-                const SizedBox(height: 20),
+                  duration: timeInSec,
+                  initialDuration: 0,
+                  width: MediaQuery.of(context).size.width / 2,
+                  height: MediaQuery.of(context).size.height / 2,
+                  controller: _controller,
+                  ringColor: ripeMango,
+                  fillColor: _controller.isPaused ? red : ripeMango,
+                  fillGradient: LinearGradient(
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
+                    colors: [
+                      _controller.isPaused ? red : ripeMango,
+                      offOrange
+                    ], // Your gradient colors
+                  ),
+                  strokeWidth: 20.0,
+                  isReverse: true,
+                  isReverseAnimation: false,
+                  strokeCap: StrokeCap.round,
+                  autoStart: true,
+                  textStyle: TextStyle(
+                    fontSize: 33.0,
+                    color: _controller.isPaused ? red : cetaceanBlue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  onChange: (String timeStamp) {
+                    // Here, do whatever you want
+                    debugPrint('Countdown Changed $timeStamp');
+                    // int currentTime = int.tryParse(timeStamp) ?? 0;
+                    // setState(() {
+                    //   currentTimerValue = currentTime;
+                    // });
+                  },
+                  onComplete: () {
+                    _showPopup();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CustomTimer(),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -178,12 +202,14 @@ class _TimerState extends State<TimerView> {
                         onTap: () {
                           setState(() {
                             _controller.pause();
-                            isStarted = true;
+                            // Update warna saat tombol pause ditekan
+                            iconColor = red;
+                            backgroundColor = ripeMango;
                           });
                         },
-                        child: const Icon(
-                          Icons.pause,
-                          color: blueJeans,
+                        child: Icon(
+                          Icons.pause_rounded,
+                          color: iconColor,
                           size: 40,
                         ),
                       ),
