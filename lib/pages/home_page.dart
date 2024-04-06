@@ -1,5 +1,8 @@
+import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
@@ -19,11 +22,23 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage>
-    with SingleTickerProviderStateMixin {
+class _HomePageState extends State<HomePage> {
   int _page = 0;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+
   late List<Map<String, dynamic>> _allData = [];
+
+  int _counter = 0;
+  int _counterBreakTime = 0;
+  int _counterInterval = 0;
+  bool _isLoading = false;
+  bool statusSwitch = false;
+  bool hideContainer = true;
+  bool isSettingPressed = false;
+
+  TextEditingController _namaTimerController = TextEditingController();
+  TextEditingController _deskripsiController = TextEditingController();
+
   List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
 
   void updateLabelColors(int selectedIndex) {
@@ -33,28 +48,15 @@ class _HomePageState extends State<HomePage>
     labelColors[selectedIndex] = offOrange;
   }
 
-  late TabController tabController;
-  int counter = 0;
-  int counterBreakTime = 0;
-  int counterInterval = 0;
-  bool isLoading = false;
-  bool statusSwitch = false;
-  bool hideContainer = true;
-  bool isSemuaSelected = true;
-  bool isSettingPressed = false;
-
-  final TextEditingController _namaTimerController = TextEditingController();
-  final TextEditingController _deskripsiController = TextEditingController();
-
   // refresh data
   void _refreshData() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
     final data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -64,22 +66,21 @@ class _HomePageState extends State<HomePage>
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      counter = existingData['time'] ?? 0;
-      counterBreakTime = existingData['rest'] ?? 0;
-      counterInterval = existingData['interval'] ?? 0;
+      _counter = existingData['time'] ?? 0;
+      _counterBreakTime = existingData['rest'] ?? 0;
+      _counterInterval = existingData['interval'] ?? 0;
     } else {
-      // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      counter = 0;
-      counterBreakTime = 0;
-      counterInterval = 0;
+      _counter = 0;
+      _counterBreakTime = 0;
+      _counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
       context: context,
       builder: (_) => Container(
-        margin: const EdgeInsets.only(top: 170),
+        margin: EdgeInsets.only(top: 170),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(70),
         ),
@@ -100,16 +101,90 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ripeMango,
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        index: _page,
+        height: 69.0,
+        items: [
+          CurvedNavigationBarItem(
+            child: SvgPicture.asset(
+              "assets/images/solar.svg",
+              width: 25,
+              height: 25,
+            ),
+            label: "BERANDA",
+            labelStyle: TextStyle(
+              color: labelColors[0],
+              fontFamily: 'Nunito',
+            ),
+          ),
+          CurvedNavigationBarItem(
+            child: const Icon(
+              Icons.add,
+              size: 25,
+            ),
+            label: "TAMBAH",
+            labelStyle: TextStyle(
+              color: labelColors[1],
+              fontFamily: 'Nunito',
+            ),
+          ),
+          CurvedNavigationBarItem(
+            child: const Icon(
+              Icons.hourglass_empty_rounded,
+              size: 25,
+            ),
+            label: "TIMER",
+            labelStyle: TextStyle(
+              color: labelColors[2],
+              fontFamily: 'Nunito',
+            ),
+          ),
+        ],
+        backgroundColor: Colors.white,
+        color: offOrange,
+        animationCurve: Curves.bounceInOut,
+        animationDuration: const Duration(milliseconds: 500),
+        buttonBackgroundColor: ripeMango,
+        onTap: (index) {
+          setState(() {
+            _page = index;
+            updateLabelColors(index);
+            switch (index) {
+              case 0:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HomePage()),
+                );
+                break;
+              case 1:
+                _showModal((int? id) {});
+                break;
+              case 2:
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DetailListTimer(),
+                  ),
+                );
+                break;
+            }
+          });
+        },
+        letIndexChange: (index) => true,
+      ),
       body: CustomScrollView(
         slivers: <Widget>[
+          // SizedBox(height: 10),
           SliverAppBar(
-            floating: true,
-            snap: true,
+            title: SizedBox.shrink(),
+            floating: true, // Membuat app bar tetap muncul saat discroll
+            snap: true, // Mengaktifkan efek snap saat discroll
             backgroundColor: ripeMango,
-            elevation: 0,
+            elevation: 0, // Menghilangkan shadow di app bar
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
+                padding: EdgeInsets.symmetric(horizontal: 25.0, vertical: 15.0),
                 child: Column(
                   children: [
                     Row(
@@ -173,8 +248,8 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
             ),
-            expandedHeight: 200.0,
-            pinned: true,
+            expandedHeight: 200.0, // Tinggi ekspansi maksimum untuk app bar
+            pinned: true, // Membuat app bar menempel di bagian atas saat discroll
           ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
@@ -259,82 +334,10 @@ class _HomePageState extends State<HomePage>
                   ),
                 );
               },
-              childCount: 1,
+              childCount: 1, // Hanya satu item dalam SliverList
             ),
           ),
         ],
-      ),
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        index: _page,
-        height: 69.0,
-        items: [
-          CurvedNavigationBarItem(
-            child: SvgPicture.asset(
-              "assets/images/solar.svg",
-              width: 25,
-              height: 25,
-            ),
-            label: "BERANDA",
-            labelStyle: TextStyle(
-              color: labelColors[0],
-              fontFamily: 'Nunito',
-            ),
-          ),
-          CurvedNavigationBarItem(
-            child: const Icon(
-              Icons.add,
-              size: 25,
-            ),
-            label: "TAMBAH",
-            labelStyle: TextStyle(
-              color: labelColors[1],
-              fontFamily: 'Nunito',
-            ),
-          ),
-          CurvedNavigationBarItem(
-            child: const Icon(
-              Icons.hourglass_empty_rounded,
-              size: 25,
-            ),
-            label: "TIMER",
-            labelStyle: TextStyle(
-              color: labelColors[2],
-              fontFamily: 'Nunito',
-            ),
-          ),
-        ],
-        backgroundColor: Colors.white,
-        color: offOrange,
-        animationCurve: Curves.bounceInOut,
-        animationDuration: const Duration(milliseconds: 500),
-        buttonBackgroundColor: ripeMango,
-        onTap: (index) {
-          setState(() {
-            _page = index;
-            updateLabelColors(index);
-            switch (index) {
-              case 0:
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => const HomePage()),
-                );
-                break;
-              case 1:
-                _showModal((int? id) {});
-                break;
-              case 2:
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const DetailListTimer(),
-                  ),
-                );
-                break;
-            }
-          });
-        },
-        letIndexChange: (index) => true,
       ),
     );
   }

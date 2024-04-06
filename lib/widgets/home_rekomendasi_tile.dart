@@ -21,6 +21,11 @@ class HomeRekomendasiTile extends StatefulWidget {
 }
 
 class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
+  final List<Color> _customColors = [
+    heliotrope,
+    red,
+  ];
+
   late List<Map<String, dynamic>> _allData = [];
 
   int counter = 0;
@@ -43,19 +48,6 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
       _allData = data;
       isLoading = false;
     });
-  }
-
-  // delete data
-  void _deleteData(int id) async {
-    await SQLHelper.deleteData(id);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text("Data deleted"),
-        duration: Duration(milliseconds: 500),
-      ));
-    }
-    _refreshData();
   }
 
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
@@ -104,6 +96,7 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
       shrinkWrap: true,
       itemCount: Timerlist.length,
       itemBuilder: (context, index) {
+        final color = _customColors[index % _customColors.length];
         return GestureDetector(
           onTap: () {
             Navigator.push(
@@ -126,7 +119,7 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
                 borderRadius: BorderRadius.circular(100),
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-                  color: Timerlist[index].color,
+                  color: color,
                   child: SvgPicture.asset(
                     Timerlist[index].image,
                     height: 30,
@@ -149,40 +142,27 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
                   fontSize: 10,
                 ),
               ),
-              trailing: Container(
-                width: 100,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Text(
-                              Timerlist[index].time,
-                              style: TextStyle(
-                                fontFamily: 'DMSans',
-                                fontWeight: FontWeight.w600,
-                                fontSize: 8,
-                                color: darkGrey,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 8.0,
-                            ),
-                            SvgPicture.asset(
-                              'assets/images/button.svg',
-                            ),
-                          ],
-                        ),
-                      ],
+              trailing: Column(
+                children: [
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Text(
+                    Timerlist[index].time,
+                    style: TextStyle(
+                      fontFamily: 'DMSans',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 8,
+                      color: darkGrey,
                     ),
-                  ],
-                ),
+                  ),
+                  SizedBox(
+                    height: 8.0,
+                  ),
+                  SvgPicture.asset(
+                    'assets/images/button.svg',
+                  ),
+                ],
               ),
             ),
           ),

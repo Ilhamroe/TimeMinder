@@ -5,8 +5,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -67,7 +67,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     _refreshData();
   }
 
-  void _showModal(ModalCloseCallback onClose, int? id) async {
+  void _showModal(ModalCloseCallback onClose, [int? id]) async {
     if (id != null) {
       final existingData =
           _allData.firstWhere((element) => element['id'] == id);
@@ -97,6 +97,15 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     );
     onClose(newData);
     _refreshData();
+  }
+
+  void _showPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return ModalConfirm();
+      },
+    );
   }
 
   @override
@@ -164,183 +173,70 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                         fontSize: 10,
                       ),
                     ),
-                    trailing: Container(
-                      width: 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              if (widget.isSettingPressed)
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      alignment: Alignment.topCenter,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      color: ripeMango,
-                                      icon: const Icon(
-                                          CupertinoIcons.pencil_circle_fill,
-                                          size: 26),
-                                      onPressed: () => _showModal(
-                                          (int? id) {}, _allData[index]['id']),
-                                    ),
-                                    IconButton(
-                                      alignment: Alignment.topCenter,
-                                      splashColor: Colors.transparent,
-                                      highlightColor: Colors.transparent,
-                                      color: redDeep,
-                                      icon: const Icon(
-                                          CupertinoIcons.delete_solid,
-                                          size: 26),
-                                      onPressed: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(10.0),
-                                              ),
-                                              content: SizedBox(
-                                                width: 100,
-                                                height: 300,
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    SizedBox(
-                                                      height: 120.0,
-                                                      child: Image.asset(
-                                                        'assets/images/confirm_popup.png',
-                                                        fit: BoxFit.contain,
-                                                        width: 100,
-                                                        height: 100,
-                                                      ),
-                                                    ),
-                                                    const Text(
-                                                      "Apakah Anda yakin?",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      style: TextStyle(
-                                                        fontFamily: 'Nunito',
-                                                        fontSize: 26,
-                                                      ),
-                                                    ),
-                                                    const SizedBox(
-                                                        height: 20.0),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      children: [
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10.0),
-                                                            color: halfGrey,
-                                                          ),
-                                                          child: TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                            child: const Text(
-                                                              "Tidak",
-                                                              style: TextStyle(
-                                                                  color:
-                                                                      offGrey),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                            width: 30),
-                                                        Container(
-                                                          decoration:
-                                                              BoxDecoration(
-                                                            borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10.0),
-                                                            color: ripeMango,
-                                                          ),
-                                                          child: TextButton(
-                                                            onPressed: () {
-                                                              if (_allData
-                                                                  .isNotEmpty) {
-                                                                _deleteData(
-                                                                    _allData[0]
-                                                                        ['id']);
-                                                                _refreshData();
-                                                              } else {
-                                                                Navigator
-                                                                    .pushReplacement(
-                                                                  context,
-                                                                  MaterialPageRoute(
-                                                                    builder:
-                                                                        (context) =>
-                                                                            HomePage(),
-                                                                  ),
-                                                                );
-                                                              }
-                                                              Navigator.of(
-                                                                      context)
-                                                                  .pop();
-                                                            },
-                                                            child: const Text(
-                                                              "Ya",
-                                                              style: TextStyle(
-                                                                  color:
-                                                                      offGrey),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              if (!widget.isSettingPressed)
+                    trailing: widget.isSettingPressed
+                        ? Container(
+                            width: 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
                                 Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    SizedBox(
-                                      height: 15,
-                                    ),
-                                    Text(
-                                      _formatTime(
-                                          _allData[index]['timer'] ?? 0),
-                                      style: TextStyle(
-                                        fontFamily: 'DMSans',
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 8,
-                                        color: darkGrey,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 8.0,
-                                    ),
-                                    SvgPicture.asset(
-                                      'assets/images/button.svg',
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          alignment: Alignment.topCenter,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          color: ripeMango,
+                                          icon: const Icon(
+                                              CupertinoIcons.pencil_circle_fill,
+                                              size: 26),
+                                          onPressed: () => _showModal(
+                                              (int? id) {},
+                                              _allData[index]['id']),
+                                        ),
+                                        IconButton(
+                                          alignment: Alignment.topCenter,
+                                          splashColor: Colors.transparent,
+                                          highlightColor: Colors.transparent,
+                                          color: redDeep,
+                                          icon: const Icon(
+                                              CupertinoIcons.delete_solid,
+                                              size: 26),
+                                          onPressed: () {
+                                            _showPopup();
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
+                              ],
+                            ),
+                          )
+                        : Column(
+                            children: [
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Text(
+                                _formatTime(_allData[index]['timer'] ?? 0),
+                                style: TextStyle(
+                                  fontFamily: 'DMSans',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 8,
+                                  color: darkGrey,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 8.0,
+                              ),
+                              SvgPicture.asset(
+                                'assets/images/button.svg',
+                              ),
                             ],
                           ),
-                        ],
-                      ),
-                    ),
                   ),
                 ),
               );
