@@ -8,10 +8,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/models/theme.dart';
+import 'package:mobile_time_minder/pages/custom_timer.dart';
 import 'package:mobile_time_minder/services/homepage.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
+import 'package:mobile_time_minder/theme.dart';
 
 class TimerView extends StatefulWidget {
   final int timerIndex;
@@ -24,6 +27,9 @@ class TimerView extends StatefulWidget {
 
 class _TimerState extends State<TimerView> {
   late Timer _timer;
+
+  Color iconColor = blueJeans;
+  Color backgroundColor = offGrey;
 
 
   late int timeInSec;
@@ -112,31 +118,41 @@ class _TimerState extends State<TimerView> {
                   height: MediaQuery.of(context).size.height / 2,
                   controller: _controller,
                   ringColor: app_background,
-                  fillColor: _controller.isPaused ? red_timer : yellow_timer,
+                  fillColor: _controller.isPaused? merah : ripeMango,
+                  fillGradient: LinearGradient(
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
+                    colors: [_controller.isPaused? merah : ripeMango, offOrange], // Your gradient colors
+                  ),
                   strokeWidth: 20.0,
                   isReverse: true,
-                  isReverseAnimation: true,
+                  isReverseAnimation: false,
                   strokeCap: StrokeCap.round,
                   autoStart: true,
                   textStyle: TextStyle(
                     fontSize: 33.0,
-                    color: _controller.isPaused ? red_timer : tulisan,
+                    color: _controller.isPaused ? merah : cetaceanBlue,
                     fontWeight: FontWeight.bold,
                   ),
-                  onComplete: (){
-                    // _showPopupEnd();
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                        builder: (context) => const Homepage(),
-                        )
+                  onChange: (String timeStamp) {
+                    // Here, do whatever you want
+                    debugPrint('Countdown Changed $timeStamp');
+                    // int currentTime = int.tryParse(timeStamp) ?? 0;
+                    // setState(() {
+                    //   currentTimerValue = currentTime;
+                    // });
+                  },
+                  onComplete: () {
+                    _showPopupEnd();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const CustomTimer(),
+                      ),
                     );
-                  }
-                    // Tindakan yang diambil ketika timer selesai
+                  },
                 ),
-
                 SizedBox(height: 20),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -144,14 +160,16 @@ class _TimerState extends State<TimerView> {
                       GestureDetector(
                         onTap: () {
                           setState(() {
-                            _controller.resume() ;
-                            isStarted = false;
+                            _controller.resume();
+                            // Update warna saat tombol pause ditekan
+                            iconColor = blueJeans;
+                            backgroundColor = merah;
                           });
                         },
                         child: Icon(
-                          Icons.play_arrow_outlined,
-                          color: light_blue,
-                          size: 40, // Mengatur ukuran ikon menjadi 40
+                          Icons.play_arrow_rounded,
+                          color: iconColor,
+                          size: 40,
                         ),
                       ),
                     if (!isStarted)
@@ -159,21 +177,23 @@ class _TimerState extends State<TimerView> {
                         onTap: () {
                           setState(() {
                             _controller.pause();
-                            isStarted = true;
+                            // Update warna saat tombol pause ditekan
+                            iconColor = merah;
+                            backgroundColor = ripeMango;
                           });
                         },
                         child: Icon(
-                          Icons.pause,
-                          color: light_blue,
-                          size: 40, // Mengatur ukuran ikon menjadi 40
+                          Icons.pause_rounded,
+                          color: iconColor,
+                          size: 40,
                         ),
                       ),
                     SizedBox(width: 100),
                     IconButton(
                       onPressed: _showPopup,
                       icon: Icon(Icons.check),
-                      color: light_blue,
-                      iconSize: 40, // Mengatur ukuran ikon menjadi 40
+                      color: blueJeans,
+                      iconSize: 40,
                     ),
                   ],
                 ),
@@ -184,22 +204,24 @@ class _TimerState extends State<TimerView> {
       ),
     );
   }
-  void _showPopupEnd(){
+  void _showPopupEnd() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: Center(
-            child: Icon (Icons.add ,),
+            child: SvgPicture.asset("assets/images/cat3.svg"),
           ),
           content: Column(
-            mainAxisSize: MainAxisSize.min, // Menentukan ukuran minimum untuk Column
+            mainAxisSize:
+            MainAxisSize.min, // Menentukan ukuran minimum untuk Column
             children: <Widget>[
               SizedBox(height: 30),
               Center(
                 child: Text(
                   "Kembali ke Beranda ?",
-                  textAlign: TextAlign.center, // Mengatur teks menjadi di tengah
+                  textAlign:
+                  TextAlign.center, // Mengatur teks menjadi di tengah
                 ),
               ),
             ],
@@ -208,19 +230,18 @@ class _TimerState extends State<TimerView> {
             SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget> [
+              children: <Widget>[
                 ElevatedButton(
-
-                  onPressed:(){
-                    Navigator.push(
+                  onPressed: () {
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const Homepage(),
-                        )
-                    );
+                          builder: (context) => const CustomTimer(),
+                        ));
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: yellow_timer, // Gunakan warna dari variabel state
+                    backgroundColor:
+                    yellow_timer, // Gunakan warna dari variabel state
                   ),
                   child: Text("Oke"),
                 )
@@ -238,16 +259,21 @@ class _TimerState extends State<TimerView> {
       builder: (BuildContext context) {
         return AlertDialog(
           title: Center(
-            child: Icon (Icons.add ,),
+            child: SvgPicture.asset("assets/images/cat3.svg"),
           ),
           content: Column(
-            mainAxisSize: MainAxisSize.min, // Menentukan ukuran minimum untuk Column
+            mainAxisSize:
+            MainAxisSize.min, // Menentukan ukuran minimum untuk Column
             children: <Widget>[
               SizedBox(height: 30),
               Center(
                 child: Text(
                   "Apakah Anda Yakin ?",
-                  textAlign: TextAlign.center, // Mengatur teks menjadi di tengah
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                  ),
+                  // Mengatur teks menjadi di tengah
                 ),
               ),
             ],
@@ -256,36 +282,38 @@ class _TimerState extends State<TimerView> {
             SizedBox(height: 30),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget> [
+              children: <Widget>[
                 ElevatedButton(
-                  onPressed:(){
+                  onPressed: () {
                     Navigator.of(context).pop();
-                  } ,
+                  },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey, // Gunakan warna dari variabel state
+                    backgroundColor:
+                    Colors.grey, // Gunakan warna dari variabel state
                   ),
                   child: Text(
-                      "Tidak",
+                    "Tidak",
                     style: TextStyle(
-                      backgroundColor: Colors.grey ,
-                      color: Colors.white ,
+                      backgroundColor: Colors.grey,
+                      color: Colors.white,
                     ),
                   ),
                 ),
                 SizedBox(width: 30),
                 ElevatedButton(
-                  onPressed:(){
-                    Navigator.push(
+                  onPressed: () {
+                    Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                        builder: (context) => const Homepage(),
-                        )
-                    );
+                          builder: (context) => const CustomTimer(),
+                        ));
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: yellow_timer, // Gunakan warna dari variabel state
+                    backgroundColor:
+                    yellow_timer, // Gunakan warna dari variabel state
                   ),
-                  child: Text("Iya",
+                  child: Text(
+                    "Iya",
                     style: TextStyle(
                       backgroundColor: yellow_timer,
                       color: Colors.white,
