@@ -12,7 +12,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController animationController;
-  late Animation animation;
+  late Animation<double> animation;
 
   @override
   void initState() {
@@ -25,21 +25,10 @@ class _SplashScreenState extends State<SplashScreen>
       parent: animationController,
       curve: Curves.easeInOut,
     );
-    animation.addListener(() {
-      if (mounted) {
-        setState(() {});
-      }
-    });
     animationController.forward();
     Future.delayed(const Duration(seconds: 2), () {
       checkFirstSeen();
     });
-  }
-
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
   }
 
   Future<void> checkFirstSeen() async {
@@ -54,16 +43,31 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SizedBox(
-        height: size.height,
-        width: size.width,
-        child: Center(
-          child: Image.asset(
-            'assets/images/splash1.png',
-            height: animation.value * 200,
+      body: Center(
+        child: AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) {
+            return Opacity(
+              opacity: animation.value,
+              child: child,
+            );
+          },
+          child: SizedBox(
+            height: size.height,
+            width: size.width,
+            child: Image.asset(
+              'assets/images/splash1.png', 
+              height: 200, 
+            ),
           ),
         ),
       ),
