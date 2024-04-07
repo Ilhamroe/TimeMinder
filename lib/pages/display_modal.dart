@@ -127,6 +127,7 @@ class _DisplayModalState extends State<DisplayModal> {
 
   // add data
   Future<void> _addData() async {
+    if (id == null) {
       await SQLHelper.createData(
           _namaTimerController.text,
           _deskripsiController.text,
@@ -134,6 +135,9 @@ class _DisplayModalState extends State<DisplayModal> {
           _counterBreakTime,
           _counterInterval);
       _refreshData();
+    } else {
+      _refreshData();
+    }
   }
 
   // edit data
@@ -148,8 +152,20 @@ class _DisplayModalState extends State<DisplayModal> {
     _refreshData();
   }
 
+  // delete data
+  void _deleteData(int id) async {
+    await SQLHelper.deleteData(id);
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      backgroundColor: Colors.redAccent,
+      content: Text("Data deleted"),
+      duration: Duration(milliseconds: 500),
+    ));
+    _refreshData();
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Mendapatkan ukuran layar
     final Size screenSize = MediaQuery.of(context).size;
 
     return Dialog(
@@ -164,7 +180,7 @@ class _DisplayModalState extends State<DisplayModal> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
           ),
-          width: screenSize.width * 0.9,
+          width: screenSize.width * 0.9, // Menggunakan 90% dari lebar layar
           padding: EdgeInsets.fromLTRB(26, 15, 26, 21),
           child: SingleChildScrollView(
             child: Column(
@@ -243,10 +259,9 @@ class _DisplayModalState extends State<DisplayModal> {
                                   height: 30,
                                 )
                               : SvgPicture.asset(
-                                  "assets/images/option_down.svg",
+                                  "assets/images/optiondown.svg",
                                   width: 30,
                                   height: 30,
-                                  color: darkGrey,
                                 ),
                         ),
                       ],
@@ -328,7 +343,7 @@ class _DisplayModalState extends State<DisplayModal> {
                           primaryColor: ripeMango,
                           onPrimaryColor: pureWhite,
                           borderSideColor: Colors.transparent,
-                          onPressed: _submitSetting,
+                          onPressed: () => _submitSetting(),
                         ),
                       ],
                     ),

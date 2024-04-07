@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -91,10 +90,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       counterInterval = 0;
     }
 
-    // Create a Completer
-    Completer<void> completer = Completer<void>();
-
-    await showCupertinoModalPopup(
+    final newData = await showCupertinoModalPopup(
       context: context,
       builder: (_) => Stack(
         children: [
@@ -116,12 +112,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
         ],
       ),
-    ).then((newData) {
-      completer.complete();
-      onClose(newData);
-      _refreshData();
-    });
-    await completer.future;
+    );
+    onClose(newData);
+    _refreshData();
   }
 
   late String _greeting;
@@ -298,28 +291,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   color: heliotrope,
                                 ),
                               ),
-                              const Spacer(),
-                              const Text(
-                                "Refresh",
-                                style: TextStyle(
-                                  fontFamily: 'Nunito-Bold',
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w900,
-                                  color: ripeMango,
-                                ),
-                              ),
-                              IconButton(
-                                  onPressed: () async {
-                                    setState(() {
-                                      isLoading = true;
-                                    });
-                                    final data = await SQLHelper.getAllData();
-                                    setState(() {
-                                      _allData = data;
-                                      isLoading = false;
-                                    });
-                                  },
-                                  icon: Icon(Icons.refresh)),
                             ],
                           ),
                         ),

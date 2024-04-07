@@ -1,12 +1,14 @@
-import 'dart:async';
 import 'dart:ui';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -84,9 +86,8 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       counterBreakTime = 0;
       counterInterval = 0;
     }
-    Completer<void> completer = Completer<void>();
 
-    await showCupertinoModalPopup(
+    final newData = await showCupertinoModalPopup(
       context: context,
       builder: (_) => Stack(
         children: [
@@ -108,12 +109,15 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
           ),
         ],
       ),
-    ).then((newData) {
-      completer.complete();
-      onClose(newData);
-      _refreshData();
-    });
-    await completer.future;
+    );
+    onClose(newData);
+    _refreshData();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
   }
 
   @override
@@ -217,16 +221,16 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                                             10.0),
                                                   ),
                                                   content: SizedBox(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.68,
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.42,
+                                                    width: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .width *
+                                                        0.68,
+                                                    height: MediaQuery.of(
+                                                                context)
+                                                            .size
+                                                            .height *
+                                                        0.42,
                                                     child: Column(
                                                       mainAxisSize:
                                                           MainAxisSize.min,
