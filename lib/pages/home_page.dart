@@ -117,7 +117,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _refreshData();
   }
 
-  late String _greeting;
+  late String ?_greeting;
 
   @override
   void initState() {
