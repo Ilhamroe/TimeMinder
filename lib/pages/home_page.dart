@@ -16,7 +16,7 @@ import 'package:intl/intl.dart';
 typedef ModalCloseCallback = void Function(int? id);
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -28,10 +28,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late List<Map<String, dynamic>> _allData = [];
   List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
 
-  int counter = 0;
-  int counterBreakTime = 0;
-  int counterInterval = 0;
-  bool isLoading = false;
+  int _counter = 0;
+  int _counterBreakTime = 0;
+  int _counterInterval = 0;
+  bool _isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
   bool isSemuaSelected = true;
@@ -48,28 +48,59 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // refresh data
-  void _refreshData() async {
+  Future<void> _refreshData() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
-    final data = await SQLHelper.getAllData();
+    final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
-  // delete data
-  void _deleteData(int id) async {
-    await SQLHelper.deleteData(id);
-    if (mounted) {
+  Future<void> _addData() async {
+    await SQLHelper.createData(
+        _namaTimerController.text,
+        _deskripsiController.text,
+        _counter,
+        _counterBreakTime,
+        _counterInterval);
+    _refreshData();
+  }
+
+  // edit data
+  Future<void> _updateData(int id) async {
+    await SQLHelper.updateData(
+        id,
+        _namaTimerController.text,
+        _deskripsiController.text,
+        _counter,
+        _counterBreakTime,
+        _counterInterval);
+    _refreshData();
+  }
+
+  void _submitSetting(int id) async {
+    final name = _namaTimerController.text.trim();
+    final description = _deskripsiController.text.trim();
+    final counter = _counter;
+
+    if (name.isEmpty || description.isEmpty || counter == 0) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         backgroundColor: Colors.redAccent,
-        content: Text("Data deleted"),
-        duration: Duration(milliseconds: 500),
+        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
+        duration: Duration(seconds: 1),
       ));
+      return;
     }
-    _refreshData();
+    if (id == null) {
+      await _addData().then((data) => _refreshData());
+    } else {
+      await _updateData(id!);
+    }
+
+    Navigator.of(context).pop();
   }
 
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
@@ -78,16 +109,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      counter = existingData['time'] ?? 0;
-      counterBreakTime = existingData['rest'] ?? 0;
-      counterInterval = existingData['interval'] ?? 0;
+      _counter = existingData['time'] ?? 0;
+      _counterBreakTime = existingData['rest'] ?? 0;
+      _counterInterval = existingData['interval'] ?? 0;
     } else {
       // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      counter = 0;
-      counterBreakTime = 0;
-      counterInterval = 0;
+      _counter = 0;
+      _counterBreakTime = 0;
+      _counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
@@ -321,7 +352,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const DetailListTimer(),
+                                          const DetailListTimer(data: {
+                                        'title': 'Title',
+                                        'description': 'Description',
+                                        'timer': 'Timer',
+                                        'rest': 'Rest',
+                                        'interval': 'Interval'
+                                      }),
                                     ),
                                   );
                                 },
@@ -336,7 +373,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        HomeTimermuTile(isSettingPressed: isSettingPressed),
+                        HomeTimermuTile(
+                          isSettingPressed: isSettingPressed,
+                        ),
                       ],
                     ),
                   );
@@ -398,8 +437,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             updateLabelColors(index);
             switch (index) {
               case 0:
-                Navigator.popUntil(
-                    context, ModalRoute.withName(AppRoutes.home));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
                 break;
               case 1:
                 _showModal((int? id) {});
@@ -408,7 +451,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const DetailListTimer(),
+                    builder: (context) => const DetailListTimer(data: {
+                      'title': 'Title',
+                      'description': 'Description',
+                      'timer': 'Timer',
+                      'rest': 'Rest',
+                      'interval': 'Interval'
+                    }),
                   ),
                 );
                 break;

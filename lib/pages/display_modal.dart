@@ -1,12 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
+import 'package:mobile_time_minder/pages/home_page.dart';
+import 'package:mobile_time_minder/pages/list_timer.dart';
+import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/cupertino_switch.dart';
 import 'package:mobile_time_minder/widgets/text.dart';
 import 'package:mobile_time_minder/widgets/setting_time.dart';
 import 'package:mobile_time_minder/widgets/setting_break.dart';
 import 'package:mobile_time_minder/widgets/button_exe.dart';
+
+class CusTime {
+  final int? id;
+  final String title;
+  final String description;
+  final int timer;
+  final int? rest;
+  final int? interval;
+
+  CusTime({
+    this.id,
+    required this.title,
+    required this.description,
+    required this.timer,
+    this.rest,
+    this.interval,
+  });
+}
 
 class DisplayModal extends StatefulWidget {
   const DisplayModal({Key? key, this.id}) : super(key: key);
@@ -47,12 +68,11 @@ class _DisplayModalState extends State<DisplayModal> {
     }
   }
 
-  // show data
   void _refreshData() async {
     setState(() {
       _isLoading = true;
     });
-    final data = await SQLHelper.getAllData();
+    final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
       _isLoading = false;
@@ -79,20 +99,28 @@ class _DisplayModalState extends State<DisplayModal> {
     final counter = _counter;
 
     if (name.isEmpty || description.isEmpty || counter == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
-        duration: Duration(seconds: 1),
-      ));
-      return;
-    }
-    if (id == null) {
-      await _addData();
-    } else {
-      await _updateData(id!);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.redAccent,
+          content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
+          duration: Duration(seconds: 1),
+        ),
+      );
+      return; // Menghentikan eksekusi _submitSetting() jika inputan belum diisi
     }
 
-    Navigator.of(context).pop();
+    if (id == null) {
+      await _addData().then((data) => _refreshData());
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomePage(),
+        ),
+      );
+    } else {
+      await _updateData(id!).then((value) => _refreshData());
+      Navigator.pop(context);
+    }
   }
 
   void _resetSetting() {
@@ -127,17 +155,13 @@ class _DisplayModalState extends State<DisplayModal> {
 
   // add data
   Future<void> _addData() async {
-    if (id == null) {
-      await SQLHelper.createData(
-          _namaTimerController.text,
-          _deskripsiController.text,
-          _counter,
-          _counterBreakTime,
-          _counterInterval);
-      _refreshData();
-    } else {
-      _refreshData();
-    }
+    await SQLHelper.createData(
+        _namaTimerController.text,
+        _deskripsiController.text,
+        _counter,
+        _counterBreakTime,
+        _counterInterval);
+    _refreshData();
   }
 
   // edit data
@@ -343,7 +367,7 @@ class _DisplayModalState extends State<DisplayModal> {
                           primaryColor: ripeMango,
                           onPrimaryColor: pureWhite,
                           borderSideColor: Colors.transparent,
-                          onPressed: () => _submitSetting(),
+                          onPressed: _submitSetting,
                         ),
                       ],
                     ),

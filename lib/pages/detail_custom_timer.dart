@@ -164,8 +164,13 @@ class _DetailTimerState extends State<DetailTimer> {
                     ),
                     onChange: (String timeStamp) {},
                     onComplete: () {
-                      Navigator.popUntil(
-                          context, ModalRoute.withName(AppRoutes.home));
+                      _refreshData();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const HomePage(),
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),

@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
@@ -34,6 +35,19 @@ class _TimerState extends State<TimerView> {
   late int _detik;
   bool isStarted = false;
   int focusedMins = 0;
+  late List<Map<String, dynamic>> _allData = [];
+  bool _isLoading = false;
+
+  void _refreshData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final data = await SQLHelper.getAllData();
+    setState(() {
+      _allData = data;
+      _isLoading = false;
+    });
+  }
 
   @override
   void initState() {
@@ -146,10 +160,7 @@ class _TimerState extends State<TimerView> {
                   fillGradient: LinearGradient(
                     begin: Alignment.bottomLeft,
                     end: Alignment.topRight,
-                    colors: [
-                      _controller.isPaused ? red : ripeMango,
-                      offOrange
-                    ],
+                    colors: [_controller.isPaused ? red : ripeMango, offOrange],
                   ),
                   strokeWidth: 20.0,
                   isReverse: true,
@@ -163,8 +174,13 @@ class _TimerState extends State<TimerView> {
                   ),
                   onChange: (String timeStamp) {},
                   onComplete: () {
-                    Navigator.popUntil(
-                        context, ModalRoute.withName(AppRoutes.home));
+                    _refreshData();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                    );
                   },
                 ),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.02),

@@ -108,8 +108,13 @@ class _ModalConfirmState extends State<ModalConfirm> {
                         widget.onConfirm!();
                         Navigator.pop(context);
                       } else {
-                        Navigator.popUntil(
-                            context, ModalRoute.withName(AppRoutes.home));
+                        _refreshData();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ),
+                        );
                       }
                     },
                     child: const Text(
