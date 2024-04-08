@@ -27,8 +27,12 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
     _textController.addListener(_onTextChanged);
   }
 
+   int getCounter() {
+    return _counterMainTime;
+  }
+
   void _onTextChanged() {
-    final newText = _textController.text;
+  final newText = _textController.text;
     if (newText.isNotEmpty) {
       final newValue = int.tryParse(newText);
       if (newValue != null) {
@@ -38,6 +42,15 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
         });
       }
     }
+  }
+
+  void updateCounter(int newCounter) {
+    setState(() {
+      _counterMainTime = newCounter;
+      widget.onChanged?.call(newCounter);
+      _textController.text =
+          _counterMainTime.toString();
+    });
   }
 
   void _increment() {

@@ -19,7 +19,7 @@ class Notif{
       const AndroidNotificationDetails(
         'you_can_name_it_whatever', 
         'channel_name',      
-        playSound: true,
+        playSound: false,
         // sound: RawResourceAndroidNotificationSound('start'),
         importance: Importance.max,
         priority: Priority.high,

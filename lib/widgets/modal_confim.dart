@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/models/notif.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -122,11 +121,9 @@ class _ModalConfirmState extends State<ModalConfirm> {
                         widget.onConfirm!();
                         Navigator.pop(context);
                       } else {
-                        player.stop();
-                        _showNotification("Timer dihentikan");
-                        player.stop();                    
+                        _showNotification("Timer dihentikan");               
                         _refreshData();
-                        Navigator.pushReplacement(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => HomePage(),
