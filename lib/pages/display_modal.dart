@@ -73,19 +73,53 @@ class _DisplayModalState extends State<DisplayModal> {
     });
   }
 
+  late OverlayEntry _overlayEntry;
+  void _showOverlay(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double horizontalPadding = screenWidth * 0.05;
+    final double verticalPadding = 10.0;
+
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Positioned(
+        top: kToolbarHeight,
+        left: horizontalPadding,
+        right: horizontalPadding,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: screenWidth - (horizontalPadding * 2),
+            padding: EdgeInsets.symmetric(
+                horizontal: horizontalPadding, vertical: verticalPadding),
+            decoration: BoxDecoration(
+              color: red,
+              borderRadius: BorderRadius.circular(10.0),
+            ),
+            child: Text(
+              'Nama Timer, Deskripsi, dan Waktu harus diisi.',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Nunito',
+                color: pureWhite,
+                fontSize: 16.0,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+    Overlay.of(context)!.insert(_overlayEntry);
+  }
+
   void _submitSetting() async {
     final name = _namaTimerController.text.trim();
     final description = _deskripsiController.text.trim();
     final counter = _counter;
 
     if (name.isEmpty || description.isEmpty || counter == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          backgroundColor: Colors.redAccent,
-          content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
-          duration: Duration(seconds: 1),
-        ),
-      );
+      _showOverlay(context);
+      Future.delayed(Duration(seconds: 1), () {
+        _overlayEntry.remove();
+      });
       return;
     }
 

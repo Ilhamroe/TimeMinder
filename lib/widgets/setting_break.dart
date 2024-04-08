@@ -20,11 +20,23 @@ class SettingBreakWidget extends StatefulWidget {
 class SettingBreakWidgetState extends State<SettingBreakWidget> {
   int _counterBreakTime = 0;
   int _counterInterval = 0;
+  late TextEditingController _textBreakController;
+  late TextEditingController _textIntervalController;
+
+  @override
+  void initState() {
+    super.initState();
+    _textBreakController =
+        TextEditingController(text: _counterBreakTime.toString());
+    _textIntervalController =
+        TextEditingController(text: _counterInterval.toString());
+  }
 
   void _increment1() {
     setState(() {
       if (widget.statusSwitch) _counterBreakTime++;
       widget.onBreakTimeChanged?.call(_counterBreakTime);
+      _textBreakController.text = _counterBreakTime.toString();
     });
   }
 
@@ -32,6 +44,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
     setState(() {
       if (widget.statusSwitch && _counterBreakTime > 0) _counterBreakTime--;
       widget.onBreakTimeChanged?.call(_counterBreakTime);
+      _textBreakController.text = _counterBreakTime.toString();
     });
   }
 
@@ -39,6 +52,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
     setState(() {
       if (widget.statusSwitch) _counterInterval++;
       widget.onIntervalChanged?.call(_counterInterval);
+      _textIntervalController.text = _counterInterval.toString();
     });
   }
 
@@ -46,6 +60,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
     setState(() {
       if (widget.statusSwitch && _counterInterval > 0) _counterInterval--;
       widget.onIntervalChanged?.call(_counterInterval);
+      _textIntervalController.text = _counterInterval.toString();
     });
   }
 
@@ -53,21 +68,19 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
     setState(() {
       _counterBreakTime = 0;
       _counterInterval = 0;
+      _textBreakController.text = _counterBreakTime.toString();
+      _textIntervalController.text = _counterInterval.toString();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final containerWidth = screenWidth * 0.45;
-
     return Row(
       children: [
         Expanded(
           child: Container(
-            width: containerWidth,
-            padding: const EdgeInsets.all(2),
-            margin: const EdgeInsets.only(right: 4),
+            padding: EdgeInsets.all(2),
+            margin: EdgeInsets.only(right: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: widget.statusSwitch ? offYellow : offGrey,
@@ -79,49 +92,63 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  onPressed: widget.statusSwitch ? _decrement1 : null,
-                  icon: const Icon(Icons.remove),
-                  iconSize: 16,
-                  color: widget.statusSwitch ? ripeMango : darkGrey,
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      right: BorderSide(
+                        color: offYellow,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: IconButton(
+                    onPressed: widget.statusSwitch ? _decrement1 : null,
+                    icon: Icon(Icons.remove),
+                    iconSize: 16,
+                    color: widget.statusSwitch ? ripeMango : darkGrey,
+                  ),
                 ),
-                Flexible(
+                Expanded(
+                  flex: 3,
                   child: TextFormField(
-                    initialValue: '$_counterBreakTime',
+                    controller: _textBreakController,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 12,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
                       color: darkGrey,
                     ),
-                    onChanged: (value) {
-                      if (widget.statusSwitch) {
-                        final newValue = int.tryParse(value) ?? 0;
-                        widget.onIntervalChanged?.call(newValue);
-                      }
-                    },
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: widget.statusSwitch ? _increment1 : null,
-                  icon: const Icon(Icons.add),
-                  iconSize: 16,
-                  color: widget.statusSwitch ? ripeMango : darkGrey,
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: IconButton(
+                    onPressed: widget.statusSwitch ? _increment1 : null,
+                    icon: Icon(Icons.add),
+                    iconSize: 16,
+                    color: widget.statusSwitch ? ripeMango : darkGrey,
+                  ),
                 ),
               ],
             ),
           ),
         ),
-        SizedBox(width: screenWidth * 0.02),
+        SizedBox(width: 20),
         Expanded(
           child: Container(
-            width: containerWidth,
-            padding: const EdgeInsets.all(2),
-            margin: const EdgeInsets.only(right: 4),
+            padding: EdgeInsets.all(2),
+            margin: EdgeInsets.only(right: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: widget.statusSwitch ? offYellow : offGrey,
@@ -133,38 +160,53 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  onPressed: widget.statusSwitch ? _decrement2 : null,
-                  icon: const Icon(Icons.remove),
-                  iconSize: 16,
-                  color: widget.statusSwitch ? ripeMango : darkGrey,
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      right: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: IconButton(
+                    onPressed: widget.statusSwitch ? _decrement2 : null,
+                    icon: Icon(Icons.remove),
+                    iconSize: 16,
+                    color: widget.statusSwitch ? ripeMango : darkGrey,
+                  ),
                 ),
-                Flexible(
+                Expanded(
+                  flex: 3,
                   child: TextFormField(
-                    initialValue: '$_counterInterval',
+                    controller: _textIntervalController,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 12,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
                       color: darkGrey,
                     ),
-                    onChanged: (value) {
-                      if (widget.statusSwitch) {
-                        final newValue = int.tryParse(value) ?? 0;
-                        widget.onIntervalChanged?.call(newValue);
-                      }
-                    },
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                     ),
                   ),
                 ),
-                IconButton(
-                  onPressed: widget.statusSwitch ? _increment2 : null,
-                  icon: const Icon(Icons.add),
-                  iconSize: 16,
-                  color: widget.statusSwitch ? ripeMango : darkGrey,
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border(
+                      left: BorderSide(
+                        color: Colors.white,
+                        width: 1,
+                      ),
+                    ),
+                  ),
+                  child: IconButton(
+                    onPressed: widget.statusSwitch ? _increment2 : null,
+                    icon: Icon(Icons.add),
+                    iconSize: 16,
+                    color: widget.statusSwitch ? ripeMango : darkGrey,
+                  ),
                 ),
               ],
             ),

@@ -1,14 +1,9 @@
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:timer_count_down/timer_controller.dart';
-import 'package:timer_count_down/timer_count_down.dart';
 import 'package:mobile_time_minder/models/notif.dart';
-import 'package:mobile_time_minder/models/dnd.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_dnd/flutter_dnd.dart';
-import 'package:mobile_time_minder/pages/tes.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
@@ -27,9 +22,6 @@ class DetailTimer extends StatefulWidget {
 }
 
 class _DetailTimerState extends State<DetailTimer> {
-  int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
   int currentTimerValue = 0;
   bool _isLoading = false;
 
@@ -37,12 +29,9 @@ class _DetailTimerState extends State<DetailTimer> {
   bool statusSwitch = false;
   bool hideContainer = true;
   late List<Map<String, dynamic>> _allData = [];
-  late CountDownController _controller; // Controller untuk Countdown widget
+  late CountDownController _controller;
   final player = AudioPlayer();
   bool _isSoundPlayed = false;
-  // String _filtername= '';
-  // bool? isNotificationAccessGranted = false;
-  // bool? isDNDActive= false;
 
   int get inTimeMinutes => widget.data['timer'];
   int get inRestMinutes => widget.data['rest'] ?? 0;
@@ -74,19 +63,10 @@ class _DetailTimerState extends State<DetailTimer> {
         _isSoundPlayed = false;
       });
     });
-    // FlutterDnd.initialize();
-    // WidgetsBinding.instance!.addObserver(this);
-    // updateUI();
+    _startTime = DateTime.now();
+    _endTime = _startTime.add(Duration(minutes: inTimeMinutes));
+    _scheduleBreakNotification();
   }
-
-  // void updateUI() async{
-  //   int? filter= await FlutterDnd.getCurrentInterruptionFilter();
-  //   if(filter != null){
-  //     String filtername= FlutterDnd.getFilterName(filter);
-  //     bool? isNotificationAccessGranted=
-  //       await FlutterDnd.isNotificationPolicyAccessGranted;
-  //   }
-  // }
 
   void _refreshData() async {
     setState(() {
@@ -97,6 +77,28 @@ class _DetailTimerState extends State<DetailTimer> {
       _allData = data;
       _isLoading = false;
     });
+  }
+
+  late DateTime _startTime;
+  late DateTime _endTime;
+
+  void _scheduleBreakNotification() {
+    int totalDuration = inTimeMinutes + (inRestMinutes * interval);
+    int restDuration = inRestMinutes * interval;
+
+    for (int i = 1; i <= interval; i++) {
+      int breakStartMinute =
+          ((totalDuration / 2) - ((i * restDuration) / 2)).floor();
+      int breakEndMinute = breakStartMinute + inRestMinutes;
+
+      DateTime breakStart =
+          _endTime.subtract(Duration(minutes: breakStartMinute.round()));
+      DateTime breakEnd =
+          _endTime.subtract(Duration(minutes: breakEndMinute.round()));
+
+      _showNotification('Istirahat dimulai');
+      _showNotification('Istirahat selesai');
+    }
   }
 
   void _showNotification(String message) {
@@ -203,6 +205,7 @@ class _DetailTimerState extends State<DetailTimer> {
                     },
                     onStart: () {
                       player.play(AssetSource('sounds/end.wav'));
+                      _scheduleBreakNotification();
                       _showNotification("Timer dimulai");
                       _isSoundPlayed = true;
                     },
@@ -304,27 +307,6 @@ class _DetailTimerState extends State<DetailTimer> {
                             color: blueJeans,
                           ),
                         ],
-                      ),
-                      if (!_isTimerRunning)
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _controller.pause();
-                              _isTimerRunning = true;
-                            });
-                          },
-                          child: Icon(
-                            Icons.pause,
-                            color: blueJeans,
-                            size: 40,
-                          ),
-                        ),
-                      SizedBox(width: 100),
-                      IconButton(
-                        onPressed: _showPopup,
-                        icon: Icon(Icons.check),
-                        color: blueJeans,
-                        iconSize: 40,
                       ),
                     ],
                   ),

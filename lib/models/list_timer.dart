@@ -15,14 +15,14 @@ class Timer {
 var Timerlist = [
   Timer(
     image: 'assets/images/cat1.svg',
-    title: 'Belajar',
-    description: 'Fokus belajar dengan time block',
+    title: 'Short Timer',
+    description: 'Produktivitas waktu singkat',
     time: '00:15:00',
   ),
   Timer(
     image: 'assets/images/cat1.svg',
-    title: 'Pomodoro',
-    description: 'Belajar dengan metode pomodoro',
+    title: 'Long Timer',
+    description: 'Produktivitas waktu panjang',
     time: '00:40:00',
   ),
 ];
