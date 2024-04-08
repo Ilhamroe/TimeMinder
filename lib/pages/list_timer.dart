@@ -313,6 +313,7 @@ class _DetailListTimerState extends State<DetailListTimer>
           children: [
             ListView(
               padding: const EdgeInsets.symmetric(horizontal: 15),
+              shrinkWrap: true,
               children: [
                 HomeRekomendasiTile(isSettingPressed: isSettingPressed),
                 HomeTimermuTile(isSettingPressed: isSettingPressed),

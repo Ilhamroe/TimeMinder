@@ -23,6 +23,15 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
   late TextEditingController _textBreakController;
   late TextEditingController _textIntervalController;
 
+  @override
+  void initState() {
+    super.initState();
+    _textBreakController =
+        TextEditingController(text: _counterBreakTime.toString());
+    _textIntervalController =
+        TextEditingController(text: _counterInterval.toString());
+  }
+
   void _increment1() {
     setState(() {
       if (widget.statusSwitch) _counterBreakTime++;
@@ -100,13 +109,19 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Expanded(
-                  child: Text(
-                    '$_counterBreakTime',
+                  flex: 3,
+                  child: TextFormField(
+                    controller: _textBreakController,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
                       color: darkGrey,
                     ),
-                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
                   ),
                 ),
                 Container(
@@ -162,13 +177,19 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Expanded(
-                  child: Text(
-                    '$_counterInterval',
+                  flex: 3,
+                  child: TextFormField(
+                    controller: _textIntervalController,
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
                       color: darkGrey,
                     ),
-                    textAlign: TextAlign.center,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
                   ),
                 ),
                 Container(
