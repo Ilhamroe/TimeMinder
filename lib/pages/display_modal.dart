@@ -2,32 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/pages/list_timer.dart';
-import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/cupertino_switch.dart';
 import 'package:mobile_time_minder/widgets/text.dart';
 import 'package:mobile_time_minder/widgets/setting_time.dart';
 import 'package:mobile_time_minder/widgets/setting_break.dart';
 import 'package:mobile_time_minder/widgets/button_exe.dart';
-
-class CusTime {
-  final int? id;
-  final String title;
-  final String description;
-  final int timer;
-  final int? rest;
-  final int? interval;
-
-  CusTime({
-    this.id,
-    required this.title,
-    required this.description,
-    required this.timer,
-    this.rest,
-    this.interval,
-  });
-}
 
 class DisplayModal extends StatefulWidget {
   const DisplayModal({Key? key, this.id}) : super(key: key);
@@ -106,12 +86,12 @@ class _DisplayModalState extends State<DisplayModal> {
           duration: Duration(seconds: 1),
         ),
       );
-      return; // Menghentikan eksekusi _submitSetting() jika inputan belum diisi
+      return;
     }
 
     if (id == null) {
       await _addData().then((data) => _refreshData());
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => HomePage(),
@@ -121,6 +101,10 @@ class _DisplayModalState extends State<DisplayModal> {
       await _updateData(id!).then((value) => _refreshData());
       Navigator.pop(context);
     }
+
+    setState(() {
+      _counter = _settingTimeWidgetKey.currentState?.getCounter() ?? 0;
+    });
   }
 
   void _resetSetting() {
@@ -189,7 +173,6 @@ class _DisplayModalState extends State<DisplayModal> {
 
   @override
   Widget build(BuildContext context) {
-    // Mendapatkan ukuran layar
     final Size screenSize = MediaQuery.of(context).size;
 
     return Dialog(
@@ -204,7 +187,7 @@ class _DisplayModalState extends State<DisplayModal> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
           ),
-          width: screenSize.width * 0.9, // Menggunakan 90% dari lebar layar
+          width: screenSize.width * 0.9,
           padding: EdgeInsets.fromLTRB(26, 15, 26, 21),
           child: SingleChildScrollView(
             child: Column(
@@ -261,6 +244,8 @@ class _DisplayModalState extends State<DisplayModal> {
                         setState(() {
                           _counter = value;
                         });
+                        _settingTimeWidgetKey.currentState
+                            ?.updateCounter(_counter);
                       },
                     ),
                     SizedBox(height: 10),
@@ -283,9 +268,10 @@ class _DisplayModalState extends State<DisplayModal> {
                                   height: 30,
                                 )
                               : SvgPicture.asset(
-                                  "assets/images/optiondown.svg",
+                                  "assets/images/option.svg",
                                   width: 30,
                                   height: 30,
+                                  color: darkGrey,
                                 ),
                         ),
                       ],

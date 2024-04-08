@@ -1,16 +1,9 @@
-import 'dart:ffi';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
-import 'package:mobile_time_minder/pages/custom_timer.dart';
-import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:flutter/animation.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 class DetailTimer extends StatefulWidget {
@@ -78,196 +71,297 @@ class _DetailTimerState extends State<DetailTimer> {
   Widget build(BuildContext context) {
     final Map<String, dynamic> data = widget.data;
 
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            _showPopup();
-          },
-          icon: SvgPicture.asset(
-            "assets/images/button_back.svg",
-            width: 30,
-            height: 30,
-            color: cetaceanBlue,
+    return WillPopScope(
+      onWillPop: () => _onBackButtonPressed(context),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              _showPopup();
+            },
+            icon: SvgPicture.asset(
+              "assets/images/button_back.svg",
+              width: 30,
+              height: 30,
+              color: cetaceanBlue,
+            ),
           ),
-        ),
-        title: Column(
-          children: [
-            const SizedBox(height: 20),
-            Text(
-              data['title'],
-              style: const TextStyle(
-                fontFamily: 'Nunito-Bold',
-                fontWeight: FontWeight.w600,
-                color: cetaceanBlue,
+          title: Column(
+            children: [
+              const SizedBox(height: 20),
+              Text(
+                data['title'],
+                style: const TextStyle(
+                  fontFamily: 'Nunito-Bold',
+                  fontWeight: FontWeight.w600,
+                  color: cetaceanBlue,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 10),
-            Text(
-              data['description'],
-              style: const TextStyle(
-                fontFamily: 'Nunito',
-                fontSize: 14,
-                color: Colors.black,
+              const SizedBox(height: 10),
+              Text(
+                data['description'],
+                style: const TextStyle(
+                  fontFamily: 'Nunito',
+                  fontSize: 14,
+                  color: Colors.black,
+                ),
               ),
-            ),
-            SizedBox(height: 10),
-          ],
-        ),
-        centerTitle: true,
-        backgroundColor: pureWhite,
-        toolbarHeight: 80,
-      ),
-      body: SafeArea(
-        child: DecoratedBox(
-          decoration: const BoxDecoration(
-            color: pureWhite,
+              SizedBox(height: 10),
+            ],
           ),
-          child: Container(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.1,
-              vertical: MediaQuery.of(context).size.height * 0.1,
+          centerTitle: true,
+          backgroundColor: pureWhite,
+          toolbarHeight: 80,
+        ),
+        body: SafeArea(
+          child: DecoratedBox(
+            decoration: const BoxDecoration(
+              color: pureWhite,
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  CircularCountDownTimer(
-                    duration: inTimeBreak,
-                    initialDuration: 0,
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    controller: _controller,
-                    ringColor: ring,
-                    fillColor: _controller.isPaused ? red : ripeMango,
-                    fillGradient: LinearGradient(
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.topRight,
-                      colors: [
-                        _controller.isPaused ? red : ripeMango,
-                        offOrange
-                      ],
-                    ),
-                    strokeWidth: 20.0,
-                    isReverse: true,
-                    isReverseAnimation: false,
-                    strokeCap: StrokeCap.round,
-                    autoStart: true,
-                    textStyle: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.1,
-                      color: _controller.isPaused ? red : cetaceanBlue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    onChange: (String timeStamp) {},
-                    onComplete: () {
-                      _refreshData();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
-                      );
-                    },
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      if (_isTimerRunning)
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.15,
-                              height: MediaQuery.of(context).size.width * 0.15,
-                              decoration: BoxDecoration(
-                                color: offBlue,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _controller.resume();
-                                  _isTimerRunning = false;
-                                });
-                              },
-                              child: SvgPicture.asset(
-                                "assets/images/play.svg",
-                                width: MediaQuery.of(context).size.width * 0.07,
-                                height:
-                                    MediaQuery.of(context).size.width * 0.07,
-                                color: blueJeans,
-                              ),
-                            ),
-                          ],
-                        ),
-                      if (!_isTimerRunning)
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.15,
-                              height: MediaQuery.of(context).size.width * 0.15,
-                              decoration: BoxDecoration(
-                                color: offBlue,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _controller.pause();
-                                  _isTimerRunning = true;
-                                });
-                              },
-                              child: SvgPicture.asset(
-                                "assets/images/pause.svg",
-                                width: MediaQuery.of(context).size.width * 0.07,
-                                height:
-                                    MediaQuery.of(context).size.width * 0.07,
-                                color: blueJeans,
-                              ),
-                            ),
-                          ],
-                        ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.2),
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.15,
-                            height: MediaQuery.of(context).size.width * 0.15,
-                            decoration: BoxDecoration(
-                              color: offBlue,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: _showPopup,
-                            icon: SvgPicture.asset(
-                              "assets/images/check.svg",
-                              width: MediaQuery.of(context).size.width * 0.07,
-                              height: MediaQuery.of(context).size.width * 0.07,
-                              color: blueJeans,
-                            ),
-                            color: blueJeans,
-                          ),
+            child: Container(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.height,
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * 0.1,
+                vertical: MediaQuery.of(context).size.height * 0.1,
+              ),
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    CircularCountDownTimer(
+                      duration: inTimeBreak,
+                      initialDuration: 0,
+                      width: MediaQuery.of(context).size.width * 0.5,
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      controller: _controller,
+                      ringColor: ring,
+                      fillColor: _controller.isPaused ? red : ripeMango,
+                      fillGradient: LinearGradient(
+                        begin: Alignment.bottomLeft,
+                        end: Alignment.topRight,
+                        colors: [
+                          _controller.isPaused ? red : ripeMango,
+                          offOrange
                         ],
                       ),
-                    ],
-                  ),
-                ],
+                      strokeWidth: 20.0,
+                      isReverse: true,
+                      isReverseAnimation: false,
+                      strokeCap: StrokeCap.round,
+                      autoStart: true,
+                      textStyle: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width * 0.1,
+                        color: _controller.isPaused ? red : cetaceanBlue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      onChange: (String timeStamp) {},
+                      onComplete: () {
+                        _refreshData();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const HomePage(),
+                          ),
+                        );
+                      },
+                    ),
+                    SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        if (_isTimerRunning)
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.15,
+                                decoration: BoxDecoration(
+                                  color: offBlue,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _controller.resume();
+                                    _isTimerRunning = false;
+                                  });
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/images/play.svg",
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.07,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.07,
+                                  color: blueJeans,
+                                ),
+                              ),
+                            ],
+                          ),
+                        if (!_isTimerRunning)
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.15,
+                                decoration: BoxDecoration(
+                                  color: offBlue,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _controller.pause();
+                                    _isTimerRunning = true;
+                                  });
+                                },
+                                child: SvgPicture.asset(
+                                  "assets/images/pause.svg",
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.07,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.07,
+                                  color: blueJeans,
+                                ),
+                              ),
+                            ],
+                          ),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.2),
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              height: MediaQuery.of(context).size.width * 0.15,
+                              decoration: BoxDecoration(
+                                color: offBlue,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: _showPopup,
+                              icon: SvgPicture.asset(
+                                "assets/images/check.svg",
+                                width: MediaQuery.of(context).size.width * 0.07,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.07,
+                                color: blueJeans,
+                              ),
+                              color: blueJeans,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
     );
+  }
+
+  Future<bool> _onBackButtonPressed(BuildContext context) async {
+    bool? exitApp = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0),
+          ),
+          content: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.68,
+            height: MediaQuery.of(context).size.height * 0.42,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  child: Image.asset(
+                    'assets/images/confirm_popup.png',
+                    fit: BoxFit.contain,
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    height: MediaQuery.of(context).size.width * 0.2,
+                  ),
+                ),
+                const Text(
+                  "Kembali ke Beranda,",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Nunito',
+                    fontSize: 15,
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                const Text(
+                  "Apakah Anda yakin?",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Nunito',
+                    fontSize: 21,
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: halfGrey,
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                        child: const Text(
+                          "Tidak",
+                          style: TextStyle(color: offGrey),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 30),
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.0),
+                        color: ripeMango,
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Ya",
+                          style: TextStyle(color: offGrey),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    return exitApp ?? false;
   }
 
   void _showPopup() {

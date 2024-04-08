@@ -109,7 +109,7 @@ class _ModalConfirmState extends State<ModalConfirm> {
                         Navigator.pop(context);
                       } else {
                         _refreshData();
-                        Navigator.pushReplacement(
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => HomePage(),

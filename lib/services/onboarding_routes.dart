@@ -32,14 +32,9 @@ class AppRoutes {
 
       case AppRoutes.listTimer:
         return MaterialPageRoute(
-            settings: settings,
-            builder: (_) => DetailListTimer(data: {
-                  'title': 'Title',
-                  'description': 'Description',
-                  'timer': 'Timer',
-                  'break': 'Break',
-                  'interval': 'Interval'
-                }));
+          settings: settings,
+          builder: (_) => const DetailListTimer(),
+        );
 
       default:
         return MaterialPageRoute(
