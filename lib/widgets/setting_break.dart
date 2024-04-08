@@ -59,9 +59,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-
-    // Menentukan lebar container berdasarkan ukuran layar
-    final containerWidth = screenWidth * 0.45; // Misalnya, 45% dari lebar layar
+    final containerWidth = screenWidth * 0.45;
 
     return Row(
       children: [
@@ -81,41 +79,44 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  child: IconButton(
-                    onPressed: widget.statusSwitch ? _decrement1 : null,
-                    icon: const Icon(Icons.remove),
-                    iconSize: 16,
-                    color: widget.statusSwitch
-                        ? ripeMango
-                        : const Color(0xFF838589),
-                  ),
+                IconButton(
+                  onPressed: widget.statusSwitch ? _decrement1 : null,
+                  icon: const Icon(Icons.remove),
+                  iconSize: 16,
+                  color: widget.statusSwitch ? ripeMango : darkGrey,
                 ),
-                Expanded(
-                  child: Text(
-                    '$_counterBreakTime',
+                Flexible(
+                  child: TextFormField(
+                    initialValue: '$_counterBreakTime',
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF838589),
+                      color: darkGrey,
                     ),
-                    textAlign: TextAlign.center,
+                    onChanged: (value) {
+                      if (widget.statusSwitch) {
+                        final newValue = int.tryParse(value) ?? 0;
+                        widget.onIntervalChanged?.call(newValue);
+                      }
+                    },
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
                   ),
                 ),
-                Container(
-                  child: IconButton(
-                    onPressed: widget.statusSwitch ? _increment1 : null,
-                    icon: const Icon(Icons.add),
-                    iconSize: 16,
-                    color: widget.statusSwitch
-                        ? ripeMango
-                        : const Color(0xFF838589),
-                  ),
+                IconButton(
+                  onPressed: widget.statusSwitch ? _increment1 : null,
+                  icon: const Icon(Icons.add),
+                  iconSize: 16,
+                  color: widget.statusSwitch ? ripeMango : darkGrey,
                 ),
               ],
             ),
           ),
         ),
-        SizedBox(width: screenWidth * 0.02), // Jarak antara dua container
+        SizedBox(width: screenWidth * 0.02),
         Expanded(
           child: Container(
             width: containerWidth,
@@ -132,35 +133,38 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  child: IconButton(
-                    onPressed: widget.statusSwitch ? _decrement2 : null,
-                    icon: const Icon(Icons.remove),
-                    iconSize: 16,
-                    color: widget.statusSwitch
-                        ? ripeMango
-                        : const Color(0xFF838589),
-                  ),
+                IconButton(
+                  onPressed: widget.statusSwitch ? _decrement2 : null,
+                  icon: const Icon(Icons.remove),
+                  iconSize: 16,
+                  color: widget.statusSwitch ? ripeMango : darkGrey,
                 ),
-                Expanded(
-                  child: Text(
-                    '$_counterInterval',
+                Flexible(
+                  child: TextFormField(
+                    initialValue: '$_counterInterval',
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
                     style: const TextStyle(
                       fontSize: 12,
-                      color: Color(0xFF838589),
+                      color: darkGrey,
                     ),
-                    textAlign: TextAlign.center,
+                    onChanged: (value) {
+                      if (widget.statusSwitch) {
+                        final newValue = int.tryParse(value) ?? 0;
+                        widget.onIntervalChanged?.call(newValue);
+                      }
+                    },
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      contentPadding: EdgeInsets.zero,
+                    ),
                   ),
                 ),
-                Container(
-                  child: IconButton(
-                    onPressed: widget.statusSwitch ? _increment2 : null,
-                    icon: const Icon(Icons.add),
-                    iconSize: 16,
-                    color: widget.statusSwitch
-                        ? ripeMango
-                        : const Color(0xFF838589),
-                  ),
+                IconButton(
+                  onPressed: widget.statusSwitch ? _increment2 : null,
+                  icon: const Icon(Icons.add),
+                  iconSize: 16,
+                  color: widget.statusSwitch ? ripeMango : darkGrey,
                 ),
               ],
             ),

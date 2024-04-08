@@ -8,14 +8,14 @@ import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/setting_time.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
 class HomeTimermuTile extends StatefulWidget {
   final bool isSettingPressed;
 
-  const HomeTimermuTile(
-      {Key? key, required this.isSettingPressed})
+  const HomeTimermuTile({Key? key, required this.isSettingPressed})
       : super(key: key);
 
   @override
@@ -23,6 +23,8 @@ class HomeTimermuTile extends StatefulWidget {
 }
 
 class _HomeTimermuTileState extends State<HomeTimermuTile> {
+  final GlobalKey<SettingTimeWidgetState> _settingTimeWidgetKey =
+      GlobalKey<SettingTimeWidgetState>();
   final List<Color> _customColors = [
     blueJeans,
     ripeMango,
@@ -117,16 +119,22 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      _counter = existingData['time'] ?? 0;
+      setState(() {
+        _counter = existingData['time'] ?? 0;
+      });
       _counterBreakTime = existingData['rest'] ?? 0;
       _counterInterval = existingData['interval'] ?? 0;
     } else {
       // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      _counter = 0;
+      setState(() {
+        _counter = 0;
+      });
       _counterBreakTime = 0;
       _counterInterval = 0;
+      // Perbarui nilai initialCounter di SettingTimeWidget
+      _settingTimeWidgetKey.currentState?.updateCounter(_counter);
     }
 
     final newData = await showCupertinoModalPopup(
@@ -408,7 +416,9 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                 height: 15,
                               ),
                               Text(
-                                _formatTime(_allData[index]['timer'] ?? 0),
+                                _formatTime(_allData[index]['timer'] +
+                                    (_allData[index]['rest'] *
+                                        _allData[index]['interval'])),
                                 style: const TextStyle(
                                   fontFamily: 'DMSans',
                                   fontWeight: FontWeight.w600,

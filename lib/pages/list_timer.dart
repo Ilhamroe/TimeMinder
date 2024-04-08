@@ -17,9 +17,7 @@ final logger = Logger();
 typedef ModalCloseCallback = void Function(int? id);
 
 class DetailListTimer extends StatefulWidget {
-  final Map<String, dynamic> data;
-
-  const DetailListTimer({Key? key, required this.data}) : super(key: key);
+  const DetailListTimer({Key? key});
 
   @override
   State<DetailListTimer> createState() => _DetailListTimerState();
@@ -30,7 +28,7 @@ class _DetailListTimerState extends State<DetailListTimer>
   int _page = 2;
   final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
   late List<Map<String, dynamic>> _allData = [];
-  List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
+  List<Color> labelColors = [cetaceanBlue, cetaceanBlue, offOrange];
 
   late TabController tabController;
   int _counter = 0;
@@ -49,7 +47,7 @@ class _DetailListTimerState extends State<DetailListTimer>
     for (int i = 0; i < labelColors.length; i++) {
       labelColors[i] = cetaceanBlue;
     }
-    labelColors[selectedIndex] = offOrange;
+    labelColors[selectedIndex] = cetaceanBlue;
   }
 
   // refresh data
@@ -57,11 +55,18 @@ class _DetailListTimerState extends State<DetailListTimer>
     setState(() {
       isLoading = true;
     });
-    final data = await SQLHelper.getAllData();
-    setState(() {
-      _allData = data;
-      isLoading = false;
-    });
+    try{
+      final data= await SQLHelper.getAllData();
+      setState(() {
+        _allData= data;
+        isLoading= false;
+      });
+    }catch(e){
+      logger.e("Terjadi error saat refresh data: $e");
+      setState(() {
+        isLoading= false;
+      });
+    }
   }
 
   // delete data
@@ -174,94 +179,13 @@ class _DetailListTimerState extends State<DetailListTimer>
   @override
   void dispose() {
     tabController.dispose();
-    _refreshData();
+    // _refreshData();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        index: _page,
-        height: 50.0,
-        items: [
-          CurvedNavigationBarItem(
-            child: SvgPicture.asset(
-              "assets/images/solar.svg",
-              width: 20,
-              height: 20,
-            ),
-            label: "BERANDA",
-            labelStyle: TextStyle(
-              color: labelColors[0],
-              fontFamily: 'Nunito',
-            ),
-          ),
-          CurvedNavigationBarItem(
-            child: const Icon(
-              Icons.add,
-              size: 20,
-            ),
-            label: "TAMBAH",
-            labelStyle: TextStyle(
-              color: labelColors[1],
-              fontFamily: 'Nunito',
-            ),
-          ),
-          CurvedNavigationBarItem(
-            child: const Icon(
-              Icons.hourglass_empty_rounded,
-              size: 20,
-            ),
-            label: "TIMER",
-            labelStyle: TextStyle(
-              color: labelColors[2],
-              fontFamily: 'Nunito',
-            ),
-          ),
-        ],
-        backgroundColor: Colors.white,
-        color: offOrange,
-        animationCurve: Curves.bounceInOut,
-        animationDuration: const Duration(milliseconds: 750),
-        buttonBackgroundColor: const Color(0xFFFFBF1C),
-        onTap: (index) {
-          setState(() {
-            _page = index;
-            updateLabelColors(index);
-            switch (index) {
-              case 0:
-                _refreshData();
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => HomePage(),
-                  ),
-                );
-                break;
-              case 1:
-                _showModal((int? id) {});
-                break;
-              case 2:
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const DetailListTimer(data: {
-                      'title': 'Title',
-                      'description': 'Description',
-                      'timer': 'Timer',
-                      'rest': 'Rest',
-                      'interval': 'Interval'
-                    }),
-                  ),
-                );
-                break;
-            }
-          });
-        },
-        letIndexChange: (index) => true,
-      ),
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
@@ -392,6 +316,77 @@ class _DetailListTimerState extends State<DetailListTimer>
             HomeTimermuTile(isSettingPressed: isSettingPressed),
           ],
         ),
+      ),
+      bottomNavigationBar: CurvedNavigationBar(
+        key: _bottomNavigationKey,
+        index: _page,
+        height: 65.0,
+        items: [
+          CurvedNavigationBarItem(
+            child: SvgPicture.asset(
+              "assets/images/solar.svg",
+              width: 25,
+              height: 25,
+            ),
+            label: "BERANDA",
+            labelStyle: TextStyle(
+              color: labelColors[0],
+              fontFamily: 'Nunito',
+            ),
+          ),
+          CurvedNavigationBarItem(
+            child: const Icon(
+              Icons.add,
+              size: 25,
+            ),
+            label: "TAMBAH",
+            labelStyle: TextStyle(
+              color: labelColors[1],
+              fontFamily: 'Nunito',
+            ),
+          ),
+          CurvedNavigationBarItem(
+            child: const Icon(
+              Icons.hourglass_empty_rounded,
+              size: 25,
+            ),
+            label: _page == 2 ? null : "TIMER",
+            labelStyle: TextStyle(
+              color: labelColors[2],
+              fontFamily: 'Nunito',
+            ),
+          ),
+        ],
+        backgroundColor: pureWhite,
+        color: offOrange,
+        animationCurve: Curves.bounceInOut,
+        animationDuration: const Duration(milliseconds: 500),
+        buttonBackgroundColor: const Color(0xFFFFBF1C),
+        onTap: (index) {
+          setState(
+            () {
+              _page = index;
+              updateLabelColors(index);
+              switch (index) {
+                case 0:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomePage(),
+                    ),
+                  );
+                  break;
+                case 1:
+                  _showModal((int? id) {});
+                  break;
+                case 2:
+                  _refreshData();
+                  break;
+              }
+            },
+          );
+        },
+        letIndexChange: (index) => true,
       ),
     );
   }
