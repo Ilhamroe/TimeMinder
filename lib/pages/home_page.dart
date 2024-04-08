@@ -11,12 +11,12 @@ import 'package:mobile_time_minder/pages/list_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+import 'package:intl/intl.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -28,10 +28,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late List<Map<String, dynamic>> _allData = [];
   List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
 
-  int counter = 0;
-  int counterBreakTime = 0;
-  int counterInterval = 0;
-  bool isLoading = false;
+  int _counter = 0;
+  int _counterBreakTime = 0;
+  int _counterInterval = 0;
+  bool _isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
   bool isSemuaSelected = true;
@@ -48,28 +48,59 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   // refresh data
-  void _refreshData() async {
+  Future<void> _refreshData() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
-    final data = await SQLHelper.getAllData();
+    final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
-  // delete data
-  void _deleteData(int id) async {
-    await SQLHelper.deleteData(id);
-    if (mounted) {
+  Future<void> _addData() async {
+    await SQLHelper.createData(
+        _namaTimerController.text,
+        _deskripsiController.text,
+        _counter,
+        _counterBreakTime,
+        _counterInterval);
+    _refreshData();
+  }
+
+  // edit data
+  Future<void> _updateData(int id) async {
+    await SQLHelper.updateData(
+        id,
+        _namaTimerController.text,
+        _deskripsiController.text,
+        _counter,
+        _counterBreakTime,
+        _counterInterval);
+    _refreshData();
+  }
+
+  void _submitSetting(int id) async {
+    final name = _namaTimerController.text.trim();
+    final description = _deskripsiController.text.trim();
+    final counter = _counter;
+
+    if (name.isEmpty || description.isEmpty || counter == 0) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         backgroundColor: Colors.redAccent,
-        content: Text("Data deleted"),
-        duration: Duration(milliseconds: 500),
+        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
+        duration: Duration(seconds: 1),
       ));
+      return;
     }
-    _refreshData();
+    if (id == null) {
+      await _addData().then((data) => _refreshData());
+    } else {
+      await _updateData(id!);
+    }
+
+    Navigator.of(context).pop();
   }
 
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
@@ -78,16 +109,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      counter = existingData['time'] ?? 0;
-      counterBreakTime = existingData['rest'] ?? 0;
-      counterInterval = existingData['interval'] ?? 0;
+      _counter = existingData['time'] ?? 0;
+      _counterBreakTime = existingData['rest'] ?? 0;
+      _counterInterval = existingData['interval'] ?? 0;
     } else {
       // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      counter = 0;
-      counterBreakTime = 0;
-      counterInterval = 0;
+      _counter = 0;
+      _counterBreakTime = 0;
+      _counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
@@ -95,7 +126,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       builder: (_) => Stack(
         children: [
           BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 200, sigmaY: 200),
+            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
             child: Container(
               color: Colors.transparent,
             ),
@@ -126,12 +157,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _initializeGreeting();
   }
 
-  // Inisialisasi salam sesuai dengan waktu lokal
-  Future<void> _initializeGreeting() async {
+  void _initializeGreeting() {
     final currentTime = DateTime.now();
-    final timeZone = await FlutterNativeTimezone.getLocalTimezone();
-    final timeZoneOffset = currentTime.timeZoneOffset;
-    final currentHour = (currentTime.hour + timeZoneOffset.inHours) % 24;
+    final currentHour = currentTime.hour;
 
     setState(() {
       if (currentHour >= 5 && currentHour < 12) {
@@ -148,6 +176,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
       body: Container(
         width: double.infinity,
@@ -162,80 +191,90 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
         child: CustomScrollView(
           slivers: <Widget>[
-            // SizedBox(height: 10),
             SliverAppBar(
               title: const SizedBox.shrink(),
-              floating: true, // Membuat app bar tetap muncul saat discroll
-              snap: true, // Mengaktifkan efek snap saat discroll
+              floating: true,
+              snap: true,
               backgroundColor: ripeMango,
-              elevation: 0, // Menghilangkan shadow di app bar
+              elevation: 0,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 25.0, vertical: 15.0),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: screenSize.width * 0.1,
+                    vertical: screenSize.height * 0.02,
+                  ),
                   child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Transform.translate(
-                            offset: const Offset(15, 0),
+                            offset: Offset(screenSize.width * 0.03, 0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  '$_greeting, Mindy',
+                                  '$_greeting',
                                   style: TextStyle(
                                     fontFamily: 'Nunito-Bold',
                                     color: Colors.black,
-                                    fontSize: 31.55,
+                                    fontSize: screenSize.width * 0.08,
                                     fontWeight: FontWeight.w900,
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 5,
+                                  height: screenSize.height * 0.005,
                                 ),
                                 Text(
                                   'Yuk, capai target',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: 19.68,
-                                      fontWeight: FontWeight.w500),
+                                    fontFamily: 'Nunito-Bold',
+                                    color: Colors.black,
+                                    fontSize: screenSize.width * 0.05,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                                 Text(
                                   'fokusmu hari ini dan',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: 19.68,
-                                      fontWeight: FontWeight.w500),
+                                    fontFamily: 'Nunito-Bold',
+                                    color: Colors.black,
+                                    fontSize: screenSize.width * 0.05,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                                 Text(
                                   'Selamat beraktivitas!',
                                   overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: 19.68,
-                                      fontWeight: FontWeight.w500),
+                                    fontFamily: 'Nunito-Bold',
+                                    color: Colors.black,
+                                    fontSize: screenSize.width * 0.05,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ],
                             ),
                           ),
                           Transform.translate(
-                            offset: const Offset(-20, 10),
+                            offset: Offset(screenSize.width * -0.03,
+                                screenSize.height * 0.01),
                             child: Container(
-                              width: 100,
-                              padding:
-                                  const EdgeInsets.only(top: 5.0, bottom: 10.0),
-                              margin: const EdgeInsets.only(top: 15.0),
+                              width: screenSize.width * 0.3,
+                              height: screenSize.height * 0.2,
+                              padding: EdgeInsets.only(
+                                top: screenSize.height * 0.01,
+                                bottom: screenSize.height * 0.02,
+                                left: screenSize.width * 0.07,
+                              ),
+                              margin: EdgeInsets.only(
+                                  top: screenSize.height * 0.01),
                               child: SvgPicture.asset(
                                 "assets/images/cat3.svg",
-                                width: 150.0,
-                                height: 150.0,
+                                width: screenSize.width * 0.3,
+                                height: screenSize.width * 0.3,
                               ),
                             ),
                           ),
@@ -245,7 +284,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              expandedHeight: 200.0,
+              expandedHeight: screenSize.height * 0.22,
               pinned: true,
             ),
             SliverList(
@@ -313,7 +352,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const DetailListTimer(),
+                                          const DetailListTimer(data: {
+                                        'title': 'Title',
+                                        'description': 'Description',
+                                        'timer': 'Timer',
+                                        'rest': 'Rest',
+                                        'interval': 'Interval'
+                                      }),
                                     ),
                                   );
                                 },
@@ -328,7 +373,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ],
                           ),
                         ),
-                        HomeTimermuTile(isSettingPressed: isSettingPressed),
+                        HomeTimermuTile(
+                          isSettingPressed: isSettingPressed,
+                        ),
                       ],
                     ),
                   );
@@ -390,8 +437,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             updateLabelColors(index);
             switch (index) {
               case 0:
-                Navigator.popUntil(
-                    context, ModalRoute.withName(AppRoutes.home));
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
                 break;
               case 1:
                 _showModal((int? id) {});
@@ -400,7 +451,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const DetailListTimer(),
+                    builder: (context) => const DetailListTimer(data: {
+                      'title': 'Title',
+                      'description': 'Description',
+                      'timer': 'Timer',
+                      'rest': 'Rest',
+                      'interval': 'Interval'
+                    }),
                   ),
                 );
                 break;

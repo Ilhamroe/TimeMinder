@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
+import 'package:mobile_time_minder/pages/list_timer.dart';
 import 'package:mobile_time_minder/pages/onboarding_page.dart';
 import 'package:mobile_time_minder/pages/splash_screen.dart';
 
@@ -7,6 +8,7 @@ class AppRoutes {
   static const String splash = "/";
   static const String onboard = "/onboard";
   static const String home = "/home";
+  static const String listTimer = "list_timer";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -27,6 +29,17 @@ class AppRoutes {
           settings: settings,
           builder: (_) => const HomePage(),
         );
+
+      case AppRoutes.listTimer:
+        return MaterialPageRoute(
+            settings: settings,
+            builder: (_) => DetailListTimer(data: {
+                  'title': 'Title',
+                  'description': 'Description',
+                  'timer': 'Timer',
+                  'break': 'Break',
+                  'interval': 'Interval'
+                }));
 
       default:
         return MaterialPageRoute(

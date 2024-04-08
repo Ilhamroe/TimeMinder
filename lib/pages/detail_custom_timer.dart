@@ -158,55 +158,140 @@ class _DetailTimerState extends State<DetailTimer> {
             horizontal: 24,
             vertical: 100,
           ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                CircularCountDownTimer(
-                  duration: inTimeBreak,
-                  initialDuration: 0,
-                  width: MediaQuery.of(context).size.width / 2,
-                  height: MediaQuery.of(context).size.height / 2,
-                  controller: _controller,
-                  ringColor: offGrey,
-                  fillColor: _controller.isPaused ? red : ripeMango,
-                  strokeWidth: 20.0,
-                  isReverse: true,
-                  isReverseAnimation: true,
-                  strokeCap: StrokeCap.round,
-                  autoStart: true,
-                  textStyle: TextStyle(
-                    fontSize: 33.0,
-                    color: _controller.isPaused ? red : red,
-                    fontWeight: FontWeight.bold,
-                  ),
-                  onComplete: () {
-                    _showPopup();
-                    Navigator.push(
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            padding: EdgeInsets.symmetric(
+              horizontal: MediaQuery.of(context).size.width * 0.1,
+              vertical: MediaQuery.of(context).size.height * 0.1,
+            ),
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  CircularCountDownTimer(
+                    duration: inTimeBreak,
+                    initialDuration: 0,
+                    width: MediaQuery.of(context).size.width * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.4,
+                    controller: _controller,
+                    ringColor: ring,
+                    fillColor: _controller.isPaused ? red : ripeMango,
+                    fillGradient: LinearGradient(
+                      begin: Alignment.bottomLeft,
+                      end: Alignment.topRight,
+                      colors: [
+                        _controller.isPaused ? red : ripeMango,
+                        offOrange
+                      ],
+                    ),
+                    strokeWidth: 20.0,
+                    isReverse: true,
+                    isReverseAnimation: false,
+                    strokeCap: StrokeCap.round,
+                    autoStart: true,
+                    textStyle: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.1,
+                      color: _controller.isPaused ? red : cetaceanBlue,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    onChange: (String timeStamp) {},
+                    onComplete: () {
+                      _refreshData();
+                      Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
                           builder: (context) => const HomePage(),
-                        ));
-                  },
-                ),
-                SizedBox(height: 20),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    if (_isTimerRunning)
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            _controller.resume();
-                            _isTimerRunning = false;
-                          });
-                        },
-                        child: Icon(
-                          Icons.play_arrow_outlined,
-                          color: blueJeans,
-                          size: 40,
                         ),
+                      );
+                    },
+                  ),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      if (_isTimerRunning)
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              height: MediaQuery.of(context).size.width * 0.15,
+                              decoration: BoxDecoration(
+                                color: offBlue,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _controller.resume();
+                                  _isTimerRunning = false;
+                                });
+                              },
+                              child: SvgPicture.asset(
+                                "assets/images/play.svg",
+                                width: MediaQuery.of(context).size.width * 0.07,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.07,
+                                color: blueJeans,
+                              ),
+                            ),
+                          ],
+                        ),
+                      if (!_isTimerRunning)
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            Container(
+                              width: MediaQuery.of(context).size.width * 0.15,
+                              height: MediaQuery.of(context).size.width * 0.15,
+                              decoration: BoxDecoration(
+                                color: offBlue,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _controller.pause();
+                                  _isTimerRunning = true;
+                                });
+                              },
+                              child: SvgPicture.asset(
+                                "assets/images/pause.svg",
+                                width: MediaQuery.of(context).size.width * 0.07,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.07,
+                                color: blueJeans,
+                              ),
+                            ),
+                          ],
+                        ),
+                      SizedBox(width: MediaQuery.of(context).size.width * 0.2),
+                      Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.15,
+                            height: MediaQuery.of(context).size.width * 0.15,
+                            decoration: BoxDecoration(
+                              color: offBlue,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: _showPopup,
+                            icon: SvgPicture.asset(
+                              "assets/images/check.svg",
+                              width: MediaQuery.of(context).size.width * 0.07,
+                              height: MediaQuery.of(context).size.width * 0.07,
+                              color: blueJeans,
+                            ),
+                            color: blueJeans,
+                          ),
+                        ],
                       ),
                     if (!_isTimerRunning)
                       GestureDetector(
@@ -235,6 +320,7 @@ class _DetailTimerState extends State<DetailTimer> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

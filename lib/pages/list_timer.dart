@@ -17,7 +17,9 @@ final logger = Logger();
 typedef ModalCloseCallback = void Function(int? id);
 
 class DetailListTimer extends StatefulWidget {
-  const DetailListTimer({Key? key});
+  final Map<String, dynamic> data;
+
+  const DetailListTimer({Key? key, required this.data}) : super(key: key);
 
   @override
   State<DetailListTimer> createState() => _DetailListTimerState();
@@ -31,9 +33,9 @@ class _DetailListTimerState extends State<DetailListTimer>
   List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
 
   late TabController tabController;
-  int counter = 0;
-  int counterBreakTime = 0;
-  int counterInterval = 0;
+  int _counter = 0;
+  int _counterBreakTime = 0;
+  int _counterInterval = 0;
   bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
@@ -81,16 +83,16 @@ class _DetailListTimerState extends State<DetailListTimer>
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      counter = existingData['time'] ?? 0;
-      counterBreakTime = existingData['rest'] ?? 0;
-      counterInterval = existingData['interval'] ?? 0;
+      _counter = existingData['time'] ?? 0;
+      _counterBreakTime = existingData['rest'] ?? 0;
+      _counterInterval = existingData['interval'] ?? 0;
     } else {
       // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      counter = 0;
-      counterBreakTime = 0;
-      counterInterval = 0;
+      _counter = 0;
+      _counterBreakTime = 0;
+      _counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
@@ -172,8 +174,8 @@ class _DetailListTimerState extends State<DetailListTimer>
   @override
   void dispose() {
     tabController.dispose();
-    super.dispose();
     _refreshData();
+    super.dispose();
   }
 
   @override
@@ -230,8 +232,13 @@ class _DetailListTimerState extends State<DetailListTimer>
             updateLabelColors(index);
             switch (index) {
               case 0:
-                Navigator.popUntil(
-                    context, ModalRoute.withName(AppRoutes.home));
+                _refreshData();
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
                 break;
               case 1:
                 _showModal((int? id) {});
@@ -240,7 +247,13 @@ class _DetailListTimerState extends State<DetailListTimer>
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const DetailListTimer(),
+                    builder: (context) => const DetailListTimer(data: {
+                      'title': 'Title',
+                      'description': 'Description',
+                      'timer': 'Timer',
+                      'rest': 'Rest',
+                      'interval': 'Interval'
+                    }),
                   ),
                 );
                 break;

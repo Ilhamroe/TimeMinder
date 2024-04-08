@@ -71,7 +71,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
       children: [
         Expanded(
           child: Container(
-            padding: const EdgeInsets.all(4),
+            padding: EdgeInsets.all(MediaQuery.of(context).size.width * 0.01),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
               color: offYellow,
@@ -86,7 +86,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       border: Border(
                         right: BorderSide(
                           color: offYellow,
@@ -96,8 +96,8 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     ),
                     child: IconButton(
                       onPressed: _decrement,
-                      icon: const Icon(Icons.remove),
-                      iconSize: 18,
+                      icon: Icon(Icons.remove),
+                      iconSize: MediaQuery.of(context).size.width * 0.03,
                       color: ripeMango,
                     ),
                   ),
@@ -108,8 +108,11 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     controller: _textController,
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 14, color: Colors.grey),
-                    decoration: const InputDecoration(
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width * 0.035,
+                      color: darkGrey,
+                    ),
+                    decoration: InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                     ),
@@ -118,7 +121,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    decoration: const BoxDecoration(
+                    decoration: BoxDecoration(
                       border: Border(
                         left: BorderSide(
                           color: offYellow,
@@ -128,8 +131,8 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     ),
                     child: IconButton(
                       onPressed: _increment,
-                      icon: const Icon(Icons.add),
-                      iconSize: 18,
+                      icon: Icon(Icons.add),
+                      iconSize: MediaQuery.of(context).size.width * 0.03,
                       color: ripeMango,
                     ),
                   ),

@@ -45,28 +45,36 @@ class _ModalConfirmState extends State<ModalConfirm> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      backgroundColor: pureWhite,
       content: SizedBox(
-        width: 100,
-        height: 300,
+        width: MediaQuery.of(context).size.width * 0.68,
+        height: MediaQuery.of(context).size.height * 0.42,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: 120.0,
+              height: MediaQuery.of(context).size.height * 0.2,
               child: Image.asset(
                 'assets/images/confirm_popup.png',
                 fit: BoxFit.contain,
-                width: 100,
-                height: 100,
+                width: MediaQuery.of(context).size.width * 0.2,
+                height: MediaQuery.of(context).size.width * 0.2,
               ),
             ),
+            const Text(
+              "Kembali ke Beranda,",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontFamily: 'Nunito',
+                fontSize: 15,
+              ),
+            ),
+            const SizedBox(height: 20.0),
             const Text(
               "Apakah Anda yakin?",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Nunito',
-                fontSize: 26,
+                fontSize: 21,
               ),
             ),
             const SizedBox(height: 20.0),
@@ -100,8 +108,13 @@ class _ModalConfirmState extends State<ModalConfirm> {
                         widget.onConfirm!();
                         Navigator.pop(context);
                       } else {
-                        Navigator.popUntil(
-                            context, ModalRoute.withName(AppRoutes.home));
+                        _refreshData();
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomePage(),
+                          ),
+                        );
                       }
                     },
                     child: const Text(

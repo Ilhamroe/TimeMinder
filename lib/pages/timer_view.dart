@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
@@ -34,6 +35,19 @@ class _TimerState extends State<TimerView> {
   late int _detik;
   bool isStarted = false;
   int focusedMins = 0;
+  late List<Map<String, dynamic>> _allData = [];
+  bool _isLoading = false;
+
+  void _refreshData() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final data = await SQLHelper.getAllData();
+    setState(() {
+      _allData = data;
+      _isLoading = false;
+    });
+  }
 
   @override
   void initState() {
@@ -126,9 +140,9 @@ class _TimerState extends State<TimerView> {
           ),
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 24,
-            vertical: 100,
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width * 0.1,
+            vertical: MediaQuery.of(context).size.height * 0.1,
           ),
           child: Center(
             child: Column(
@@ -138,18 +152,15 @@ class _TimerState extends State<TimerView> {
                 CircularCountDownTimer(
                   duration: timeInSec,
                   initialDuration: 0,
-                  width: MediaQuery.of(context).size.width / 2,
-                  height: MediaQuery.of(context).size.height / 2,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: MediaQuery.of(context).size.height * 0.4,
                   controller: _controller,
                   ringColor: ring,
                   fillColor: _controller.isPaused ? red : ripeMango,
                   fillGradient: LinearGradient(
                     begin: Alignment.bottomLeft,
                     end: Alignment.topRight,
-                    colors: [
-                      _controller.isPaused ? red : ripeMango,
-                      offOrange
-                    ], // Your gradient colors
+                    colors: [_controller.isPaused ? red : ripeMango, offOrange],
                   ),
                   strokeWidth: 20.0,
                   isReverse: true,
@@ -157,24 +168,22 @@ class _TimerState extends State<TimerView> {
                   strokeCap: StrokeCap.round,
                   autoStart: true,
                   textStyle: TextStyle(
-                    fontSize: 33.0,
+                    fontSize: MediaQuery.of(context).size.width * 0.1,
                     color: _controller.isPaused ? red : cetaceanBlue,
                     fontWeight: FontWeight.bold,
                   ),
-                  onChange: (String timeStamp) {
-                    // Here, do whatever you want
-                    // debugPrint('Countdown Changed $timeStamp');
-                    // int currentTime = int.tryParse(timeStamp) ?? 0;
-                    // setState(() {
-                    //   currentTimerValue = currentTime;
-                    // });
-                  },
+                  onChange: (String timeStamp) {},
                   onComplete: () {
-                    Navigator.popUntil(
-                        context, ModalRoute.withName(AppRoutes.home));
+                    _refreshData();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => HomePage(),
+                      ),
+                    );
                   },
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -183,8 +192,8 @@ class _TimerState extends State<TimerView> {
                         alignment: Alignment.center,
                         children: [
                           Container(
-                            width: 60,
-                            height: 60,
+                            width: MediaQuery.of(context).size.width * 0.15,
+                            height: MediaQuery.of(context).size.width * 0.15,
                             decoration: BoxDecoration(
                               color: offBlue,
                               borderRadius: BorderRadius.circular(20),
@@ -199,8 +208,8 @@ class _TimerState extends State<TimerView> {
                             },
                             child: SvgPicture.asset(
                               "assets/images/play.svg",
-                              width: 30,
-                              height: 30,
+                              width: MediaQuery.of(context).size.width * 0.07,
+                              height: MediaQuery.of(context).size.width * 0.07,
                               color: blueJeans,
                             ),
                           ),
@@ -211,8 +220,8 @@ class _TimerState extends State<TimerView> {
                         alignment: Alignment.center,
                         children: [
                           Container(
-                            width: 60,
-                            height: 60,
+                            width: MediaQuery.of(context).size.width * 0.15,
+                            height: MediaQuery.of(context).size.width * 0.15,
                             decoration: BoxDecoration(
                               color: offBlue,
                               borderRadius: BorderRadius.circular(20),
@@ -227,20 +236,20 @@ class _TimerState extends State<TimerView> {
                             },
                             child: SvgPicture.asset(
                               "assets/images/pause.svg",
-                              width: 30,
-                              height: 30,
+                              width: MediaQuery.of(context).size.width * 0.07,
+                              height: MediaQuery.of(context).size.width * 0.07,
                               color: blueJeans,
                             ),
                           ),
                         ],
                       ),
-                    SizedBox(width: 100),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.2),
                     Stack(
                       alignment: Alignment.center,
                       children: [
                         Container(
-                          width: 60,
-                          height: 60,
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          height: MediaQuery.of(context).size.width * 0.15,
                           decoration: BoxDecoration(
                             color: offBlue,
                             borderRadius: BorderRadius.circular(20),
@@ -250,8 +259,8 @@ class _TimerState extends State<TimerView> {
                           onPressed: _showPopup,
                           icon: SvgPicture.asset(
                             "assets/images/check.svg",
-                            width: 30,
-                            height: 30,
+                            width: MediaQuery.of(context).size.width * 0.07,
+                            height: MediaQuery.of(context).size.width * 0.07,
                             color: blueJeans,
                           ),
                           color: blueJeans,

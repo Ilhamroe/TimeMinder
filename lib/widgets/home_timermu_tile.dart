@@ -8,14 +8,14 @@ import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
 class HomeTimermuTile extends StatefulWidget {
   final bool isSettingPressed;
 
-  const HomeTimermuTile({Key? key, required this.isSettingPressed})
+  const HomeTimermuTile(
+      {Key? key, required this.isSettingPressed})
       : super(key: key);
 
   @override
@@ -31,28 +31,26 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     red,
   ];
 
-  //databases
-  late List<Map<String, dynamic>> _allData = [];
-
-  int counter = 0;
-  int counterBreakTime = 0;
-  int counterInterval = 0;
-  bool isLoading = false;
+  int _counter = 0;
+  int _counterBreakTime = 0;
+  int _counterInterval = 0;
+  bool _isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
 
   final TextEditingController _namaTimerController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
 
+  late List<Map<String, dynamic>> _allData = [];
   // refresh data
-  void _refreshData() async {
+  Future<void> _refreshData() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
-    final data = await SQLHelper.getAllData();
+    final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -69,22 +67,66 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     _refreshData();
   }
 
+  Future<void> _addData() async {
+    await SQLHelper.createData(
+        _namaTimerController.text,
+        _deskripsiController.text,
+        _counter,
+        _counterBreakTime,
+        _counterInterval);
+    _refreshData();
+  }
+
+  // edit data
+  Future<void> _updateData(int id) async {
+    await SQLHelper.updateData(
+        id,
+        _namaTimerController.text,
+        _deskripsiController.text,
+        _counter,
+        _counterBreakTime,
+        _counterInterval);
+    _refreshData();
+  }
+
+  void _submitSetting(int id) async {
+    final name = _namaTimerController.text.trim();
+    final description = _deskripsiController.text.trim();
+    final counter = _counter;
+
+    if (name.isEmpty || description.isEmpty || counter == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        backgroundColor: Colors.redAccent,
+        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
+        duration: Duration(seconds: 1),
+      ));
+      return;
+    }
+    if (id == null) {
+      await _addData().then((data) => _refreshData());
+    } else {
+      await _updateData(id!);
+    }
+
+    Navigator.of(context).pop();
+  }
+
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
     if (id != null) {
       final existingData =
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      counter = existingData['time'] ?? 0;
-      counterBreakTime = existingData['rest'] ?? 0;
-      counterInterval = existingData['interval'] ?? 0;
+      _counter = existingData['time'] ?? 0;
+      _counterBreakTime = existingData['rest'] ?? 0;
+      _counterInterval = existingData['interval'] ?? 0;
     } else {
       // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      counter = 0;
-      counterBreakTime = 0;
-      counterInterval = 0;
+      _counter = 0;
+      _counterBreakTime = 0;
+      _counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
@@ -92,8 +134,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       builder: (_) => Stack(
         children: [
           BackdropFilter(
-            filter: ImageFilter.blur(
-                sigmaX: 50, sigmaY: 50),
+            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
             child: Container(
               color: Colors.transparent,
             ),
@@ -123,7 +164,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
 
   @override
   Widget build(BuildContext context) {
-    return isLoading
+    return _isLoading
         ? const Center(
             child: CircularProgressIndicator(),
           )
@@ -222,19 +263,39 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                                             10.0),
                                                   ),
                                                   content: SizedBox(
-                                                    width: 100,
-                                                    height: 300,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width *
+                                                            0.68,
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.42,
                                                     child: Column(
                                                       mainAxisSize:
                                                           MainAxisSize.min,
                                                       children: [
                                                         SizedBox(
-                                                          height: 120.0,
+                                                          height: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .height *
+                                                              0.2,
                                                           child: Image.asset(
                                                             'assets/images/confirm_popup.png',
                                                             fit: BoxFit.contain,
-                                                            width: 100,
-                                                            height: 100,
+                                                            width: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.2,
+                                                            height: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .width *
+                                                                0.2,
                                                           ),
                                                         ),
                                                         const Text(
@@ -244,19 +305,19 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                                           style: TextStyle(
                                                             fontFamily:
                                                                 'Nunito',
-                                                            fontSize: 21,
+                                                            fontSize: 15,
                                                           ),
                                                         ),
                                                         const SizedBox(
                                                             height: 20.0),
-                                                            const Text(
+                                                        const Text(
                                                           "Apakah Anda yakin?",
                                                           textAlign:
                                                               TextAlign.center,
                                                           style: TextStyle(
                                                             fontFamily:
                                                                 'Nunito',
-                                                            fontSize: 26,
+                                                            fontSize: 21,
                                                           ),
                                                         ),
                                                         const SizedBox(
