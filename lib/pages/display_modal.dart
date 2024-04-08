@@ -374,23 +374,27 @@ class _DisplayModalState extends State<DisplayModal> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CustomButton(
-                          text: '  Reset  ',
-                          primaryColor: Colors.white,
-                          onPrimaryColor: cetaceanBlue,
-                          borderSideColor: cetaceanBlue,
-                          onPressed: _resetSetting,
+                        Expanded(
+                          child: CustomButton(
+                            text: 'Reset',
+                            primaryColor: Colors.white,
+                            onPrimaryColor: cetaceanBlue,
+                            borderSideColor: cetaceanBlue,
+                            onPressed: _resetSetting,
+                          ),
                         ),
                         SizedBox(width: 15),
-                        CustomButton(
-                          text: 'Terapkan',
-                          primaryColor: ripeMango,
-                          onPrimaryColor: pureWhite,
-                          borderSideColor: Colors.transparent,
-                          onPressed: _submitSetting,
+                        Expanded(
+                          child: CustomButton(
+                            text: 'Terapkan',
+                            primaryColor: ripeMango,
+                            onPrimaryColor: pureWhite,
+                            borderSideColor: Colors.transparent,
+                            onPressed: _submitSetting,
+                          ),
                         ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ],

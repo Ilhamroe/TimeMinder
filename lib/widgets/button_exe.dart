@@ -8,46 +8,44 @@ class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
 
   const CustomButton({
-    super.key,
+    Key? key,
     required this.text,
     required this.primaryColor,
     required this.onPrimaryColor,
     required this.borderSideColor,
     required this.onPressed,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
-    final verticalPadding = screenHeight * 0.025;
-    final horizontalPadding = screenWidth * 0.12;
-
-    return Center(
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
-          foregroundColor: MaterialStateProperty.all<Color>(onPrimaryColor),
-          side: MaterialStateProperty.all<BorderSide>(
-            BorderSide(
-              width: 1,
-              color: borderSideColor,
-            ),
-          ),
-          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-            EdgeInsets.symmetric(
-                vertical: verticalPadding, horizontal: horizontalPadding),
-          ),
-          shape: MaterialStateProperty.all<OutlinedBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+    return ElevatedButton(
+      onPressed: onPressed,
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(primaryColor),
+        foregroundColor: MaterialStateProperty.all<Color>(onPrimaryColor),
+        side: MaterialStateProperty.all<BorderSide>(
+          BorderSide(
+            width: 1,
+            color: borderSideColor,
           ),
         ),
+        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+          EdgeInsets.all(0), // No fixed padding
+        ),
+        shape: MaterialStateProperty.all<OutlinedBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        minimumSize: MaterialStateProperty.all<Size>(
+          Size.zero, // Allow the button to adjust its size based on content
+        ),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16), // Adjust padding as needed
         child: Text(text),
       ),
     );
   }
 }
+
