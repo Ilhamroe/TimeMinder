@@ -40,6 +40,7 @@
         <meta-data 
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/logo"
-            />
+            />        
     </application>
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
 </manifest>

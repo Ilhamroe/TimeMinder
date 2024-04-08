@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/models/notif.dart';
+import 'package:audioplayers/audioplayers.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -20,6 +24,7 @@ class _ModalConfirmState extends State<ModalConfirm> {
 
   bool isLoading = false;
   bool statusSwitch = false;
+  final player= AudioPlayer();
 
   // refresh data
   void _refreshData() async {
@@ -31,6 +36,14 @@ class _ModalConfirmState extends State<ModalConfirm> {
       _allData = data;
       isLoading = false;
     });
+  }
+
+  void _showNotification(String message){
+    Notif.showBigTextNotification(
+      title: "TimeMinder", 
+      body: message, 
+      fln: flutterLocalNotificationsPlugin
+      );
   }
 
   @override
@@ -108,6 +121,7 @@ class _ModalConfirmState extends State<ModalConfirm> {
                         widget.onConfirm!();
                         Navigator.pop(context);
                       } else {
+                        _showNotification("Timer dihentikan");               
                         _refreshData();
                         Navigator.push(
                           context,

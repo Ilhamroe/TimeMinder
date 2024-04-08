@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
@@ -6,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
@@ -13,6 +15,10 @@ import 'package:mobile_time_minder/models/list_timer.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/modal_confim.dart';
+import 'package:mobile_time_minder/models/notif.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 class TimerView extends StatefulWidget {
   final int timerIndex;
@@ -37,6 +43,8 @@ class _TimerState extends State<TimerView> {
   int focusedMins = 0;
   late List<Map<String, dynamic>> _allData = [];
   bool _isLoading = false;
+  bool _isSoundPlayed = false;
+  final player = AudioPlayer();
 
   void _refreshData() async {
     setState(() {
@@ -89,6 +97,13 @@ class _TimerState extends State<TimerView> {
         return ModalConfirm();
       },
     );
+  }
+
+  void _showNotification(String message) {
+    Notif.showBigTextNotification(
+        title: "TimeMinder",
+        body: message,
+        fln: flutterLocalNotificationsPlugin);
   }
 
   @override
@@ -155,7 +170,7 @@ class _TimerState extends State<TimerView> {
                     duration: timeInSec,
                     initialDuration: 0,
                     width: MediaQuery.of(context).size.width * 0.5,
-                    height: MediaQuery.of(context).size.height * 0.35,
+                    height: MediaQuery.of(context).size.height * 0.4,
                     controller: _controller,
                     ringColor: ring,
                     fillColor: _controller.isPaused ? red : ripeMango,
@@ -179,6 +194,8 @@ class _TimerState extends State<TimerView> {
                     ),
                     onChange: (String timeStamp) {},
                     onComplete: () {
+                      player.play(AssetSource('sounds/end.wav'));
+                      _showNotification("Timer selesai");
                       _refreshData();
                       Navigator.pushReplacement(
                         context,
@@ -187,8 +204,13 @@ class _TimerState extends State<TimerView> {
                         ),
                       );
                     },
+                    onStart: () {
+                      _showNotification("Timer dimulai");
+                      player.stop();
+                      player.play(AssetSource('sounds/end.wav'));
+                    },
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -209,6 +231,12 @@ class _TimerState extends State<TimerView> {
                                 setState(() {
                                   _controller.resume();
                                   isStarted = false;
+                                  _showNotification("Timer dilanjutkan");
+                                  if (!_isSoundPlayed) {
+                                    player
+                                        .play(AssetSource("sounds/start.wav"));
+                                    _isSoundPlayed = true;
+                                  }
                                 });
                               },
                               child: SvgPicture.asset(
@@ -238,6 +266,12 @@ class _TimerState extends State<TimerView> {
                                 setState(() {
                                   _controller.pause();
                                   isStarted = true;
+                                  _showNotification("Timer dijeda");
+                                  if (_isSoundPlayed) {
+                                    player
+                                        .play(AssetSource("sounds/pause.wav"));
+                                    _isSoundPlayed = false;
+                                  }
                                 });
                               },
                               child: SvgPicture.asset(
