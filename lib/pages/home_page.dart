@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     style: TextStyle(
                                       fontFamily: 'Nunito-Bold',
                                       color: Colors.black,
-                                      fontSize: screenSize.width * 0.04,
+                                      fontSize: screenSize.width * 0.05,
                                       fontWeight: FontWeight.w500,
                                     ),
                                   ),
@@ -340,7 +340,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 const SizedBox(width: 8),
                                 const Text(
-                                  "Timer Mu",
+                                  "Timermu",
                                   style: TextStyle(
                                     fontFamily: 'Nunito-Bold',
                                     fontSize: 14,
@@ -362,6 +362,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   child: const Text(
                                     "Lihat Semua",
                                     style: TextStyle(
+                                      fontFamily: 'Nunito',
                                       fontSize: 12,
                                       color: ripeMango,
                                     ),
@@ -391,35 +392,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             CurvedNavigationBarItem(
               child: SvgPicture.asset(
                 "assets/images/solar.svg",
-                width: 25,
-                height: 25,
+                width: 20,
+                height: 20,
               ),
               label: _page == 0 ? null : "BERANDA",
               labelStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
                 color: labelColors[0],
-                fontFamily: 'Nunito',
+                fontFamily: 'Nunito-Bold',
               ),
             ),
             CurvedNavigationBarItem(
               child: const Icon(
                 Icons.add,
-                size: 25,
+                size: 20,
               ),
               label: "TAMBAH",
               labelStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
                 color: labelColors[1],
-                fontFamily: 'Nunito',
+                fontFamily: 'Nunito-Bold',
               ),
             ),
             CurvedNavigationBarItem(
               child: const Icon(
                 Icons.hourglass_empty_rounded,
-                size: 25,
+                size: 20,
               ),
               label: _page == 2 ? null : "TIMER",
               labelStyle: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 12,
                 color: labelColors[2],
-                fontFamily: 'Nunito',
+                fontFamily: 'Nunito-Bold',
               ),
             ),
           ],

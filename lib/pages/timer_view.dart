@@ -1,10 +1,4 @@
-import 'dart:ui';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -12,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
-import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/modal_confim.dart';
 import 'package:mobile_time_minder/models/notif.dart';

@@ -55,16 +55,16 @@ class _DetailListTimerState extends State<DetailListTimer>
     setState(() {
       isLoading = true;
     });
-    try{
-      final data= await SQLHelper.getAllData();
+    try {
+      final data = await SQLHelper.getAllData();
       setState(() {
-        _allData= data;
-        isLoading= false;
+        _allData = data;
+        isLoading = false;
       });
-    }catch(e){
+    } catch (e) {
       logger.e("Terjadi error saat refresh data: $e");
       setState(() {
-        isLoading= false;
+        isLoading = false;
       });
     }
   }
@@ -196,7 +196,12 @@ class _DetailListTimerState extends State<DetailListTimer>
           iconSize: Checkbox.width,
           key: const Key('back'),
           onPressed: () {
-            Navigator.popUntil(context, ModalRoute.withName(AppRoutes.home));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const HomePage(),
+              ),
+            );
           },
           padding: const EdgeInsets.only(left: 25),
           icon: SvgPicture.asset(
@@ -325,11 +330,13 @@ class _DetailListTimerState extends State<DetailListTimer>
           CurvedNavigationBarItem(
             child: SvgPicture.asset(
               "assets/images/solar.svg",
-              width: 25,
-              height: 25,
+              width: 20,
+              height: 20,
             ),
             label: "BERANDA",
             labelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
               color: labelColors[0],
               fontFamily: 'Nunito',
             ),
@@ -337,10 +344,12 @@ class _DetailListTimerState extends State<DetailListTimer>
           CurvedNavigationBarItem(
             child: const Icon(
               Icons.add,
-              size: 25,
+              size: 20,
             ),
             label: "TAMBAH",
             labelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
               color: labelColors[1],
               fontFamily: 'Nunito',
             ),
@@ -348,10 +357,12 @@ class _DetailListTimerState extends State<DetailListTimer>
           CurvedNavigationBarItem(
             child: const Icon(
               Icons.hourglass_empty_rounded,
-              size: 25,
+              size: 20,
             ),
             label: _page == 2 ? null : "TIMER",
             labelStyle: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 12,
               color: labelColors[2],
               fontFamily: 'Nunito',
             ),
