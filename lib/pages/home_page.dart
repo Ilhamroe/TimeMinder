@@ -95,9 +95,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       return;
     }
     if (id == null) {
-      await _addData().then((data) => _refreshData());
+      await _addData().then((data) {
+        _refreshData();
+        Navigator.pushAndRemoveUntil(
+          context, 
+          MaterialPageRoute(
+            builder: (context) => HomePage()
+            ), 
+          (route) => false
+        );
+      });
     } else {
-      await _updateData(id!);
+      await _updateData(id!).then((data) {
+        _refreshData();
+        Navigator.pushAndRemoveUntil(
+          context, 
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+            ), 
+          (route) => false
+          );
+      });
     }
 
     Navigator.of(context).pop();
@@ -218,7 +236,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   style: TextStyle(
                                     fontFamily: 'Nunito-Bold',
                                     color: Colors.black,
-                                    fontSize: screenSize.width * 0.08,
+                                    fontSize: screenSize.width * 0.075,
                                     fontWeight: FontWeight.w900,
                                   ),
                                 ),
@@ -399,7 +417,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             label: "BERANDA",
             labelStyle: TextStyle(
-              color: labelColors[0],
+              color: _page==0? offOrange: Colors.black,
               fontFamily: 'Nunito',
             ),
           ),
@@ -410,7 +428,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             label: "TAMBAH",
             labelStyle: TextStyle(
-              color: labelColors[1],
+              color: _page==1? offOrange: Colors.black,
               fontFamily: 'Nunito',
             ),
           ),
@@ -421,14 +439,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ),
             label: "TIMER",
             labelStyle: TextStyle(
-              color: labelColors[2],
+              color: _page==2? offOrange: Colors.black,
               fontFamily: 'Nunito',
             ),
           ),
         ],
         backgroundColor: Colors.white,
         color: offOrange,
-        animationCurve: Curves.bounceInOut,
+        animationCurve: Curves.easeInOut,
         animationDuration: const Duration(milliseconds: 500),
         buttonBackgroundColor: ripeMango,
         onTap: (index) {
@@ -437,11 +455,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             updateLabelColors(index);
             switch (index) {
               case 0:
-                Navigator.pushReplacement(
+                Navigator.pushAndRemoveUntil(
                   context,
                   MaterialPageRoute(
                     builder: (context) => HomePage(),
                   ),
+                  (route)=> false,
                 );
                 break;
               case 1:

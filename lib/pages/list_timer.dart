@@ -57,11 +57,18 @@ class _DetailListTimerState extends State<DetailListTimer>
     setState(() {
       isLoading = true;
     });
-    final data = await SQLHelper.getAllData();
-    setState(() {
-      _allData = data;
-      isLoading = false;
-    });
+    try{
+      final data= await SQLHelper.getAllData();
+      setState(() {
+        _allData= data;
+        isLoading= false;
+      });
+    }catch(e){
+      logger.e("Terjadi error saat refresh data: $e");
+      setState(() {
+        isLoading= false;
+      });
+    }
   }
 
   // delete data
@@ -174,7 +181,7 @@ class _DetailListTimerState extends State<DetailListTimer>
   @override
   void dispose() {
     tabController.dispose();
-    _refreshData();
+    // _refreshData();
     super.dispose();
   }
 
