@@ -20,7 +20,7 @@ class Notif{
         'you_can_name_it_whatever', 
         'channel_name',      
         playSound: true,
-        sound: RawResourceAndroidNotificationSound('start'),
+        // sound: RawResourceAndroidNotificationSound('start'),
         importance: Importance.max,
         priority: Priority.high,
         );

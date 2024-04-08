@@ -106,6 +106,14 @@ class _DetailTimerState extends State<DetailTimer> {
     });
   }
 
+  void _showNotification(String message){
+  Notif.showBigTextNotification(
+    title: "TimeMinder", 
+    body: message, 
+    fln: flutterLocalNotificationsPlugin
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final Map<String, dynamic> data = widget.data;
@@ -198,6 +206,8 @@ class _DetailTimerState extends State<DetailTimer> {
                     ),
                     onChange: (String timeStamp) {},
                     onComplete: () {
+                      player.play(AssetSource('sounds/end.wav'));
+                      _showNotification("Timer selesai");
                       _refreshData();
                       Navigator.pushReplacement(
                         context,
@@ -205,6 +215,11 @@ class _DetailTimerState extends State<DetailTimer> {
                           builder: (context) => const HomePage(),
                         ),
                       );
+                    },
+                    onStart: () {
+                      player.play(AssetSource('sounds/end.wav'));
+                      _showNotification("Timer dimulai");
+                      _isSoundPlayed= true;
                     },
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
@@ -226,8 +241,14 @@ class _DetailTimerState extends State<DetailTimer> {
                             GestureDetector(
                               onTap: () {
                                 setState(() {
-                                  _controller.resume();
+                                  _controller.resume();                                 
                                   _isTimerRunning = false;
+                                  _showNotification("Timer dilanjutkan");
+                                  if(!_isSoundPlayed){
+                                    player.stop();
+                                    player.play(AssetSource("sounds/start.wav"));
+                                    _isSoundPlayed= true;
+                                  }
                                 });
                               },
                               child: SvgPicture.asset(
@@ -257,6 +278,12 @@ class _DetailTimerState extends State<DetailTimer> {
                                 setState(() {
                                   _controller.pause();
                                   _isTimerRunning = true;
+                                  _showNotification("Timer dijeda");
+                                  if(_isSoundPlayed){
+                                    player.stop();
+                                    player.play(AssetSource("sounds/pause.wav"));
+                                    _isSoundPlayed= false;
+                                  }
                                 });
                               },
                               child: SvgPicture.asset(
