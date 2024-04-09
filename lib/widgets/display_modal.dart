@@ -34,20 +34,11 @@ class _DisplayModalState extends State<DisplayModal> {
   bool hideContainer = true;
   bool isOptionOpen = false;
 
-  TextEditingController _namaTimerController = TextEditingController();
-  TextEditingController _deskripsiController = TextEditingController();
+  TextEditingController namaTimerController = TextEditingController();
+  TextEditingController deskripsiController = TextEditingController();
 
   //databases
   late List<Map<String, dynamic>> _allData = [];
-
-  @override
-  void initState() {
-    super.initState();
-    id = widget.id;
-    if (id != null) {
-      getSingleData(id!);
-    }
-  }
 
   void _refreshData() async {
     setState(() {
@@ -66,8 +57,8 @@ class _DisplayModalState extends State<DisplayModal> {
     final int timerValue = data[0]['timer'] ?? 0;
 
     setState(() {
-      _namaTimerController.text = data[0]['title'];
-      _deskripsiController.text = data[0]['description'];
+      namaTimerController.text = data[0]['title'];
+      deskripsiController.text = data[0]['description'];
       _counter = timerValue;
       _counterBreakTime = data[0]['rest'] ?? 0;
       _counterInterval = data[0]['interval'] ?? 0;
@@ -96,7 +87,7 @@ class _DisplayModalState extends State<DisplayModal> {
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Text(
-              'Nama Timer, Deskripsi,\ndan Waktu Fokus harus diisi.',
+              'Nama Timer, Deskripsi, dan Waktu harus diisi.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Nunito',
@@ -108,27 +99,24 @@ class _DisplayModalState extends State<DisplayModal> {
         ),
       ),
     );
-    Overlay.of(context).insert(_overlayEntry);
+    Overlay.of(context)!.insert(_overlayEntry);
   }
 
   void _submitSetting() async {
-    final name = _namaTimerController.text.trim();
-    final description = _deskripsiController.text.trim();
+    final name = namaTimerController.text.trim();
+    final description = deskripsiController.text.trim();
     final counter = _counter;
 
     if (name.isEmpty || description.isEmpty || counter == 0) {
       _showOverlay(context);
-      Future.delayed(
-        Duration(seconds: 1),
-        () {
-          _overlayEntry.remove();
-        },
-      );
+      Future.delayed(Duration(seconds: 1), () {
+        _overlayEntry.remove();
+      });
       return;
     }
 
     if (id == null) {
-      await _addData();
+      await _addData().then((data) => _refreshData());
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -136,7 +124,7 @@ class _DisplayModalState extends State<DisplayModal> {
         ),
       );
     } else {
-      await _updateData(id!);
+      await _updateData(id!).then((value) => _refreshData());
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -144,12 +132,16 @@ class _DisplayModalState extends State<DisplayModal> {
         ),
       );
     }
+
+    setState(() {
+      _counter = _settingTimeWidgetKey.currentState?.getCounter() ?? 0;
+    });
   }
 
   void _resetSetting() {
     setState(() {
-      _namaTimerController.clear();
-      _deskripsiController.clear();
+      namaTimerController.clear();
+      deskripsiController.clear();
       _settingTimeWidgetKey.currentState?.resetCounter();
       _settingBreakWidgetKey.currentState?.resetCounter();
       hideContainer = true;
@@ -179,8 +171,8 @@ class _DisplayModalState extends State<DisplayModal> {
   // add data
   Future<void> _addData() async {
     await SQLHelper.createData(
-        _namaTimerController.text,
-        _deskripsiController.text,
+        namaTimerController.text,
+        deskripsiController.text,
         _counter,
         _counterBreakTime,
         _counterInterval);
@@ -191,14 +183,32 @@ class _DisplayModalState extends State<DisplayModal> {
   Future<void> _updateData(int id) async {
     await SQLHelper.updateData(
         id,
-        _namaTimerController.text,
-        _deskripsiController.text,
+        namaTimerController.text,
+        deskripsiController.text,
         _counter,
         _counterBreakTime,
         _counterInterval);
     _refreshData();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    id = widget.id;
+    if (id != null) {
+      getSingleData(id!);
+    }
+  }
+
+  @override
+  void dispose() {
+    namaTimerController.dispose();
+    deskripsiController.dispose();
+    _overlayEntry.remove();
+    super.dispose();
+  }
+
+  @override
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
@@ -255,7 +265,7 @@ class _DisplayModalState extends State<DisplayModal> {
                 TextField(
                   maxLength: 20,
                   maxLines: 1,
-                  controller: _namaTimerController,
+                  controller: namaTimerController,
                   decoration: InputDecoration(
                     counterText: '',
                   ),
@@ -265,7 +275,7 @@ class _DisplayModalState extends State<DisplayModal> {
                 TextField(
                   maxLength: 30,
                   maxLines: 1,
-                  controller: _deskripsiController,
+                  controller: deskripsiController,
                   decoration: InputDecoration(
                     counterText: '',
                   ),
@@ -294,8 +304,8 @@ class _DisplayModalState extends State<DisplayModal> {
                         ),
                         IconButton(
                           onPressed: () {
-                            if (_namaTimerController.text.isNotEmpty &&
-                                _deskripsiController.text.isNotEmpty &&
+                            if (namaTimerController.text.isNotEmpty &&
+                                deskripsiController.text.isNotEmpty &&
                                 _counter != 0) {
                               _openIconButtonPressed();
                             } else {
@@ -394,7 +404,7 @@ class _DisplayModalState extends State<DisplayModal> {
                           borderSideColor: cetaceanBlue,
                           onPressed: _resetSetting,
                         ),
-                        SizedBox(width: screenWidth * 0.04),
+                        SizedBox(width: screenWidth * 0.03),
                         CustomButton(
                           text: 'Terapkan',
                           primaryColor: ripeMango,

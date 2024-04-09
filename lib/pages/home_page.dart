@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/timer_page.dart';
 import 'package:mobile_time_minder/widgets/display_modal.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
+import '../widgets/bottom_navigation.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -66,7 +66,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
       counterBreakTime = existingData['rest'] ?? 0;
       counterInterval = existingData['interval'] ?? 0;
     } else {
-      // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
       counter = 0;
@@ -110,13 +109,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   late String _greeting;
 
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
-    _initializeGreeting();
-    updateLabelColors(_page);
-  }
 
   void _initializeGreeting() {
     final currentTime = DateTime.now();
@@ -133,6 +125,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         _greeting = 'Selamat Malam';
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _refreshData();
+    _initializeGreeting();
+    updateLabelColors(_page);
+  }
+
+  @override
+  void dispose() {
+    _namaTimerController.dispose();
+    _deskripsiController.dispose();
+    super.dispose();
   }
 
   @override
@@ -160,81 +167,74 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                leading: const Icon(Icons.arrow_back, color: ripeMango),
-                title: const SizedBox.shrink(),
+                leading: Icon(Icons.arrow_back, color: ripeMango),
+                title: SizedBox.shrink(),
                 floating: true,
                 snap: true,
                 backgroundColor: ripeMango,
                 elevation: 0,
+                expandedHeight: screenSize.height * 0.22,
+                pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: screenSize.width * 0.1,
                       vertical: screenSize.height * 0.02,
                     ),
-                    child: Column(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Transform.translate(
-                              offset: Offset(screenSize.width * 0.03, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '$_greeting',
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: screenSize.width * 0.06,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: screenSize.height * 0.005,
-                                  ),
-                                  Text(
-                                    'Yuk, capai target\nfokusmu hari ini',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: screenSize.width * 0.05,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Transform.translate(
-                              offset: Offset(screenSize.width * -0.03,
-                                  screenSize.height * 0.01),
-                              child: Container(
-                                width: screenSize.width * 0.3,
-                                height: screenSize.height * 0.2,
-                                padding: EdgeInsets.only(
-                                  top: screenSize.height * 0.01,
-                                  bottom: screenSize.height * 0.02,
-                                  left: screenSize.width * 0.07,
-                                ),
-                                margin: EdgeInsets.only(
-                                    top: screenSize.height * 0.01),
-                                child: SvgPicture.asset(
-                                  "assets/images/cat3.svg",
-                                  width: screenSize.width * 0.3,
-                                  height: screenSize.width * 0.3,
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '$_greeting',
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  color: Colors.black,
+                                  fontSize: screenSize.width * 0.06,
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                height: screenSize.height * 0.005,
+                              ),
+                              Text(
+                                'Yuk, capai target fokusmu hari ini dan Selamat beraktivitas!',
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 3,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  color: Colors.black,
+                                  fontSize: screenSize.width * 0.045,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: screenSize.width * 0.3,
+                          height: screenSize.height * 0.2,
+                          padding: EdgeInsets.only(
+                            top: screenSize.height * 0.01,
+                            bottom: screenSize.height * 0.02,
+                            left: screenSize.width * 0.07,
+                          ),
+                          child: SvgPicture.asset(
+                            "assets/images/cat3.svg",
+                            width: screenSize.width * 0.3,
+                            height: screenSize.width * 0.3,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                expandedHeight: screenSize.height * 0.22,
-                pinned: true,
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -288,7 +288,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 const SizedBox(width: 8),
                                 const Text(
-                                  "Timermu",
+                                  "Timer Mu",
                                   style: TextStyle(
                                     fontFamily: 'Nunito-Bold',
                                     fontSize: 14,
@@ -310,7 +310,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   child: const Text(
                                     "Lihat Semua",
                                     style: TextStyle(
-                                      fontFamily: 'Nunito',
                                       fontSize: 12,
                                       color: ripeMango,
                                     ),
@@ -326,88 +325,41 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     );
                   },
-                  childCount: 1, // Hanya satu item dalam SliverList
+                  childCount: 1,
                 ),
               ),
             ],
           ),
         ),
-        bottomNavigationBar: CurvedNavigationBar(
-          key: _bottomNavigationKey,
-          index: _page,
-          height: 65.0,
-          items: [
-            CurvedNavigationBarItem(
-              child: SvgPicture.asset(
-                "assets/images/solar.svg",
-                width: 20,
-                height: 20,
-              ),
-              label: _page == 0 ? null : "BERANDA",
-              labelStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: labelColors[0],
-                fontFamily: 'Nunito-Bold',
-              ),
-            ),
-            CurvedNavigationBarItem(
-              child: const Icon(
-                Icons.add,
-                size: 20,
-              ),
-              label: "TAMBAH",
-              labelStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: labelColors[1],
-                fontFamily: 'Nunito-Bold',
-              ),
-            ),
-            CurvedNavigationBarItem(
-              child: const Icon(
-                Icons.hourglass_empty_rounded,
-                size: 20,
-              ),
-              label: _page == 2 ? null : "TIMER",
-              labelStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
-                color: labelColors[2],
-                fontFamily: 'Nunito-Bold',
-              ),
-            ),
-          ],
-          backgroundColor: pureWhite,
-          color: offOrange,
-          animationCurve: Curves.bounceInOut,
-          animationDuration: const Duration(milliseconds: 500),
-          buttonBackgroundColor: const Color(0xFFFFBF1C),
+        bottomNavigationBar: TimeMinderBottomNav(
+          currentPageIndex: _page,
           onTap: (index) {
-            setState(
-              () {
-                _page = index;
-                updateLabelColors(_page);
-                switch (_page) {
-                  case 0:
-                    _refreshData();
-                    break;
-                  case 1:
-                    _showModal((int? id) {});
-                    break;
-                  case 2:
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DetailListTimer(),
-                      ),
-                    );
-                    break;
-                }
-              },
-            );
+            setState(() {
+              _page = index;
+              updateLabelColors(_page);
+              switch (_page) {
+                case 0:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const HomePage(),
+                    ),
+                  );
+                  break;
+                case 1:
+                  _showModal((newData) {});
+                  break;
+                case 2:
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DetailListTimer(),
+                    ),
+                  );
+                  break;
+              }
+            });
           },
-          letIndexChange: (index) => true,
         ),
       ),
     );

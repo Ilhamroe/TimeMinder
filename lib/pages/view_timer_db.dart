@@ -32,6 +32,8 @@ class _DetailTimerState extends State<DetailTimer> {
   late CountDownController _controller;
   final player = AudioPlayer();
   bool _isSoundPlayed = false;
+  late DateTime _startTime;
+  late DateTime _endTime;
 
   int get inTimeMinutes => widget.data['timer'];
   int get inRestMinutes => widget.data['rest'] ?? 0;
@@ -79,8 +81,12 @@ class _DetailTimerState extends State<DetailTimer> {
     });
   }
 
-  late DateTime _startTime;
-  late DateTime _endTime;
+  void _showNotification(String message) {
+    Notif.showBigTextNotification(
+        title: "TimeMinder",
+        body: message,
+        fln: flutterLocalNotificationsPlugin);
+  }
 
   void _scheduleBreakNotification() {
     int totalDuration = inTimeMinutes + (inRestMinutes * interval);
@@ -101,11 +107,10 @@ class _DetailTimerState extends State<DetailTimer> {
     }
   }
 
-  void _showNotification(String message) {
-    Notif.showBigTextNotification(
-        title: "TimeMinder",
-        body: message,
-        fln: flutterLocalNotificationsPlugin);
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   @override

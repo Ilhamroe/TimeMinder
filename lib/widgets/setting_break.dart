@@ -82,7 +82,8 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
         Expanded(
           child: Container(
             padding: EdgeInsets.all(screenWidth * 0.01),
-            margin: EdgeInsets.only(right: screenWidth * 0.03, left: screenWidth * 0.01),
+            margin: EdgeInsets.only(
+                right: screenWidth * 0.03, left: screenWidth * 0.01),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(screenWidth * 0.05),
               color: widget.statusSwitch ? offYellow : offGrey,
@@ -134,7 +135,8 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
         Expanded(
           child: Container(
             padding: EdgeInsets.all(screenWidth * 0.01),
-            margin: EdgeInsets.only(right: screenWidth * 0.03, left: screenWidth * 0.01),
+            margin: EdgeInsets.only(
+                right: screenWidth * 0.03, left: screenWidth * 0.01),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(screenWidth * 0.05),
               color: widget.statusSwitch ? offYellow : offGrey,

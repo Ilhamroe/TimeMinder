@@ -50,13 +50,6 @@ class _TimerState extends State<TimerView> {
     });
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _getDataByID();
-    _convertTimeInSec(context, _jam, _menit, _detik);
-  }
-
   void _getDataByID() {
     _timer = Timerlist[widget.timerIndex];
     _waktuMentah = _timer.time;
@@ -97,6 +90,19 @@ class _TimerState extends State<TimerView> {
         title: "TimeMinder",
         body: message,
         fln: flutterLocalNotificationsPlugin);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getDataByID();
+    _convertTimeInSec(context, _jam, _menit, _detik);
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   @override
