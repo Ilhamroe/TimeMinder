@@ -45,6 +45,7 @@ class _NotifViewState extends State<NotifView> {
               child: ElevatedButton(
                 onPressed: () {
                   Notif.showBigTextNotification(
+                    id: DateTime.now().millisecondsSinceEpoch.remainder(100000),
                     title: "Halo!", 
                     body: "Terimakasih sudah menggunakan TimeMinder!", 
                     fln: flutterLocalNotificationsPlugin);

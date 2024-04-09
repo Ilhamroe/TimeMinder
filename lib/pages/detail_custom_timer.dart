@@ -102,7 +102,11 @@ class _DetailTimerState extends State<DetailTimer> {
   }
 
   void _showNotification(String message) {
+    int generateRandomId() {
+      return DateTime.now().millisecondsSinceEpoch.remainder(100000);
+    }
     Notif.showBigTextNotification(
+        id: generateRandomId(),
         title: "TimeMinder",
         body: message,
         fln: flutterLocalNotificationsPlugin);

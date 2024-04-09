@@ -9,7 +9,7 @@ import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
 import 'package:mobile_time_minder/pages/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/setting_time.dart';
-
+import 'package:mobile_time_minder/pages/timer_player.dart';
 typedef ModalCloseCallback = void Function(int? id);
 
 class HomeTimermuTile extends StatefulWidget {
@@ -185,10 +185,19 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
               final color = _customColors[index % _customColors.length];
               return GestureDetector(
                 onTap: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => DetailTimer(data: _allData[index]),
+                  //   ),
+                  // );
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailTimer(data: _allData[index]),
+                      builder: (context) => TimerPlayer(
+                        id: _allData[index]['id'],
+                      ),
                     ),
                   );
                 },

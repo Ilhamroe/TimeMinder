@@ -38,12 +38,15 @@ class _ModalConfirmState extends State<ModalConfirm> {
     });
   }
 
-  void _showNotification(String message){
+  void _showNotification(String message) {
+    int generateRandomId() {
+      return DateTime.now().millisecondsSinceEpoch.remainder(100000);
+    }
     Notif.showBigTextNotification(
-      title: "TimeMinder", 
-      body: message, 
-      fln: flutterLocalNotificationsPlugin
-      );
+        id: generateRandomId(),
+        title: "TimeMinder",
+        body: message,
+        fln: flutterLocalNotificationsPlugin);
   }
 
   @override
