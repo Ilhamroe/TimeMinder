@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
+import 'package:mobile_time_minder/pages/timer_page.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/cupertino_switch.dart';
 import 'package:mobile_time_minder/widgets/text.dart';
@@ -28,7 +29,7 @@ class _DisplayModalState extends State<DisplayModal> {
   int _counter = 0;
   int _counterBreakTime = 0;
   int _counterInterval = 0;
-  bool _isLoading = false;
+  bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
   bool isOptionOpen = false;
@@ -50,12 +51,12 @@ class _DisplayModalState extends State<DisplayModal> {
 
   void _refreshData() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      _isLoading = false;
+      isLoading = false;
     });
   }
 
@@ -95,7 +96,7 @@ class _DisplayModalState extends State<DisplayModal> {
               borderRadius: BorderRadius.circular(10.0),
             ),
             child: Text(
-              'Nama Timer, Deskripsi, dan Waktu harus diisi.',
+              'Nama Timer, Deskripsi,\ndan Waktu Fokus harus diisi.',
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Nunito',
@@ -107,7 +108,7 @@ class _DisplayModalState extends State<DisplayModal> {
         ),
       ),
     );
-    Overlay.of(context)!.insert(_overlayEntry);
+    Overlay.of(context).insert(_overlayEntry);
   }
 
   void _submitSetting() async {
@@ -117,14 +118,17 @@ class _DisplayModalState extends State<DisplayModal> {
 
     if (name.isEmpty || description.isEmpty || counter == 0) {
       _showOverlay(context);
-      Future.delayed(Duration(seconds: 1), () {
-        _overlayEntry.remove();
-      });
+      Future.delayed(
+        Duration(seconds: 1),
+        () {
+          _overlayEntry.remove();
+        },
+      );
       return;
     }
 
     if (id == null) {
-      await _addData().then((data) => _refreshData());
+      await _addData();
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -132,13 +136,14 @@ class _DisplayModalState extends State<DisplayModal> {
         ),
       );
     } else {
-      await _updateData(id!).then((value) => _refreshData());
-      Navigator.pop(context);
+      await _updateData(id!);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => DetailListTimer(),
+        ),
+      );
     }
-
-    setState(() {
-      _counter = _settingTimeWidgetKey.currentState?.getCounter() ?? 0;
-    });
   }
 
   void _resetSetting() {
@@ -194,24 +199,18 @@ class _DisplayModalState extends State<DisplayModal> {
     _refreshData();
   }
 
-  // delete data
-  void _deleteData(int id) async {
-    await SQLHelper.deleteData(id);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      backgroundColor: Colors.redAccent,
-      content: Text("Data deleted"),
-      duration: Duration(milliseconds: 500),
-    ));
-    _refreshData();
-  }
-
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
+    final double screenWidth = screenSize.width;
+    final double screenHeight = screenSize.height;
+
+    final double horizontalPadding = screenWidth * 0.05;
+    final double verticalPadding = screenHeight * 0.03;
 
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -221,8 +220,13 @@ class _DisplayModalState extends State<DisplayModal> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
           ),
-          width: screenSize.width * 0.9,
-          padding: EdgeInsets.fromLTRB(26, 15, 26, 21),
+          width: screenWidth * 0.9,
+          padding: EdgeInsets.fromLTRB(
+            horizontalPadding,
+            verticalPadding,
+            horizontalPadding,
+            verticalPadding,
+          ),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -233,7 +237,8 @@ class _DisplayModalState extends State<DisplayModal> {
                     Expanded(
                       child: CustomTextField(
                         labelText: 'Tambah waktumu sendiri',
-                        fontSize: 16,
+                        fontSize: screenWidth *
+                            0.04, // Contoh penggunaan ukuran font responsif
                         fontFamily: 'Nunito-Bold',
                       ),
                     ),
@@ -245,7 +250,7 @@ class _DisplayModalState extends State<DisplayModal> {
                     ),
                   ],
                 ),
-                SizedBox(height: 7),
+                SizedBox(height: screenHeight * 0.01),
                 CustomTextField(labelText: "Nama Timer : "),
                 TextField(
                   maxLength: 20,
@@ -255,7 +260,7 @@ class _DisplayModalState extends State<DisplayModal> {
                     counterText: '',
                   ),
                 ),
-                SizedBox(height: 7),
+                SizedBox(height: screenHeight * 0.01),
                 CustomTextField(labelText: "Deskripsi : "),
                 TextField(
                   maxLength: 30,
@@ -265,12 +270,12 @@ class _DisplayModalState extends State<DisplayModal> {
                     counterText: '',
                   ),
                 ),
-                SizedBox(height: 7),
+                SizedBox(height: screenHeight * 0.01),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextField(labelText: "Waktu (dalam menit)"),
-                    SizedBox(height: 15),
+                    CustomTextField(labelText: "Waktu Fokus (dalam menit)"),
+                    SizedBox(height: screenHeight * 0.015),
                     SettingTimeWidget(
                       key: _settingTimeWidgetKey,
                       initialCounter: _counter,
@@ -278,11 +283,9 @@ class _DisplayModalState extends State<DisplayModal> {
                         setState(() {
                           _counter = value;
                         });
-                        _settingTimeWidgetKey.currentState
-                            ?.updateCounter(_counter);
                       },
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: screenHeight * 0.01),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
@@ -290,21 +293,31 @@ class _DisplayModalState extends State<DisplayModal> {
                           child: CustomTextField(labelText: "Opsi Lainnya"),
                         ),
                         IconButton(
-                          onPressed: _namaTimerController.text.isNotEmpty &&
-                                  _deskripsiController.text.isNotEmpty &&
-                                  _counter != 0
-                              ? _openIconButtonPressed
-                              : null,
+                          onPressed: () {
+                            if (_namaTimerController.text.isNotEmpty &&
+                                _deskripsiController.text.isNotEmpty &&
+                                _counter != 0) {
+                              _openIconButtonPressed();
+                            } else {
+                              _showOverlay(context);
+                              Future.delayed(
+                                Duration(seconds: 1),
+                                () {
+                                  _overlayEntry?.remove();
+                                },
+                              );
+                            }
+                          },
                           icon: isOptionOpen
                               ? SvgPicture.asset(
                                   "assets/images/option_up.svg",
-                                  width: 30,
-                                  height: 30,
+                                  width: screenWidth * 0.08,
+                                  height: screenWidth * 0.08,
                                 )
                               : SvgPicture.asset(
                                   "assets/images/option.svg",
-                                  width: 30,
-                                  height: 30,
+                                  width: screenWidth * 0.08,
+                                  height: screenWidth * 0.08,
                                   color: darkGrey,
                                 ),
                         ),
@@ -319,7 +332,7 @@ class _DisplayModalState extends State<DisplayModal> {
                             color: Colors.grey,
                             thickness: 1,
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: screenHeight * 0.01),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -337,7 +350,7 @@ class _DisplayModalState extends State<DisplayModal> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 10),
+                          SizedBox(height: screenHeight * 0.01),
                           Divider(
                             color: Colors.grey,
                             thickness: 1,
@@ -351,14 +364,14 @@ class _DisplayModalState extends State<DisplayModal> {
                                     child: CustomTextField(
                                         labelText: "Durasi Istirahat"),
                                   ),
-                                  SizedBox(width: 15),
+                                  SizedBox(width: screenWidth * 0.02),
                                   Expanded(
                                     child: CustomTextField(
                                         labelText: "Jumlah Istirahat"),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8),
+                              SizedBox(height: screenHeight * 0.005),
                               SettingBreakWidget(
                                 key: _settingBreakWidgetKey,
                                 statusSwitch: statusSwitch,
@@ -370,7 +383,7 @@ class _DisplayModalState extends State<DisplayModal> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 15),
+                    SizedBox(height: screenHeight * 0.015),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -381,7 +394,7 @@ class _DisplayModalState extends State<DisplayModal> {
                           borderSideColor: cetaceanBlue,
                           onPressed: _resetSetting,
                         ),
-                        SizedBox(width: 15),
+                        SizedBox(width: screenWidth * 0.04),
                         CustomButton(
                           text: 'Terapkan',
                           primaryColor: ripeMango,

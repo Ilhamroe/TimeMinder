@@ -75,14 +75,16 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Row(
       children: [
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(2),
-            margin: EdgeInsets.only(right: 4),
+            padding: EdgeInsets.all(screenWidth * 0.01),
+            margin: EdgeInsets.only(right: screenWidth * 0.03, left: screenWidth * 0.01),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(screenWidth * 0.05),
               color: widget.statusSwitch ? offYellow : offGrey,
               border: Border.all(
                 color: widget.statusSwitch ? ripeMango : halfGrey,
@@ -93,18 +95,10 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: offYellow,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _decrement1 : null,
                     icon: Icon(Icons.remove),
-                    iconSize: 16,
+                    iconSize: screenWidth * 0.04,
                     color: widget.statusSwitch ? ripeMango : darkGrey,
                   ),
                 ),
@@ -115,7 +109,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.035,
+                      fontSize: screenWidth * 0.035,
                       color: darkGrey,
                     ),
                     decoration: InputDecoration(
@@ -125,18 +119,10 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _increment1 : null,
                     icon: Icon(Icons.add),
-                    iconSize: 16,
+                    iconSize: screenWidth * 0.04,
                     color: widget.statusSwitch ? ripeMango : darkGrey,
                   ),
                 ),
@@ -144,13 +130,13 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             ),
           ),
         ),
-        SizedBox(width: 20),
+        SizedBox(width: screenWidth * 0.005),
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(2),
-            margin: EdgeInsets.only(right: 4),
+            padding: EdgeInsets.all(screenWidth * 0.01),
+            margin: EdgeInsets.only(right: screenWidth * 0.03, left: screenWidth * 0.01),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(screenWidth * 0.05),
               color: widget.statusSwitch ? offYellow : offGrey,
               border: Border.all(
                 color: widget.statusSwitch ? ripeMango : halfGrey,
@@ -161,18 +147,10 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      right: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _decrement2 : null,
                     icon: Icon(Icons.remove),
-                    iconSize: 16,
+                    iconSize: screenWidth * 0.04,
                     color: widget.statusSwitch ? ripeMango : darkGrey,
                   ),
                 ),
@@ -183,7 +161,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     keyboardType: TextInputType.number,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.035,
+                      fontSize: screenWidth * 0.035,
                       color: darkGrey,
                     ),
                     decoration: InputDecoration(
@@ -193,18 +171,10 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Container(
-                  decoration: BoxDecoration(
-                    border: Border(
-                      left: BorderSide(
-                        color: Colors.white,
-                        width: 1,
-                      ),
-                    ),
-                  ),
                   child: IconButton(
                     onPressed: widget.statusSwitch ? _increment2 : null,
                     icon: Icon(Icons.add),
-                    iconSize: 16,
+                    iconSize: screenWidth * 0.04,
                     color: widget.statusSwitch ? ripeMango : darkGrey,
                   ),
                 ),

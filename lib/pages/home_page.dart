@@ -6,11 +6,10 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/list_timer.dart';
-import 'package:mobile_time_minder/pages/display_modal.dart';
+import 'package:mobile_time_minder/pages/timer_page.dart';
+import 'package:mobile_time_minder/widgets/display_modal.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
-import 'package:intl/intl.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -27,10 +26,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late List<Map<String, dynamic>> _allData = [];
   List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
 
-  int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
-  bool _isLoading = false;
+  int counter = 0;
+  int counterBreakTime = 0;
+  int counterInterval = 0;
+  bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
   bool isSemuaSelected = true;
@@ -41,65 +40,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void updateLabelColors(int selectedIndex) {
     for (int i = 0; i < labelColors.length; i++) {
-      labelColors[i] = cetaceanBlue;
+      labelColors[i] = i == selectedIndex ? offOrange : cetaceanBlue;
     }
-    labelColors[selectedIndex] = offOrange;
   }
 
   // refresh data
   Future<void> _refreshData() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      _isLoading = false;
+      isLoading = false;
     });
-  }
-
-  Future<void> _addData() async {
-    await SQLHelper.createData(
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    _refreshData();
-  }
-
-  // edit data
-  Future<void> _updateData(int id) async {
-    await SQLHelper.updateData(
-        id,
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    _refreshData();
-  }
-
-  void _submitSetting(int id) async {
-    final name = _namaTimerController.text.trim();
-    final description = _deskripsiController.text.trim();
-    final counter = _counter;
-
-    if (name.isEmpty || description.isEmpty || counter == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
-        duration: Duration(seconds: 1),
-      ));
-      return;
-    }
-    if (id == null) {
-      await _addData().then((data) => _refreshData());
-    } else {
-      await _updateData(id!);
-    }
-
-    Navigator.of(context).pop();
   }
 
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
@@ -108,16 +62,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      _counter = existingData['time'] ?? 0;
-      _counterBreakTime = existingData['rest'] ?? 0;
-      _counterInterval = existingData['interval'] ?? 0;
+      counter = existingData['time'] ?? 0;
+      counterBreakTime = existingData['rest'] ?? 0;
+      counterInterval = existingData['interval'] ?? 0;
     } else {
       // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      _counter = 0;
-      _counterBreakTime = 0;
-      _counterInterval = 0;
+      counter = 0;
+      counterBreakTime = 0;
+      counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
@@ -145,6 +99,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
     onClose(newData);
     _refreshData();
+    if (_page != 0) {
+      setState(() {
+        _page = 0;
+        updateLabelColors(_page);
+        _refreshData();
+      });
+    }
   }
 
   late String _greeting;
@@ -154,6 +115,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.initState();
     _refreshData();
     _initializeGreeting();
+    updateLabelColors(_page);
   }
 
   void _initializeGreeting() {
@@ -163,9 +125,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() {
       if (currentHour >= 5 && currentHour < 12) {
         _greeting = 'Selamat Pagi';
-      } else if (currentHour >= 12 && currentHour < 17) {
+      } else if (currentHour >= 12 && currentHour < 15) {
         _greeting = 'Selamat Siang';
-      } else if (currentHour >= 17 && currentHour < 19) {
+      } else if (currentHour >= 15 && currentHour < 19) {
         _greeting = 'Selamat Sore';
       } else {
         _greeting = 'Selamat Malam';
@@ -176,7 +138,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    return PopScope(
+    return WillPopScope(
+      onWillPop: () async {
+        setState(() {
+          updateLabelColors(_page);
+        });
+        return true;
+      },
       child: Scaffold(
         body: Container(
           width: double.infinity,
@@ -227,27 +195,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                     height: screenSize.height * 0.005,
                                   ),
                                   Text(
-                                    'Yuk, capai target',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: screenSize.width * 0.05,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    'fokusmu hari ini dan',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: screenSize.width * 0.05,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Selamat beraktivitas!',
+                                    'Yuk, capai target\nfokusmu hari ini',
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                       fontFamily: 'Nunito-Bold',
