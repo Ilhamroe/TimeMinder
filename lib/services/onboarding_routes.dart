@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/pages/list_timer.dart';
-import 'package:mobile_time_minder/pages/onboarding_page.dart';
-import 'package:mobile_time_minder/pages/splash_screen.dart';
+import 'package:mobile_time_minder/pages/timer_page.dart';
+import 'package:mobile_time_minder/pages/onBoarding_page.dart';
+import 'package:mobile_time_minder/widgets/splash_screen.dart';
 
 class AppRoutes {
   static const String splash = "/";

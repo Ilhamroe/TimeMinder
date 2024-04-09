@@ -1,95 +1,110 @@
-import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter/material.dart';
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/models/list_timer.dart';
-import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/widgets/modal_confim.dart';
 import 'package:mobile_time_minder/models/notif.dart';
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/pages/home_page.dart';
+import 'package:mobile_time_minder/widgets/modal_confim.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
-class TimerView extends StatefulWidget {
-  final int timerIndex;
+class DetailTimer extends StatefulWidget {
+  final Map<String, dynamic> data;
 
-  const TimerView({Key? key, required this.timerIndex}) : super(key: key);
+  const DetailTimer({Key? key, required this.data}) : super(key: key);
 
   @override
-  State<TimerView> createState() => _TimerState();
+  State<DetailTimer> createState() => _DetailTimerState();
 }
 
-class _TimerState extends State<TimerView> {
-  late Timer _timer;
+class _DetailTimerState extends State<DetailTimer> {
+  int currentTimerValue = 0;
+  bool isLoading = false;
 
-  late int timeInSec;
-  late String _waktuMentah;
-  late String _judul;
-  late String _deskripsi;
-  late int _jam;
-  late int _menit;
-  late int _detik;
-  bool isStarted = false;
-  int focusedMins = 0;
+  bool _isTimerRunning = false;
+  bool statusSwitch = false;
+  bool hideContainer = true;
   late List<Map<String, dynamic>> _allData = [];
-  bool _isLoading = false;
-  bool _isSoundPlayed = false;
+  late CountDownController _controller;
   final player = AudioPlayer();
+  bool _isSoundPlayed = false;
+  late DateTime _startTime;
+  late DateTime _endTime;
 
-  void _refreshData() async {
-    setState(() {
-      _isLoading = true;
-    });
-    final data = await SQLHelper.getAllData();
-    setState(() {
-      _allData = data;
-      _isLoading = false;
-    });
+  int get inTimeMinutes => widget.data['timer'];
+  int get inRestMinutes => widget.data['rest'] ?? 0;
+  int get interval => widget.data['interval'] ?? 1;
+
+  int get inTimeSeconds => inTimeMinutes * 60;
+  int get inRestSeconds => inRestMinutes * 60;
+
+  int get inTimeBreak {
+    if (inRestMinutes == 0 && interval == 1) {
+      return inTimeSeconds;
+    } else if (inRestMinutes > 0 && interval == 1) {
+      return inTimeSeconds + inRestSeconds;
+    } else if (inRestMinutes > 0 && interval > 1) {
+      return inTimeSeconds + (inRestSeconds * interval);
+    } else {
+      return inTimeSeconds;
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    _getDataByID();
-    _convertTimeInSec(context, _jam, _menit, _detik);
+    _refreshData();
+    _controller = CountDownController();
+    Notif.initialize(flutterLocalNotificationsPlugin);
+    player.onPlayerComplete.listen((event) {
+      setState(() {
+        _isSoundPlayed = false;
+      });
+    });
+    _startTime = DateTime.now();
+    _endTime = _startTime.add(Duration(minutes: inTimeMinutes));
+    _scheduleBreakNotification();
   }
 
-  void _getDataByID() {
-    _timer = Timerlist[widget.timerIndex];
-    _waktuMentah = _timer.time;
-    _judul = _timer.title;
-    _deskripsi = _timer.description;
-    _parseWaktuMentah(_waktuMentah);
-  }
-
-  void _parseWaktuMentah(String time) {
-    List<String> bagian = time.split(':');
-    _jam = int.parse(bagian[0]);
-    _menit = int.parse(bagian[1]);
-    _detik = int.parse(bagian[2]);
-  }
-
-  void _convertTimeInSec(BuildContext context, jam, menit, detik) {
+  void _refreshData() async {
     setState(() {
-      timeInSec = jam * 3600 + menit * 60 + detik;
+      isLoading = true;
+    });
+    final data = await SQLHelper.getAllData();
+    setState(() {
+      _allData = data;
+      isLoading = false;
     });
   }
 
-  final CountDownController _controller = CountDownController();
-  void startTimer() {
-    const onesec = Duration(seconds: 1);
+  void _showNotification(String message) {
+    Notif.showBigTextNotification(
+        title: "TimeMinder",
+        body: message,
+        fln: flutterLocalNotificationsPlugin);
   }
 
-  void _showPopup() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return ModalConfirm();
-      },
-    );
+  void _scheduleBreakNotification() {
+    int totalDuration = inTimeMinutes + (inRestMinutes * interval);
+    int restDuration = inRestMinutes * interval;
+
+    for (int i = 1; i <= interval; i++) {
+      int breakStartMinute =
+          ((totalDuration / 2) - ((i * restDuration) / 2)).floor();
+      int breakEndMinute = breakStartMinute + inRestMinutes;
+
+      DateTime breakStart =
+          _endTime.subtract(Duration(minutes: breakStartMinute.round()));
+      DateTime breakEnd =
+          _endTime.subtract(Duration(minutes: breakEndMinute.round()));
+
+      _showNotification('Istirahat dimulai');
+      _showNotification('Istirahat selesai');
+    }
   }
 
   void _showNotification(String message) {
@@ -101,10 +116,16 @@ class _TimerState extends State<TimerView> {
         title: "TimeMinder",
         body: message,
         fln: flutterLocalNotificationsPlugin);
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    final Map<String, dynamic> data = widget.data;
+
     return WillPopScope(
       onWillPop: () => _onBackButtonPressed(context),
       child: Scaffold(
@@ -122,9 +143,9 @@ class _TimerState extends State<TimerView> {
           ),
           title: Column(
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
-                _judul,
+                data['title'],
                 style: const TextStyle(
                   fontFamily: 'Nunito-Bold',
                   fontWeight: FontWeight.w600,
@@ -132,15 +153,16 @@ class _TimerState extends State<TimerView> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
-                _deskripsi,
+                data['description'],
                 style: const TextStyle(
                   fontFamily: 'Nunito',
                   fontSize: 14,
                   color: Colors.black,
                 ),
               ),
+              SizedBox(height: 10),
             ],
           ),
           centerTitle: true,
@@ -148,15 +170,9 @@ class _TimerState extends State<TimerView> {
           toolbarHeight: 80,
         ),
         body: SafeArea(
-          child: Container(
+          child: DecoratedBox(
             decoration: const BoxDecoration(
               color: pureWhite,
-            ),
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            padding: EdgeInsets.symmetric(
-              horizontal: MediaQuery.of(context).size.width * 0.1,
-              vertical: MediaQuery.of(context).size.height * 0.1,
             ),
             child: Center(
               child: Column(
@@ -164,7 +180,7 @@ class _TimerState extends State<TimerView> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   CircularCountDownTimer(
-                    duration: timeInSec,
+                    duration: inTimeBreak,
                     initialDuration: 0,
                     width: MediaQuery.of(context).size.width * 0.5,
                     height: MediaQuery.of(context).size.height * 0.4,
@@ -197,21 +213,22 @@ class _TimerState extends State<TimerView> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(),
+                          builder: (context) => const HomePage(),
                         ),
                       );
                     },
                     onStart: () {
-                      _showNotification("Timer dimulai");
-                      player.stop();
                       player.play(AssetSource('sounds/end.wav'));
+                      _scheduleBreakNotification();
+                      _showNotification("Timer dimulai");
+                      _isSoundPlayed = true;
                     },
                   ),
                   SizedBox(height: MediaQuery.of(context).size.height * 0.02),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      if (isStarted)
+                      if (_isTimerRunning)
                         Stack(
                           alignment: Alignment.center,
                           children: [
@@ -227,7 +244,7 @@ class _TimerState extends State<TimerView> {
                               onTap: () {
                                 setState(() {
                                   _controller.resume();
-                                  isStarted = false;
+                                  _isTimerRunning = false;
                                   _showNotification("Timer dilanjutkan");
                                   if (!_isSoundPlayed) {
                                     player
@@ -246,7 +263,7 @@ class _TimerState extends State<TimerView> {
                             ),
                           ],
                         ),
-                      if (!isStarted)
+                      if (!_isTimerRunning)
                         Stack(
                           alignment: Alignment.center,
                           children: [
@@ -262,7 +279,7 @@ class _TimerState extends State<TimerView> {
                               onTap: () {
                                 setState(() {
                                   _controller.pause();
-                                  isStarted = true;
+                                  _isTimerRunning = true;
                                   _showNotification("Timer dijeda");
                                   if (_isSoundPlayed) {
                                     player
@@ -383,7 +400,12 @@ class _TimerState extends State<TimerView> {
                       ),
                       child: TextButton(
                         onPressed: () {
-                          Navigator.of(context).pop(true);
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => HomePage(),
+                            ),
+                          );
                         },
                         child: const Text(
                           "Ya",
@@ -401,5 +423,14 @@ class _TimerState extends State<TimerView> {
     );
 
     return exitApp ?? false;
+  }
+
+  void _showPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return const ModalConfirm();
+      },
+    );
   }
 }

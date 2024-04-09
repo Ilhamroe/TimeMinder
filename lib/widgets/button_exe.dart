@@ -38,7 +38,7 @@ class CustomButton extends StatelessWidget {
           ),
         ),
         minimumSize: MaterialStateProperty.all<Size>(
-          Size.zero, // Allow the button to adjust its size based on content
+          Size.zero,
         ),
       ),
       child: Padding(

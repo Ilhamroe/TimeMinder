@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
@@ -15,8 +14,9 @@ void requestNotificationPermission() async {
     await Permission.notification.request();
   }
 }
+
 class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+  const MainApp({Key? key}) : super(key: key);
 
   @override
   State<MainApp> createState() => _MainAppState();
