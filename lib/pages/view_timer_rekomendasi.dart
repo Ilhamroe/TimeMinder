@@ -89,6 +89,7 @@ class _TimerState extends State<TimerView> {
     int generateRandomId() {
       return DateTime.now().millisecondsSinceEpoch.remainder(100000);
     }
+
     Notif.showBigTextNotification(
         id: generateRandomId(),
         title: "TimeMinder",
@@ -389,6 +390,7 @@ class _TimerState extends State<TimerView> {
                       ),
                       child: TextButton(
                         onPressed: () {
+                          _showNotification("Timer dihentikan");
                           Navigator.of(context).pop(true);
                         },
                         child: const Text(

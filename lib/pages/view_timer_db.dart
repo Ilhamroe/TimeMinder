@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
@@ -22,8 +23,11 @@ class DetailTimer extends StatefulWidget {
 }
 
 class _DetailTimerState extends State<DetailTimer> {
+  int _counter = 0;
+  int _counterBreakTime = 0;
+  int _counterInterval = 0;
   int currentTimerValue = 0;
-  bool isLoading = false;
+  bool _isLoading = false;
 
   bool _isTimerRunning = false;
   bool statusSwitch = false;
@@ -32,8 +36,6 @@ class _DetailTimerState extends State<DetailTimer> {
   late CountDownController _controller;
   final player = AudioPlayer();
   bool _isSoundPlayed = false;
-  late DateTime _startTime;
-  late DateTime _endTime;
 
   int get inTimeMinutes => widget.data['timer'];
   int get inRestMinutes => widget.data['rest'] ?? 0;
@@ -54,6 +56,29 @@ class _DetailTimerState extends State<DetailTimer> {
     }
   }
 
+  List<int> getTimeSegments() {
+    List<int> timeSegments = [];
+
+    int totalFocusTime = inTimeSeconds;
+    int restTime = inRestSeconds;
+    int totalSegments = interval * 2 + 1;
+
+    int focusTimePerSegment = totalFocusTime ~/ interval;
+    for (int i = 0; i < totalSegments; i++) {
+      if (i < totalSegments - 1) {
+        timeSegments.add(focusTimePerSegment);
+      } else {
+        timeSegments
+            .add(totalFocusTime - (focusTimePerSegment * (interval - 1)));
+      }
+      if (i < totalSegments - 1) {
+        timeSegments.add(restTime);
+      }
+    }
+
+    return timeSegments;
+  }
+
   @override
   void initState() {
     super.initState();
@@ -65,19 +90,23 @@ class _DetailTimerState extends State<DetailTimer> {
         _isSoundPlayed = false;
       });
     });
-    _startTime = DateTime.now();
-    _endTime = _startTime.add(Duration(minutes: inTimeMinutes));
-    _scheduleBreakNotification();
+    _timer = Timer.periodic(Duration(seconds: 1), _updateTimer);
+  }
+
+  @override
+  void dispose() {
+    _timer.cancel();
+    super.dispose();
   }
 
   void _refreshData() async {
     setState(() {
-      isLoading = true;
+      _isLoading = true;
     });
     final data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      isLoading = false;
+      _isLoading = false;
     });
   }
 
@@ -88,42 +117,42 @@ class _DetailTimerState extends State<DetailTimer> {
         fln: flutterLocalNotificationsPlugin);
   }
 
-  void _scheduleBreakNotification() {
-    int totalDuration = inTimeMinutes + (inRestMinutes * interval);
-    int restDuration = inRestMinutes * interval;
+  late Timer _timer;
+  int _elapsedSeconds = 0;
+  int currentSegmentIndex = 0;
 
-    for (int i = 1; i <= interval; i++) {
-      int breakStartMinute =
-          ((totalDuration / 2) - ((i * restDuration) / 2)).floor();
-      int breakEndMinute = breakStartMinute + inRestMinutes;
-
-      DateTime breakStart =
-          _endTime.subtract(Duration(minutes: breakStartMinute.round()));
-      DateTime breakEnd =
-          _endTime.subtract(Duration(minutes: breakEndMinute.round()));
-
-      _showNotification('Istirahat dimulai');
-      _showNotification('Istirahat selesai');
-    }
+  void _updateTimer(Timer timer) {
+    bool isRestTime = true;
+    setState(() {
+      _elapsedSeconds++;
+      updateSegmentIndex();
+      List<int> timeSegments = getTimeSegments();
+      currentSegmentDuration = timeSegments[currentSegmentIndex];
+      isRestTime = currentSegmentIndex.isEven;
+    });
   }
 
-  void _showNotification(String message) {
-    int generateRandomId() {
-      return DateTime.now().millisecondsSinceEpoch.remainder(100000);
+  int currentSegmentDuration = 0;
+
+  void updateSegmentIndex() {
+    int totalDuration = inTimeBreak;
+    List<int> timeSegments = getTimeSegments();
+
+    int totalSegmentDuration = 0;
+    for (int i = 0; i < timeSegments.length; i++) {
+      totalSegmentDuration += timeSegments[i];
+      if (_elapsedSeconds <= totalSegmentDuration) {
+        currentSegmentIndex = i;
+        break;
+      }
     }
-    Notif.showBigTextNotification(
-        id: generateRandomId(),
-        title: "TimeMinder",
-        body: message,
-        fln: flutterLocalNotificationsPlugin);
-  @override
-  void dispose() {
-    player.dispose();
-    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    List<int> timeSegments = getTimeSegments();
+    bool isRestTime = currentSegmentIndex.isEven;
+    int currentSegmentDuration = timeSegments[currentSegmentIndex];
     final Map<String, dynamic> data = widget.data;
 
     return WillPopScope(
@@ -179,8 +208,38 @@ class _DetailTimerState extends State<DetailTimer> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: offYellow,
+                      border: Border.all(
+                        color: ripeMango,
+                        width: 1,
+                      ),
+                    ),
+                    child: Text(
+                      isRestTime ? 'Focus' : 'Istirahat',
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontFamily: 'Nunito-Bold',
+                        fontSize: 20,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    "Saat ini anda berada dalam mode ${isRestTime ? 'Focus' : 'Istirahat'} selama ${inTimeBreak / 60} menit",
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontFamily: 'Nunito',
+                      fontSize: 14,
+                      color: Colors.black,
+                    ),
+                  ),
                   CircularCountDownTimer(
-                    duration: inTimeBreak,
+                    duration: currentSegmentDuration,
                     initialDuration: 0,
                     width: MediaQuery.of(context).size.width * 0.5,
                     height: MediaQuery.of(context).size.height * 0.4,
@@ -219,7 +278,6 @@ class _DetailTimerState extends State<DetailTimer> {
                     },
                     onStart: () {
                       player.play(AssetSource('sounds/end.wav'));
-                      _scheduleBreakNotification();
                       _showNotification("Timer dimulai");
                       _isSoundPlayed = true;
                     },

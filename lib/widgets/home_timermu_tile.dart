@@ -168,21 +168,21 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
               final color = _customColors[index % _customColors.length];
               return GestureDetector(
                 onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => DetailTimer(data: _allData[index]),
-                  //   ),
-                  // );
-
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TimerPlayer(
-                        id: _allData[index]['id'],
-                      ),
+                      builder: (context) => DetailTimer(data: _allData[index]),
                     ),
                   );
+
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => TimerPlayer(
+                  //       id: _allData[index]['id'], data: _allData[index]
+                  //     ),
+                  //   ),
+                  // );
                 },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 13.0),
