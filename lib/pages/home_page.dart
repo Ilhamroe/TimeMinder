@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/theme.dart';
@@ -109,7 +110,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   late String _greeting;
 
-
   void _initializeGreeting() {
     final currentTime = DateTime.now();
     final currentHour = currentTime.hour;
@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     return WillPopScope(
       onWillPop: () async {
         setState(() {
-          updateLabelColors(_page);
+          updateLabelColors(2);
         });
         return true;
       },
@@ -178,15 +178,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: screenSize.width * 0.1,
+                      horizontal: screenSize.width * 0.14,
                       vertical: screenSize.height * 0.02,
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Expanded(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
@@ -202,7 +201,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 height: screenSize.height * 0.005,
                               ),
                               Text(
-                                'Yuk, capai target fokusmu hari ini dan Selamat beraktivitas!',
+                                'Yuk, capai target\nfokusmu hari ini',
                                 overflow: TextOverflow.ellipsis,
                                 softWrap: true,
                                 maxLines: 3,
@@ -331,35 +330,76 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             ],
           ),
         ),
-        bottomNavigationBar: TimeMinderBottomNav(
-          currentPageIndex: _page,
+        bottomNavigationBar: CurvedNavigationBar(
+          key: _bottomNavigationKey,
+          index: _page,
+          height: 65.0,
+          items: [
+            CurvedNavigationBarItem(
+              child: SvgPicture.asset(
+                "assets/images/solar.svg",
+                width: 25,
+                height: 25,
+              ),
+              label: _page == 0 ? null : "BERANDA",
+              labelStyle: TextStyle(
+                color: labelColors[0],
+                fontFamily: 'Nunito',
+              ),
+            ),
+            CurvedNavigationBarItem(
+              child: const Icon(
+                Icons.add,
+                size: 25,
+              ),
+              label: "TAMBAH",
+              labelStyle: TextStyle(
+                color: labelColors[1],
+                fontFamily: 'Nunito',
+              ),
+            ),
+            CurvedNavigationBarItem(
+              child: const Icon(
+                Icons.hourglass_empty_rounded,
+                size: 25,
+              ),
+              label: _page == 2 ? null : "TIMER",
+              labelStyle: TextStyle(
+                color: labelColors[2],
+                fontFamily: 'Nunito',
+              ),
+            ),
+          ],
+          backgroundColor: pureWhite,
+          color: offOrange,
+          animationCurve: Curves.bounceInOut,
+          animationDuration: const Duration(milliseconds: 500),
+          buttonBackgroundColor: const Color(0xFFFFBF1C),
           onTap: (index) {
-            setState(() {
-              _page = index;
-              updateLabelColors(_page);
-              switch (_page) {
-                case 0:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(),
-                    ),
-                  );
-                  break;
-                case 1:
-                  _showModal((newData) {});
-                  break;
-                case 2:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DetailListTimer(),
-                    ),
-                  );
-                  break;
-              }
-            });
+            setState(
+              () {
+                _page = index;
+                updateLabelColors(_page);
+                switch (_page) {
+                  case 0:
+                    _refreshData();
+                    break;
+                  case 1:
+                    _showModal((int? id) {});
+                    break;
+                  case 2:
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const DetailListTimer(),
+                      ),
+                    );
+                    break;
+                }
+              },
+            );
           },
+          letIndexChange: (index) => true,
         ),
       ),
     );

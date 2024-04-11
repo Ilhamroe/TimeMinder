@@ -89,28 +89,6 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     _refreshData();
   }
 
-  void _submitSetting(int id) async {
-    final name = _namaTimerController.text.trim();
-    final description = _deskripsiController.text.trim();
-    final counter = _counter;
-
-    if (name.isEmpty || description.isEmpty || counter == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
-        duration: Duration(seconds: 1),
-      ));
-      return;
-    }
-    if (id == null) {
-      await _addData().then((data) => _refreshData());
-    } else {
-      await _updateData(id!);
-    }
-
-    Navigator.of(context).pop();
-  }
-
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
     if (id != null) {
       final existingData =
@@ -166,6 +144,13 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
   void initState() {
     super.initState();
     _refreshData();
+  }
+
+  @override
+  void dispose() {
+    _namaTimerController.dispose();
+    _deskripsiController.dispose();
+    super.dispose();
   }
 
   @override
