@@ -30,22 +30,23 @@ class CustomButton extends StatelessWidget {
           ),
         ),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          EdgeInsets.all(0), // No fixed padding
+          EdgeInsets.zero,
         ),
         shape: MaterialStateProperty.all<OutlinedBorder>(
           RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),
         ),
-        minimumSize: MaterialStateProperty.all<Size>(
-          Size.zero,
-        ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16), // Adjust padding as needed
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: MediaQuery.of(context).size.height *
+              0.025,
+          horizontal: MediaQuery.of(context).size.width *
+              0.12,
+        ),
         child: Text(text),
       ),
     );
   }
 }
-

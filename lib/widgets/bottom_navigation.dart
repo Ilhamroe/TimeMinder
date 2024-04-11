@@ -19,24 +19,32 @@ class TimeMinderBottomNav extends StatefulWidget {
 }
 
 class _TimeMinderBottomNavState extends State<TimeMinderBottomNav> {
-  List<Color> labelColors = [cetaceanBlue];
+  List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
   GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+
+  void updateLabelColors(int selectedIndex) {
+    for (int i = 0; i < labelColors.length; i++) {
+      labelColors[i] = i == selectedIndex ? offOrange : cetaceanBlue;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
         index: widget.currentPageIndex == 1 ? 0 : widget.currentPageIndex,
         key: _bottomNavigationKey,
-        height: 69.0,
+        height: 50.0,
         items: [
           CurvedNavigationBarItem(
             child: SvgPicture.asset(
               "assets/images/solar.svg",
-              width: 25,
-              height: 25,
+              width: 20,
+              height: 20,
             ),
             label: "BERANDA",
             labelStyle: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
               color: labelColors[0],
               fontFamily: 'Nunito',
             ),
@@ -48,6 +56,8 @@ class _TimeMinderBottomNavState extends State<TimeMinderBottomNav> {
             ),
             label: "TAMBAH",
             labelStyle: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
               color: labelColors[0],
               fontFamily: 'Nunito',
             ),
@@ -55,12 +65,14 @@ class _TimeMinderBottomNavState extends State<TimeMinderBottomNav> {
           CurvedNavigationBarItem(
             child: const Icon(
               Icons.hourglass_empty_rounded,
-              size: 25,
+              size: 20,
             ),
             label: "TIMER",
             labelStyle: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.bold,
               color: labelColors[0],
-              fontFamily: 'Nunito',
+              fontFamily: 'Nunito-Bold',
             ),
           ),
         ],

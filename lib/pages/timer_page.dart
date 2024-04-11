@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -181,7 +182,7 @@ class _DetailListTimerState extends State<DetailListTimer>
     return WillPopScope(
       onWillPop: () async {
         setState(() {
-          updateLabelColors(_page);
+          updateLabelColors(0);
         });
         return true;
       },
@@ -329,36 +330,76 @@ class _DetailListTimerState extends State<DetailListTimer>
             ],
           ),
         ),
-        bottomNavigationBar: TimeMinderBottomNav(
-          currentPageIndex: _page,
+        bottomNavigationBar: CurvedNavigationBar(
+          key: _bottomNavigationKey,
+          index: _page,
+          height: 65.0,
+          items: [
+            CurvedNavigationBarItem(
+              child: SvgPicture.asset(
+                "assets/images/solar.svg",
+                width: 25,
+                height: 25,
+              ),
+              label: "BERANDA",
+              labelStyle: TextStyle(
+                color: labelColors[0],
+                fontFamily: 'Nunito',
+              ),
+            ),
+            CurvedNavigationBarItem(
+              child: const Icon(
+                Icons.add,
+                size: 25,
+              ),
+              label: "TAMBAH",
+              labelStyle: TextStyle(
+                color: labelColors[1],
+                fontFamily: 'Nunito',
+              ),
+            ),
+            CurvedNavigationBarItem(
+              child: const Icon(
+                Icons.hourglass_empty_rounded,
+                size: 25,
+              ),
+              label: _page == 2 ? null : "TIMER",
+              labelStyle: TextStyle(
+                color: labelColors[2],
+                fontFamily: 'Nunito',
+              ),
+            ),
+          ],
+          backgroundColor: pureWhite,
+          color: offOrange,
+          animationCurve: Curves.bounceInOut,
+          animationDuration: const Duration(milliseconds: 500),
+          buttonBackgroundColor: const Color(0xFFFFBF1C),
           onTap: (index) {
-            setState(() {
-              print("Index: $index");
-              _page = index;
-              updateLabelColors(_page);
-              switch (_page) {
-                case 0:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(),
-                    ),
-                  );
-                  break;
-                case 1:
-                  _showModal((newData) {});
-                  break;
-                case 2:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const DetailListTimer(),
-                    ),
-                  );
-                  break;
-              }
-            });
+            setState(
+              () {
+                _page = index;
+                updateLabelColors(index);
+                switch (index) {
+                  case 0:
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomePage(),
+                      ),
+                    );
+                    break;
+                  case 1:
+                    _showModal((int? id) {});
+                    break;
+                  case 2:
+                    _refreshData();
+                    break;
+                }
+              },
+            );
           },
+          letIndexChange: (index) => true,
         ),
       ),
     );

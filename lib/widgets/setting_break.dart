@@ -78,6 +78,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
     final double screenWidth = MediaQuery.of(context).size.width;
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
         Expanded(
           child: Container(
@@ -131,7 +132,6 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             ),
           ),
         ),
-        SizedBox(width: screenWidth * 0.005),
         Expanded(
           child: Container(
             padding: EdgeInsets.all(screenWidth * 0.01),

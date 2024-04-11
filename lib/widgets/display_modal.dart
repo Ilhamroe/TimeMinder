@@ -148,6 +148,12 @@ class _DisplayModalState extends State<DisplayModal> {
     });
   }
 
+  void _handleTimerChange(int value) {
+    setState(() {
+      _counter = value;
+    });
+  }
+
   void _handleBreakTimeChange(int value) {
     setState(() {
       _counterBreakTime = value;
@@ -160,12 +166,24 @@ class _DisplayModalState extends State<DisplayModal> {
     });
   }
 
-  void _openIconButtonPressed() {
-    setState(() {
-      isOptionOpen = !isOptionOpen;
-      hideContainer = !hideContainer;
-      statusSwitch = false;
-    });
+  void _openAnotherOption() {
+    if (namaTimerController.text.isNotEmpty &&
+        deskripsiController.text.isNotEmpty &&
+        _counter != 0) {
+      setState(() {
+        isOptionOpen = !isOptionOpen;
+        hideContainer = !hideContainer;
+        statusSwitch = false;
+      });
+    } else {
+      _showOverlay(context);
+      Future.delayed(
+        Duration(seconds: 1),
+        () {
+          _overlayEntry?.remove();
+        },
+      );
+    }
   }
 
   // add data
@@ -247,8 +265,7 @@ class _DisplayModalState extends State<DisplayModal> {
                     Expanded(
                       child: CustomTextField(
                         labelText: 'Tambah waktumu sendiri',
-                        fontSize: screenWidth *
-                            0.04, // Contoh penggunaan ukuran font responsif
+                        fontSize: screenWidth * 0.04,
                         fontFamily: 'Nunito-Bold',
                       ),
                     ),
@@ -289,11 +306,7 @@ class _DisplayModalState extends State<DisplayModal> {
                     SettingTimeWidget(
                       key: _settingTimeWidgetKey,
                       initialCounter: _counter,
-                      onChanged: (value) {
-                        setState(() {
-                          _counter = value;
-                        });
-                      },
+                      onChanged: _handleTimerChange,
                     ),
                     SizedBox(height: screenHeight * 0.01),
                     Row(
@@ -303,21 +316,7 @@ class _DisplayModalState extends State<DisplayModal> {
                           child: CustomTextField(labelText: "Opsi Lainnya"),
                         ),
                         IconButton(
-                          onPressed: () {
-                            if (namaTimerController.text.isNotEmpty &&
-                                deskripsiController.text.isNotEmpty &&
-                                _counter != 0) {
-                              _openIconButtonPressed();
-                            } else {
-                              _showOverlay(context);
-                              Future.delayed(
-                                Duration(seconds: 1),
-                                () {
-                                  _overlayEntry?.remove();
-                                },
-                              );
-                            }
-                          },
+                          onPressed: () => _openAnotherOption(),
                           icon: isOptionOpen
                               ? SvgPicture.asset(
                                   "assets/images/option_up.svg",
@@ -395,7 +394,7 @@ class _DisplayModalState extends State<DisplayModal> {
                     ),
                     SizedBox(height: screenHeight * 0.015),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         CustomButton(
                           text: '  Reset  ',
@@ -404,7 +403,6 @@ class _DisplayModalState extends State<DisplayModal> {
                           borderSideColor: cetaceanBlue,
                           onPressed: _resetSetting,
                         ),
-                        SizedBox(width: screenWidth * 0.03),
                         CustomButton(
                           text: 'Terapkan',
                           primaryColor: ripeMango,
