@@ -36,10 +36,13 @@ class _DetailTimerState extends State<DetailTimer> {
   late DateTime _endTime;
 
   int get inTimeMinutes => widget.data['timer'];
+
   int get inRestMinutes => widget.data['rest'] ?? 0;
+
   int get interval => widget.data['interval'] ?? 1;
 
   int get inTimeSeconds => inTimeMinutes * 60;
+
   int get inRestSeconds => inRestMinutes * 60;
 
   int get inTimeBreak {
@@ -82,7 +85,12 @@ class _DetailTimerState extends State<DetailTimer> {
   }
 
   void _showNotification(String message) {
+    int generateRandomId() {
+      return DateTime.now().millisecondsSinceEpoch.remainder(100000);
+    }
+
     Notif.showBigTextNotification(
+        id: generateRandomId(),
         title: "TimeMinder",
         body: message,
         fln: flutterLocalNotificationsPlugin);
@@ -107,15 +115,6 @@ class _DetailTimerState extends State<DetailTimer> {
     }
   }
 
-  void _showNotification(String message) {
-    int generateRandomId() {
-      return DateTime.now().millisecondsSinceEpoch.remainder(100000);
-    }
-    Notif.showBigTextNotification(
-        id: generateRandomId(),
-        title: "TimeMinder",
-        body: message,
-        fln: flutterLocalNotificationsPlugin);
   @override
   void dispose() {
     player.dispose();

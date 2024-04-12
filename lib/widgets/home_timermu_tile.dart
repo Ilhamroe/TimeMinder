@@ -178,7 +178,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => TimerPlayer(
+                      builder: (context) => CombinedTimerPage(
                         id: _allData[index]['id'],
                       ),
                     ),
