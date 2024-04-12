@@ -23,6 +23,7 @@ class DetailTimer extends StatefulWidget {
 }
 
 class _DetailTimerState extends State<DetailTimer> {
+  bool isRestTime = false;
   int _counter = 0;
   int _counterBreakTime = 0;
   int _counterInterval = 0;
@@ -56,27 +57,54 @@ class _DetailTimerState extends State<DetailTimer> {
     }
   }
 
-  List<int> getTimeSegments() {
-    List<int> timeSegments = [];
+  Map<String, int> getAllMode(
+      int inTimeMinutes, int inRestMinutes, int interval) {
+    int inTimeSeconds = inTimeMinutes * 60;
+    int inRestSeconds = inRestMinutes * 60;
 
-    int totalFocusTime = inTimeSeconds;
-    int restTime = inRestSeconds;
-    int totalSegments = interval * 2 + 1;
+    int totalDuration = inTimeSeconds + (interval * inRestSeconds);
+    int workDuration = inTimeSeconds ~/ (interval + 1);
+    int remainingWorkDuration = inTimeSeconds - (workDuration * interval);
 
-    int focusTimePerSegment = totalFocusTime ~/ interval;
-    for (int i = 0; i < totalSegments; i++) {
-      if (i < totalSegments - 1) {
-        timeSegments.add(focusTimePerSegment);
-      } else {
-        timeSegments
-            .add(totalFocusTime - (focusTimePerSegment * (interval - 1)));
-      }
-      if (i < totalSegments - 1) {
-        timeSegments.add(restTime);
-      }
+    Map<String, int> modeMap = {};
+    for (int i = 0; i < interval; i++) {
+      modeMap['workDuration${i + 1}'] = workDuration;
+      modeMap['restDuration${i + 1}'] = inRestSeconds;
     }
 
-    return timeSegments;
+    modeMap['workDuration${interval + 1}'] = remainingWorkDuration;
+
+    return modeMap;
+  }
+
+  List<Timer> activeTimers = [];
+
+  void cancelNotifications() {
+    for (Timer timer in activeTimers) {
+      timer.cancel();
+    }
+    activeTimers.clear();
+  }
+
+  void scheduleNotification(
+      Duration duration, String message, bool isEndOfBreak) {
+    Timer timer = Timer(duration, () {
+      _showNotification(message);
+      if (isEndOfBreak) {
+        player.play(AssetSource('sounds/end.wav'));
+      } else {
+        player.play(AssetSource('sounds/start.wav'));
+      }
+    });
+    activeTimers.add(timer);
+  }
+
+  void _showNotification(String message) {
+    Notif.showBigTextNotification(
+      title: "TimeMinder",
+      body: message,
+      fln: flutterLocalNotificationsPlugin,
+    );
   }
 
   @override
@@ -90,13 +118,6 @@ class _DetailTimerState extends State<DetailTimer> {
         _isSoundPlayed = false;
       });
     });
-    _timer = Timer.periodic(Duration(seconds: 1), _updateTimer);
-  }
-
-  @override
-  void dispose() {
-    _timer.cancel();
-    super.dispose();
   }
 
   void _refreshData() async {
@@ -110,49 +131,32 @@ class _DetailTimerState extends State<DetailTimer> {
     });
   }
 
-  void _showNotification(String message) {
-    Notif.showBigTextNotification(
-        title: "TimeMinder",
-        body: message,
-        fln: flutterLocalNotificationsPlugin);
-  }
-
-  late Timer _timer;
-  int _elapsedSeconds = 0;
-  int currentSegmentIndex = 0;
-
-  void _updateTimer(Timer timer) {
-    bool isRestTime = true;
+  void resumeTimer() {
     setState(() {
-      _elapsedSeconds++;
-      updateSegmentIndex();
-      List<int> timeSegments = getTimeSegments();
-      currentSegmentDuration = timeSegments[currentSegmentIndex];
-      isRestTime = currentSegmentIndex.isEven;
+      _controller.resume();
+      _isTimerRunning = false;
+      _showNotification("Timer dilanjutkan");
+      if (!_isSoundPlayed) {
+        player.play(AssetSource("sounds/start.wav"));
+        _isSoundPlayed = true;
+      }
     });
   }
 
-  int currentSegmentDuration = 0;
-
-  void updateSegmentIndex() {
-    int totalDuration = inTimeBreak;
-    List<int> timeSegments = getTimeSegments();
-
-    int totalSegmentDuration = 0;
-    for (int i = 0; i < timeSegments.length; i++) {
-      totalSegmentDuration += timeSegments[i];
-      if (_elapsedSeconds <= totalSegmentDuration) {
-        currentSegmentIndex = i;
-        break;
+  void pauseTimer() {
+    setState(() {
+      _controller.pause();
+      _isTimerRunning = true;
+      _showNotification("Timer dijeda");
+      if (_isSoundPlayed) {
+        player.play(AssetSource("sounds/pause.wav"));
+        _isSoundPlayed = false;
       }
-    }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    List<int> timeSegments = getTimeSegments();
-    bool isRestTime = currentSegmentIndex.isEven;
-    int currentSegmentDuration = timeSegments[currentSegmentIndex];
     final Map<String, dynamic> data = widget.data;
 
     return WillPopScope(
@@ -203,187 +207,231 @@ class _DetailTimerState extends State<DetailTimer> {
             decoration: const BoxDecoration(
               color: pureWhite,
             ),
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: offYellow,
-                      border: Border.all(
-                        color: ripeMango,
-                        width: 1,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                CircularCountDownTimer(
+                  duration: getAllMode(inTimeMinutes, inRestMinutes, interval)
+                      .values
+                      .reduce((a, b) => a + b),
+                  initialDuration: 0,
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  controller: _controller,
+                  ringColor: ring,
+                  fillColor: _controller.isPaused ? red : ripeMango,
+                  fillGradient: LinearGradient(
+                    begin: Alignment.bottomLeft,
+                    end: Alignment.topRight,
+                    colors: _controller.isPaused
+                        ? [red, offOrange]
+                        : [ripeMango, offOrange],
+                  ),
+                  strokeWidth: 20.0,
+                  isReverse: true,
+                  isReverseAnimation: false,
+                  strokeCap: StrokeCap.round,
+                  autoStart: true,
+                  textStyle: TextStyle(
+                    fontSize: MediaQuery.of(context).size.width * 0.1,
+                    color: _controller.isPaused ? red : cetaceanBlue,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  onChange: (String timeStamp) {},
+                  onComplete: () {
+                    player.play(AssetSource('sounds/end.wav'));
+                    _showNotification("Timer Selesai");
+                    _refreshData();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HomePage(),
                       ),
-                    ),
-                    child: Text(
-                      isRestTime ? 'Focus' : 'Istirahat',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontFamily: 'Nunito-Bold',
-                        fontSize: 20,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    "Saat ini anda berada dalam mode ${isRestTime ? 'Focus' : 'Istirahat'} selama ${inTimeBreak / 60} menit",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontFamily: 'Nunito',
-                      fontSize: 14,
-                      color: Colors.black,
-                    ),
-                  ),
-                  CircularCountDownTimer(
-                    duration: currentSegmentDuration,
-                    initialDuration: 0,
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    height: MediaQuery.of(context).size.height * 0.4,
-                    controller: _controller,
-                    ringColor: ring,
-                    fillColor: _controller.isPaused ? red : ripeMango,
-                    fillGradient: LinearGradient(
-                      begin: Alignment.bottomLeft,
-                      end: Alignment.topRight,
-                      colors: [
-                        _controller.isPaused ? red : ripeMango,
-                        offOrange
-                      ],
-                    ),
-                    strokeWidth: 20.0,
-                    isReverse: true,
-                    isReverseAnimation: false,
-                    strokeCap: StrokeCap.round,
-                    autoStart: true,
-                    textStyle: TextStyle(
-                      fontSize: MediaQuery.of(context).size.width * 0.1,
-                      color: _controller.isPaused ? red : cetaceanBlue,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    onChange: (String timeStamp) {},
-                    onComplete: () {
-                      player.play(AssetSource('sounds/end.wav'));
-                      _showNotification("Timer selesai");
-                      _refreshData();
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const HomePage(),
-                        ),
-                      );
-                    },
-                    onStart: () {
-                      player.play(AssetSource('sounds/end.wav'));
-                      _showNotification("Timer dimulai");
-                      _isSoundPlayed = true;
-                    },
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.02),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      if (_isTimerRunning)
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.15,
-                              height: MediaQuery.of(context).size.width * 0.15,
-                              decoration: BoxDecoration(
-                                color: offBlue,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _controller.resume();
-                                  _isTimerRunning = false;
-                                  _showNotification("Timer dilanjutkan");
-                                  if (!_isSoundPlayed) {
-                                    player
-                                        .play(AssetSource("sounds/start.wav"));
-                                    _isSoundPlayed = true;
-                                  }
-                                });
-                              },
-                              child: SvgPicture.asset(
-                                "assets/images/play.svg",
-                                width: MediaQuery.of(context).size.width * 0.07,
-                                height:
-                                    MediaQuery.of(context).size.width * 0.07,
-                                color: blueJeans,
-                              ),
-                            ),
-                          ],
-                        ),
-                      if (!_isTimerRunning)
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: MediaQuery.of(context).size.width * 0.15,
-                              height: MediaQuery.of(context).size.width * 0.15,
-                              decoration: BoxDecoration(
-                                color: offBlue,
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  _controller.pause();
-                                  _isTimerRunning = true;
-                                  _showNotification("Timer dijeda");
-                                  if (_isSoundPlayed) {
-                                    player
-                                        .play(AssetSource("sounds/pause.wav"));
-                                    _isSoundPlayed = false;
-                                  }
-                                });
-                              },
-                              child: SvgPicture.asset(
-                                "assets/images/pause.svg",
-                                width: MediaQuery.of(context).size.width * 0.07,
-                                height:
-                                    MediaQuery.of(context).size.width * 0.07,
-                                color: blueJeans,
-                              ),
-                            ),
-                          ],
-                        ),
-                      SizedBox(width: MediaQuery.of(context).size.width * 0.2),
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Container(
-                            width: MediaQuery.of(context).size.width * 0.15,
-                            height: MediaQuery.of(context).size.width * 0.15,
-                            decoration: BoxDecoration(
-                              color: offBlue,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
+                    );
+                  },
+                  onStart: () {
+                    player.play(AssetSource('sounds/end.wav'));
+                    _showNotification("Timer dimulai");
+                    _isSoundPlayed = true;
+                    for (int i = 0; i < interval; i++) {
+                      int workDuration = getAllMode(inTimeMinutes!,
+                          inRestMinutes!, interval)['workDuration${i + 1}']!;
+                      int restDuration = getAllMode(inTimeMinutes!,
+                          inRestMinutes!, interval)['restDuration${i + 1}']!;
+                      scheduleNotification(Duration(seconds: workDuration),
+                          "Waktunya Istirahat", false);
+                      scheduleNotification(
+                          Duration(seconds: workDuration + restDuration),
+                          "Istirahat Selesai",
+                          true);
+                    }
+                  },
+                ),
+                SizedBox(height: MediaQuery.of(context).size.height * 0.02),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          height: MediaQuery.of(context).size.width * 0.15,
+                          decoration: BoxDecoration(
+                            color: offBlue,
+                            borderRadius: BorderRadius.circular(20),
                           ),
-                          IconButton(
-                            onPressed: _showPopup,
-                            icon: SvgPicture.asset(
-                              "assets/images/check.svg",
-                              width: MediaQuery.of(context).size.width * 0.07,
-                              height: MediaQuery.of(context).size.width * 0.07,
-                              color: blueJeans,
-                            ),
+                        ),
+                        GestureDetector(
+                          onTap: _isTimerRunning ? resumeTimer : pauseTimer,
+                          child: SvgPicture.asset(
+                            _isTimerRunning
+                                ? "assets/images/play.svg"
+                                : "assets/images/pause.svg",
+                            width: MediaQuery.of(context).size.width * 0.07,
+                            height: MediaQuery.of(context).size.width * 0.07,
                             color: blueJeans,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(width: MediaQuery.of(context).size.width * 0.2),
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Container(
+                          width: MediaQuery.of(context).size.width * 0.15,
+                          height: MediaQuery.of(context).size.width * 0.15,
+                          decoration: BoxDecoration(
+                            color: offBlue,
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  content: SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.68,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.42,
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        SizedBox(
+                                          height: MediaQuery.of(context)
+                                                  .size
+                                                  .height *
+                                              0.2,
+                                          child: Image.asset(
+                                            'assets/images/confirm_popup.png',
+                                            fit: BoxFit.contain,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.2,
+                                          ),
+                                        ),
+                                        const Text(
+                                          "Timer akan dihapus,",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontFamily: 'Nunito',
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20.0),
+                                        const Text(
+                                          "Apakah Anda yakin?",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontFamily: 'Nunito',
+                                            fontSize: 21,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20.0),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                color: halfGrey,
+                                              ),
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text(
+                                                  "Tidak",
+                                                  style:
+                                                      TextStyle(color: offGrey),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 30),
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0),
+                                                color: ripeMango,
+                                              ),
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  cancelNotifications();
+                                                  _showNotification(
+                                                      "Timer dihentikan");
+                                                  _refreshData();
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          HomePage(),
+                                                    ),
+                                                  );
+                                                },
+                                                child: const Text(
+                                                  "Ya",
+                                                  style:
+                                                      TextStyle(color: offGrey),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          icon: SvgPicture.asset(
+                            "assets/images/check.svg",
+                            width: MediaQuery.of(context).size.width * 0.07,
+                            height: MediaQuery.of(context).size.width * 0.07,
+                            color: blueJeans,
+                          ),
+                          color: blueJeans,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
@@ -464,6 +512,7 @@ class _DetailTimerState extends State<DetailTimer> {
                               builder: (context) => HomePage(),
                             ),
                           );
+                          cancelNotifications();
                         },
                         child: const Text(
                           "Ya",

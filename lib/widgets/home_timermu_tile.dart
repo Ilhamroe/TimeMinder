@@ -7,7 +7,8 @@ import 'package:mobile_time_minder/pages/view_timer_db.dart';
 import 'package:mobile_time_minder/widgets/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/setting_time.dart';
-import 'package:mobile_time_minder/pages/timer_player.dart';
+import 'package:mobile_time_minder/pages/timer_player_copy.dart';
+
 typedef ModalCloseCallback = void Function(int? id);
 
 class HomeTimermuTile extends StatefulWidget {
