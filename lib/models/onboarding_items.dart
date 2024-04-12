@@ -12,18 +12,18 @@ class OnBoardItems {
 class OnboardData {
   static List<OnBoardItems> onBoardItemList = [
     OnBoardItems(
-      image: 'assets/images/cat_hello.png',
-      title: "Welcome to TimeMinder",
-      shortDescription: "Kelola waktu Anda secara efektif dengan TimeMinder",
+      image: 'assets/images/cat_hello.svg',
+      title: "Hello I'm Mindy!",
+      shortDescription: "Yuk kelola waktu Anda secara efektif dengan TimeMinder",
     ),
     OnBoardItems(
-      image: 'assets/images/cat_clock.png',
-      title: "Explore Amazing Features",
+      image: 'assets/images/cat_clock.svg',
+      title: "Explore Our Features",
       shortDescription:
           "Jelajahi fitur-fitur menakjubkan dan tetap terorganisir dengan TimeMinder",
     ),
     OnBoardItems(
-      image: 'assets/images/cat_pencil.png',
+      image: 'assets/images/cat_pencil.svg',
       title: "Get Started Now!",
       shortDescription:
           "Mulai sekarang dan tingkatkan produktivitas Anda bersama TimeMinder",

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
 
 void main() {
   runApp(const MainApp());
