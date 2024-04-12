@@ -1,7 +1,7 @@
 TimeMinder Release Notes:
 
-1.
-2.
-3.
+1.Add Logic Timer
+2.Optimize Code
+3.Embo ngelu wes an
 
-Dev -> Hafis R
+Dev -> Hafis R dan segenap A3

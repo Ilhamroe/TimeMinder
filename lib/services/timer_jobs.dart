@@ -14,7 +14,7 @@ class TimerJobs {
   });
 
   List<ListJobs> generateJobsTimer() {
-    const timeType = ['FOKUS', 'ISTIRAHAT'];
+    const timeType = ['FOKUS', 'ISTIRAHAT '];
     int workDuration = (timer / (interval + 1)).floor();
     int restDuration = rest;
 

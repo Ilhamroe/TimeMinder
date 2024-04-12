@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
+import 'package:mobile_time_minder/pages/timer_player.dart';
 import 'package:mobile_time_minder/pages/view_timer_db.dart';
 import 'package:mobile_time_minder/widgets/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
@@ -172,7 +173,11 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailTimer(data: _allData[index]),
+                      // builder: (context) => DetailTimer(data: _allData[index]),
+
+                      builder: (context) => CombinedTimerPage(
+                        id: _allData[index]['id'],
+                      ),
                     ),
                   );
 
