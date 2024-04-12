@@ -1,14 +1,14 @@
 import 'dart:ui';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/detail_custom_timer.dart';
-import 'package:mobile_time_minder/pages/display_modal.dart';
+import 'package:mobile_time_minder/pages/timer_player.dart';
+import 'package:mobile_time_minder/pages/view_timer_db.dart';
+import 'package:mobile_time_minder/widgets/display_modal.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/setting_time.dart';
+import 'package:mobile_time_minder/pages/timer_player_copy.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -91,28 +91,6 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     _refreshData();
   }
 
-  void _submitSetting(int id) async {
-    final name = _namaTimerController.text.trim();
-    final description = _deskripsiController.text.trim();
-    final counter = _counter;
-
-    if (name.isEmpty || description.isEmpty || counter == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
-        duration: Duration(seconds: 1),
-      ));
-      return;
-    }
-    if (id == null) {
-      await _addData().then((data) => _refreshData());
-    } else {
-      await _updateData(id!);
-    }
-
-    Navigator.of(context).pop();
-  }
-
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
     if (id != null) {
       final existingData =
@@ -171,6 +149,13 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
   }
 
   @override
+  void dispose() {
+    _namaTimerController.dispose();
+    _deskripsiController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return _isLoading
         ? const Center(
@@ -188,9 +173,22 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => DetailTimer(data: _allData[index]),
+                      // builder: (context) => DetailTimer(data: _allData[index]),
+
+                      builder: (context) => CombinedTimerPage(
+                        id: _allData[index]['id'],
+                      ),
                     ),
                   );
+
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(
+                  //     builder: (context) => TimerPlayer(
+                  //       id: _allData[index]['id'], data: _allData[index]
+                  //     ),
+                  //   ),
+                  // );
                 },
                 child: Container(
                   margin: const EdgeInsets.only(bottom: 13.0),
@@ -218,7 +216,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                       style: const TextStyle(
                         fontFamily: 'Nunito-Bold',
                         fontWeight: FontWeight.w900,
-                        fontSize: 12,
+                        fontSize: 14,
                       ),
                     ),
                     subtitle: Text(
@@ -226,7 +224,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                       style: const TextStyle(
                         fontFamily: 'Nunito',
                         fontWeight: FontWeight.w600,
-                        fontSize: 10,
+                        fontSize: 12,
                       ),
                     ),
                     trailing: widget.isSettingPressed
@@ -416,9 +414,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                 height: 15,
                               ),
                               Text(
-                                _formatTime(_allData[index]['timer'] +
-                                    (_allData[index]['rest'] *
-                                        _allData[index]['interval'])),
+                                _formatTime(_allData[index]['timer']),
                                 style: const TextStyle(
                                   fontFamily: 'DMSans',
                                   fontWeight: FontWeight.w600,

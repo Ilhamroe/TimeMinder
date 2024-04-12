@@ -4,8 +4,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
-import 'package:mobile_time_minder/pages/display_modal.dart';
-import 'package:mobile_time_minder/pages/timer_view.dart';
+import 'package:mobile_time_minder/widgets/display_modal.dart';
+import 'package:mobile_time_minder/pages/view_timer_rekomendasi.dart';
 import 'package:mobile_time_minder/theme.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
@@ -131,7 +131,7 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
                 style: const TextStyle(
                   fontFamily: 'Nunito-Bold',
                   fontWeight: FontWeight.w900,
-                  fontSize: 12,
+                  fontSize: 14,
                 ),
               ),
               subtitle: Text(
@@ -139,7 +139,7 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
                 style: const TextStyle(
                   fontFamily: 'Nunito',
                   fontWeight: FontWeight.w600,
-                  fontSize: 10,
+                  fontSize: 12,
                 ),
               ),
               trailing: Column(

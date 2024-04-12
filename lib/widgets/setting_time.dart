@@ -27,30 +27,29 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
     _textController.addListener(_onTextChanged);
   }
 
-   int getCounter() {
-    return _counterMainTime;
+  @override
+  void dispose() {
+    _textController.dispose();
+    super.dispose();
   }
 
   void _onTextChanged() {
-  final newText = _textController.text;
+    final newText = _textController.text;
     if (newText.isNotEmpty) {
       final newValue = int.tryParse(newText);
       if (newValue != null) {
         setState(() {
           _counterMainTime = newValue;
-          widget.onChanged?.call(_counterMainTime);
         });
+        widget.onChanged?.call(_counterMainTime);
       }
     }
   }
 
   void updateCounter(int newCounter) {
-    setState(() {
-      _counterMainTime = newCounter;
-      widget.onChanged?.call(newCounter);
-      _textController.text =
-          _counterMainTime.toString();
-    });
+    _counterMainTime = newCounter;
+    widget.onChanged?.call(newCounter);
+    _textController.text = _counterMainTime.toString();
   }
 
   void _increment() {
@@ -99,7 +98,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       border: Border(
                         right: BorderSide(
                           color: offYellow,
@@ -109,7 +108,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     ),
                     child: IconButton(
                       onPressed: _decrement,
-                      icon: Icon(Icons.remove),
+                      icon: const Icon(Icons.remove),
                       iconSize: MediaQuery.of(context).size.width * 0.03,
                       color: ripeMango,
                     ),
@@ -125,16 +124,19 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                       fontSize: MediaQuery.of(context).size.width * 0.035,
                       color: darkGrey,
                     ),
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                     ),
+                    onChanged: (text) {
+                      _onTextChanged();
+                    },
                   ),
                 ),
                 Flexible(
                   flex: 1,
                   child: Container(
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       border: Border(
                         left: BorderSide(
                           color: offYellow,
@@ -144,7 +146,7 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     ),
                     child: IconButton(
                       onPressed: _increment,
-                      icon: Icon(Icons.add),
+                      icon: const Icon(Icons.add),
                       iconSize: MediaQuery.of(context).size.width * 0.03,
                       color: ripeMango,
                     ),

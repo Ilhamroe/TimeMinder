@@ -1,59 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/models/notif.dart';
-import 'package:audioplayers/audioplayers.dart';
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
+class TimerFinishDialog extends StatelessWidget {
+  final VoidCallback? onEndTimer;
+  final String? title;
+  final String? message;
 
-typedef ModalCloseCallback = void Function(int? id);
-
-class ModalConfirm extends StatefulWidget {
-  final Function()? onConfirm;
-
-  const ModalConfirm({Key? key, this.onConfirm}) : super(key: key);
-
-  @override
-  State<ModalConfirm> createState() => _ModalConfirmState();
-}
-
-class _ModalConfirmState extends State<ModalConfirm> {
-  late List<Map<String, dynamic>> _allData = [];
-
-  bool isLoading = false;
-  bool statusSwitch = false;
-  final player= AudioPlayer();
-
-  // refresh data
-  void _refreshData() async {
-    setState(() {
-      isLoading = true;
-    });
-    final data = await SQLHelper.getAllData();
-    setState(() {
-      _allData = data;
-      isLoading = false;
-    });
-  }
-
-  void _showNotification(String message) {
-    int generateRandomId() {
-      return DateTime.now().millisecondsSinceEpoch.remainder(100000);
-    }
-    Notif.showBigTextNotification(
-        id: generateRandomId(),
-        title: "TimeMinder",
-        body: message,
-        fln: flutterLocalNotificationsPlugin);
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
-  }
+  const TimerFinishDialog(
+      {super.key, this.onEndTimer, this.title, this.message});
 
   @override
   Widget build(BuildContext context) {
@@ -120,19 +74,8 @@ class _ModalConfirmState extends State<ModalConfirm> {
                   ),
                   child: TextButton(
                     onPressed: () {
-                      if (widget.onConfirm != null) {
-                        widget.onConfirm!();
-                        Navigator.pop(context);
-                      } else {
-                        _showNotification("Timer dihentikan");               
-                        _refreshData();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => HomePage(),
-                          ),
-                        );
-                      }
+                      onEndTimer?.call();
+                      Navigator.pop(context);
                     },
                     child: const Text(
                       "Ya",

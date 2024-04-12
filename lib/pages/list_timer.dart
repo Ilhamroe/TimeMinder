@@ -1,19 +1,19 @@
 import 'dart:ui';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/display_modal.dart';
+import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
+import 'package:mobile_time_minder/widgets/display_modal.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
 
 final logger = Logger();
+
 typedef ModalCloseCallback = void Function(int? id);
 
 class DetailListTimer extends StatefulWidget {
@@ -179,7 +179,6 @@ class _DetailListTimerState extends State<DetailListTimer>
   @override
   void dispose() {
     tabController.dispose();
-    // _refreshData();
     super.dispose();
   }
 
@@ -323,82 +322,36 @@ class _DetailListTimerState extends State<DetailListTimer>
           ],
         ),
       ),
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        index: _page,
-        height: 65.0,
-        items: [
-          CurvedNavigationBarItem(
-            child: SvgPicture.asset(
-              "assets/images/solar.svg",
-              width: 20,
-              height: 20,
-            ),
-            label: "BERANDA",
-            labelStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-              color: labelColors[0],
-              fontFamily: 'Nunito',
-            ),
-          ),
-          CurvedNavigationBarItem(
-            child: const Icon(
-              Icons.add,
-              size: 20,
-            ),
-            label: "TAMBAH",
-            labelStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-              color: labelColors[1],
-              fontFamily: 'Nunito',
-            ),
-          ),
-          CurvedNavigationBarItem(
-            child: const Icon(
-              Icons.hourglass_empty_rounded,
-              size: 20,
-            ),
-            label: _page == 2 ? null : "TIMER",
-            labelStyle: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12,
-              color: labelColors[2],
-              fontFamily: 'Nunito',
-            ),
-          ),
-        ],
-        backgroundColor: pureWhite,
-        color: offOrange,
-        animationCurve: Curves.bounceInOut,
-        animationDuration: const Duration(milliseconds: 500),
-        buttonBackgroundColor: const Color(0xFFFFBF1C),
+      bottomNavigationBar: TimeMinderBottomNav(
+        currentPageIndex: _page,
         onTap: (index) {
-          setState(
-            () {
-              _page = index;
-              updateLabelColors(index);
-              switch (index) {
-                case 0:
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HomePage(),
-                    ),
-                  );
-                  break;
-                case 1:
-                  _showModal((int? id) {});
-                  break;
-                case 2:
-                  _refreshData();
-                  break;
-              }
-            },
-          );
+          setState(() {
+            print("Index: $index");
+            _page = index;
+            updateLabelColors(_page);
+            switch (_page) {
+              case 0:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const HomePage(),
+                  ),
+                );
+                break;
+              case 1:
+                _showModal((newData) {});
+                break;
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DetailListTimer(),
+                  ),
+                );
+                break;
+            }
+          });
         },
-        letIndexChange: (index) => true,
       ),
     );
   }
