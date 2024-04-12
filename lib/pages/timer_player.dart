@@ -3,7 +3,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/services/timer_jobs.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/models/notif.dart';
@@ -17,7 +16,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 class CombinedTimerPage extends StatefulWidget {
   final int id;
 
-  const CombinedTimerPage({Key? key, required this.id}) : super(key: key);
+  const CombinedTimerPage({super.key, required this.id});
 
   @override
   State<CombinedTimerPage> createState() => _CombinedTimerPageState();
@@ -72,24 +71,93 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
       setState(() {
         _cDController.restart(
             duration: _jobsTimer[++_currentJobIndex].duration * 60);
+        if (_jobsTimer[_currentJobIndex].type == 'ISTIRAHAT') {
+          _player.play(AssetSource('sounds/start.wav'));
+          _showNotification("Waktunya Istirahat");
+          showDialog(
+            context: context,
+            builder: (context) {
+              Future.delayed(const Duration(seconds: 2), () {
+                Navigator.of(context).pop();
+              });
+              return AlertDialog(
+                title: const Text('Istirahat'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/cat_hello.png',
+                      fit: BoxFit.contain,
+                      width: MediaQuery.of(context).size.width * 0.2,
+                      height: MediaQuery.of(context).size.width * 0.2,
+                    ),
+                    const SizedBox(height: 10),
+                    const Text('Waktunya istirahat'),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      _cDController.resume();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Oke'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
+        if (_jobsTimer[_currentJobIndex].type == 'FOKUS') {
+          _player.play(AssetSource('sounds/pause.wav'));
+          _showNotification("Istirahat Selesai");
+          showDialog(
+            context: context,
+            builder: (context) {
+              Future.delayed(const Duration(seconds: 2), () {
+                Navigator.of(context).pop();
+              });
+              return AlertDialog(
+                title: const Text('Istirahat'),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      'assets/images/cat_hello.png',
+                      fit: BoxFit.contain,
+                      width: MediaQuery.of(context).size.width * 0.2,
+                      height: MediaQuery.of(context).size.width * 0.2,
+                    ),
+                    const SizedBox(height: 10),
+                    const Text('istirahat Selesai'),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      _cDController.resume();
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Oke'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       });
-      if (_currentJobIndex % 2 != 0) {
-        _player.play(AssetSource('sounds/start.wav'));
-        _showNotification("Waktunya Istirahat");
-      } else {
-        _player.play(AssetSource('sounds/pause.wav'));
-        _showNotification("Istirahat Selesai");
-      }
+      // if (_currentJobIndex % 2 != 0) {
+      //   _player.play(AssetSource('sounds/start.wav'));
+      //   _showNotification("Waktunya Istirahat");
+      // } else {
+      //   _player.play(AssetSource('sounds/pause.wav'));
+      //   _showNotification("Istirahat Selesai");
+      // }
     } else {
       _player.play(AssetSource('sounds/end.wav'));
       _showNotification("Timer Selesai");
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
       _cDController.pause();
+      Navigator.pop(context);
     }
   }
 
@@ -108,11 +176,14 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
-              TimerFinishDialog(
-                onEndTimer: () {
-                  _clearJobs();
-                  Navigator.pop(context);
-                },
+              showDialog(
+                context: context,
+                builder: (context) => TimerFinishDialog(
+                  onEndTimer: () {
+                    _clearJobs();
+                    Navigator.pop(context);
+                  },
+                ),
               );
             },
             icon: SvgPicture.asset(
@@ -204,7 +275,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                       //     color: Colors.black,
                       //   ),
                       // ),
-                      const SizedBox(height: 20),
+                      // const SizedBox(height: 20),
                       CircularCountDownTimer(
                         duration: _jobsTimer[_currentJobIndex].duration * 60,
                         initialDuration: 0,
@@ -239,7 +310,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                         },
                       ),
                       SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.02),
+                          height: MediaQuery.of(context).size.height * 0.05),
                       // if (_currentJobIndex < _jobsTimer.length - 1)
                       //   Text(
                       //     'Selanjutnya : ${_jobsTimer[_currentJobIndex + 1].type} selama ${_jobsTimer[_currentJobIndex + 1].duration} menit',
@@ -288,6 +359,26 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                                   color: offBlue,
                                   borderRadius: BorderRadius.circular(20),
                                 ),
+                                // mainAxisAlignment: MainAxisAlignment.center,
+                                // children: [
+                                //   ElevatedButton(
+                                //     onPressed: () {
+                                //       showDialog(
+                                //           context: context,
+                                //           builder: (context) => TimerFinishDialog(
+                                //                 title: 'Perhatian!',
+                                //                 message:
+                                //                     'Apakah Anda yakin ingin melewati timer ini?',
+                                //                 onEndTimer: () {
+                                //                   _queueTimerJob();
+                                //                   _showNotification('Timer Dilewati');
+                                //                   Navigator.pop(context);
+                                //                 },
+                                //               ));
+                                //     },
+                                //     style: ElevatedButton.styleFrom(
+                                //       backgroundColor: offBlue,
+                                //     ),
                               ),
                               GestureDetector(
                                 onTap: _pauseOrResume,
