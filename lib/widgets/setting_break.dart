@@ -70,8 +70,8 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
       children: [
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(2),
-            margin: EdgeInsets.only(right: 4),
+            padding: const EdgeInsets.all(2),
+            margin: const EdgeInsets.only(right: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: widget.statusSwitch ? offYellow : offGrey,
@@ -94,7 +94,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                                 (currentValue - 1).toString();
                           }
                         : null,
-                    icon: Icon(Icons.remove),
+                    icon: const Icon(Icons.remove),
                     iconSize: 16,
                     color: widget.statusSwitch ? ripeMango : darkGrey,
                   ),
@@ -108,7 +108,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                       border: InputBorder.none,
                       contentPadding: EdgeInsets.zero,
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: darkGrey,
                     ),
@@ -126,7 +126,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                                 (currentValue + 1).toString();
                           }
                         : null,
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                     iconSize: 16,
                     color: widget.statusSwitch ? ripeMango : darkGrey,
                   ),
@@ -135,11 +135,11 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
             ),
           ),
         ),
-        SizedBox(width: 20),
+        const SizedBox(width: 18),
         Expanded(
           child: Container(
-            padding: EdgeInsets.all(2),
-            margin: EdgeInsets.only(right: 4),
+            padding: const EdgeInsets.all(2),
+            margin: const EdgeInsets.only(right: 4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15),
               color: widget.statusSwitch ? offYellow : offGrey,
@@ -162,7 +162,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                                 (currentValue - 1).toString();
                           }
                         : null,
-                    icon: Icon(Icons.remove),
+                    icon: const Icon(Icons.remove),
                     iconSize: 16,
                     color: widget.statusSwitch ? ripeMango : darkGrey,
                   ),
@@ -176,7 +176,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                       contentPadding: EdgeInsets.zero,
                     ),
                     onChanged: _onIntervalChanged,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
                       color: darkGrey,
                     ),
@@ -194,7 +194,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                                 (currentValue + 1).toString();
                           }
                         : null,
-                    icon: Icon(Icons.add),
+                    icon: const Icon(Icons.add),
                     iconSize: 16,
                     color: widget.statusSwitch ? ripeMango : darkGrey,
                   ),

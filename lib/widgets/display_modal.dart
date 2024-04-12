@@ -332,7 +332,7 @@ class _DisplayModalState extends State<DisplayModal> {
                             children: [
                               const Expanded(
                                 child: CustomTextField(
-                                    labelText: "Aktifkan mode istirahat"),
+                                    labelText: "Aktifkan mode istirahat\n(Min. Waktu Fokus 2 menit)"),
                               ),
                               CupertinoSwitchAdaptiveWidget(
                                 statusSwitch: statusSwitch,

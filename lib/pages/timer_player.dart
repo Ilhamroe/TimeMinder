@@ -4,13 +4,15 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/pages/view_timer_rekomendasi.dart';
 import 'package:mobile_time_minder/services/timer_jobs.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/models/notif.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 import '../widgets/timer_finish_dialog.dart';
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 class CombinedTimerPage extends StatefulWidget {
   final int id;
@@ -32,8 +34,6 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
   late int _timer;
   late int _rest;
   late int _interval;
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
@@ -73,6 +73,13 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
         _cDController.restart(
             duration: _jobsTimer[++_currentJobIndex].duration * 60);
       });
+      if (_currentJobIndex % 2 != 0) {
+        _player.play(AssetSource('sounds/start.wav'));
+        _showNotification("Waktunya Istirahat");
+      } else {
+        _player.play(AssetSource('sounds/pause.wav'));
+        _showNotification("Istirahat Selesai");
+      }
     } else {
       _player.play(AssetSource('sounds/end.wav'));
       _showNotification("Timer Selesai");
@@ -132,7 +139,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                 style: const TextStyle(
                   fontFamily: 'Nunito',
                   fontSize: 14,
-                  color: ripeMango,
+                  color: cetaceanBlue,
                 ),
               ),
               const SizedBox(height: 10),
@@ -167,36 +174,36 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: offYellow,
-                          border: Border.all(
-                            color: ripeMango,
-                            width: 1,
-                          ),
-                        ),
-                        child: Text(
-                          _jobsTimer[_currentJobIndex].title,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontFamily: 'Nunito-Bold',
-                            fontSize: 20,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      Text(
-                        '${_jobsTimer[_currentJobIndex].duration} menit',
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(
-                          fontFamily: 'Nunito',
-                          fontSize: 14,
-                          color: Colors.black,
-                        ),
-                      ),
+                      // Container(
+                      //   padding: const EdgeInsets.all(10),
+                      //   decoration: BoxDecoration(
+                      //     borderRadius: BorderRadius.circular(10),
+                      //     color: offYellow,
+                      //     border: Border.all(
+                      //       color: ripeMango,
+                      //       width: 1,
+                      //     ),
+                      //   ),
+                      //   child: Text(
+                      //     _jobsTimer[_currentJobIndex].title,
+                      //     textAlign: TextAlign.center,
+                      //     style: const TextStyle(
+                      //       fontFamily: 'Nunito-Bold',
+                      //       fontSize: 20,
+                      //       color: Colors.black,
+                      //     ),
+                      //   ),
+                      // ),
+                      // const SizedBox(height: 10),
+                      // Text(
+                      //   '${_jobsTimer[_currentJobIndex].duration} menit',
+                      //   textAlign: TextAlign.center,
+                      //   style: const TextStyle(
+                      //     fontFamily: 'Nunito',
+                      //     fontSize: 14,
+                      //     color: Colors.black,
+                      //   ),
+                      // ),
                       const SizedBox(height: 20),
                       CircularCountDownTimer(
                         duration: _jobsTimer[_currentJobIndex].duration * 60,
@@ -223,83 +230,120 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                         isReverse: true,
                         isReverseAnimation: false,
                         isTimerTextShown: true,
+                        onStart: () {
+                          _player.play(AssetSource('sounds/end.wav'));
+                          _showNotification("Timer dimulai");
+                        },
                         onComplete: () {
                           _queueTimerJob();
                         },
                       ),
-                      const SizedBox(height: 20),
-                      if (_currentJobIndex < _jobsTimer.length - 1)
-                        Text(
-                          'Selanjutnya : ${_jobsTimer[_currentJobIndex + 1].type} selama ${_jobsTimer[_currentJobIndex + 1].duration} menit',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontFamily: 'Nunito',
-                            fontSize: 12,
-                            color: darkGrey,
-                          ),
-                        )
-                      else
-                        const Text(
-                          'Ini adalah sesi terakhir',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontFamily: 'Nunito',
-                            fontSize: 12,
-                            color: darkGrey,
-                          ),
-                        ),
-                      const SizedBox(height: 20),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.02),
+                      // if (_currentJobIndex < _jobsTimer.length - 1)
+                      //   Text(
+                      //     'Selanjutnya : ${_jobsTimer[_currentJobIndex + 1].type} selama ${_jobsTimer[_currentJobIndex + 1].duration} menit',
+                      //     textAlign: TextAlign.center,
+                      //     style: const TextStyle(
+                      //       fontFamily: 'Nunito',
+                      //       fontSize: 12,
+                      //       color: darkGrey,
+                      //     ),
+                      //   )
+                      // else
+                      //   const Text(
+                      //     'Ini adalah sesi terakhir',
+                      //     textAlign: TextAlign.center,
+                      //     style: TextStyle(
+                      //       fontFamily: 'Nunito',
+                      //       fontSize: 12,
+                      //       color: darkGrey,
+                      //     ),
+                      //   ),
+                      // const SizedBox(height: 20),
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () {
-                                _queueTimerJob();
-                                _showNotification('Timer Dilewati');
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: offBlue,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          // ElevatedButton(
+                          //   onPressed: () {
+                          //     _queueTimerJob();
+                          //   },
+                          //   style: ElevatedButton.styleFrom(
+                          //     backgroundColor: offBlue,
+                          //   ),
+                          //   child: const Icon(
+                          //     Icons.skip_next,
+                          //     color: blueJeans,
+                          //   ),
+                          // ),
+                          // const SizedBox(width: 20),
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.15,
+                                decoration: BoxDecoration(
+                                  color: offBlue,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
                               ),
-                              child: const Icon(
-                                Icons.skip_next,
+                              GestureDetector(
+                                onTap: _pauseOrResume,
+                                child: SvgPicture.asset(
+                                  _cDController.isPaused
+                                      ? "assets/images/play.svg"
+                                      : "assets/images/pause.svg",
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.07,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.07,
+                                  color: blueJeans,
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(
+                              width: MediaQuery.of(context).size.width * 0.2),
+                          Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.15,
+                                height:
+                                    MediaQuery.of(context).size.width * 0.15,
+                                decoration: BoxDecoration(
+                                  color: offBlue,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => TimerFinishDialog(
+                                      onEndTimer: () {
+                                        _clearJobs();
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  );
+                                },
+                                icon: SvgPicture.asset(
+                                  "assets/images/check.svg",
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.07,
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.07,
+                                  color: blueJeans,
+                                ),
                                 color: blueJeans,
                               ),
-                            ),
-                            const SizedBox(width: 20),
-                            ElevatedButton(
-                              onPressed: _pauseOrResume,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: offBlue,
-                              ),
-                              child: Icon(
-                                _cDController.isPaused
-                                    ? Icons.play_arrow
-                                    : Icons.pause,
-                                color: blueJeans,
-                              ),
-                            ),
-                            const SizedBox(width: 20),
-                            ElevatedButton(
-                              onPressed: () {
-                                showDialog(
-                                  context: context,
-                                  builder: (context) => TimerFinishDialog(
-                                    onEndTimer: () {
-                                      _clearJobs();
-                                      Navigator.pop(context);
-                                    },
-                                  ),
-                                );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: offBlue,
-                              ),
-                              child: const Icon(
-                                Icons.check,
-                                color: blueJeans,
-                              ),
-                            ),
-                          ])
+                            ],
+                          ),
+                        ],
+                      ),
                     ],
                   );
                 }

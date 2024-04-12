@@ -38,7 +38,9 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
     if (newText.isNotEmpty) {
       final newValue = int.tryParse(newText);
       if (newValue != null) {
-        _counterMainTime = newValue;
+        setState(() {
+          _counterMainTime = newValue;
+        });
         widget.onChanged?.call(_counterMainTime);
       }
     }
