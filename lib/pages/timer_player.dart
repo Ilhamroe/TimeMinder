@@ -4,7 +4,6 @@ import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/pages/view_timer_rekomendasi.dart';
 import 'package:mobile_time_minder/services/timer_jobs.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/models/notif.dart';
@@ -15,7 +14,7 @@ import '../widgets/timer_finish_dialog.dart';
 class CombinedTimerPage extends StatefulWidget {
   final int id;
 
-  const CombinedTimerPage({Key? key, required this.id}) : super(key: key);
+  const CombinedTimerPage({super.key, required this.id});
 
   @override
   State<CombinedTimerPage> createState() => _CombinedTimerPageState();
@@ -72,25 +71,58 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
       setState(() {
         _cDController.restart(
             duration: _jobsTimer[++_currentJobIndex].duration * 60);
+        if (_jobsTimer[_currentJobIndex].type == 'ISTIRAHAT') {
+          _showNotification('Waktunya istirahat');
+          _cDController.pause();
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Istirahat'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Image.asset(
+                    'assets/images/cat_hello.png',
+                    fit: BoxFit.contain,
+                    width: MediaQuery.of(context).size.width * 0.2,
+                    height: MediaQuery.of(context).size.width * 0.2,
+                  ),
+                  const SizedBox(height: 10),
+                  const Text('Waktunya istirahat'),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    _player.play(AssetSource('sounds/start.wav'));
+                    _cDController.resume();
+                    Navigator.pop(context);
+                  },
+                  child: const Text('Oke'),
+                ),
+              ],
+            ),
+          );
+        }
       });
     } else {
       _player.play(AssetSource('sounds/end.wav'));
       _showNotification("Timer Selesai");
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
-      );
       _cDController.pause();
+      Navigator.pop(context);
     }
   }
 
   void _showNotification(String message) {
+    int generateRandomId() {
+      return DateTime.now().millisecondsSinceEpoch.remainder(100000);
+    }
+
     Notif.showBigTextNotification(
+      id: generateRandomId(),
       title: "TimeMinder",
       body: message,
-      fln: flutterLocalNotificationsPlugin,
+      fln: _flutterLocalNotificationsPlugin,
     );
   }
 
@@ -254,8 +286,18 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                _queueTimerJob();
-                                _showNotification('Timer Dilewati');
+                                showDialog(
+                                    context: context,
+                                    builder: (context) => TimerFinishDialog(
+                                          title: 'Perhatian!',
+                                          message:
+                                              'Apakah Anda yakin ingin melewati timer ini?',
+                                          onEndTimer: () {
+                                            _queueTimerJob();
+                                            _showNotification('Timer Dilewati');
+                                            Navigator.pop(context);
+                                          },
+                                        ));
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: offBlue,
