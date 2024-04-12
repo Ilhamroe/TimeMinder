@@ -35,26 +35,19 @@ class _TimerState extends State<TimerView> {
   bool isStarted = false;
   int focusedMins = 0;
   late List<Map<String, dynamic>> _allData = [];
-  bool _isLoading = false;
+  bool isLoading = false;
   bool _isSoundPlayed = false;
   final player = AudioPlayer();
 
   void _refreshData() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     final data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      _isLoading = false;
+      isLoading = false;
     });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _getDataByID();
-    _convertTimeInSec(context, _jam, _menit, _detik);
   }
 
   void _getDataByID() {
@@ -93,10 +86,28 @@ class _TimerState extends State<TimerView> {
   }
 
   void _showNotification(String message) {
+    int generateRandomId() {
+      return DateTime.now().millisecondsSinceEpoch.remainder(100000);
+    }
+
     Notif.showBigTextNotification(
+        id: generateRandomId(),
         title: "TimeMinder",
         body: message,
         fln: flutterLocalNotificationsPlugin);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getDataByID();
+    _convertTimeInSec(context, _jam, _menit, _detik);
+  }
+
+  @override
+  void dispose() {
+    player.dispose();
+    super.dispose();
   }
 
   @override
@@ -379,6 +390,7 @@ class _TimerState extends State<TimerView> {
                       ),
                       child: TextButton(
                         onPressed: () {
+                          _showNotification("Timer dihentikan");
                           Navigator.of(context).pop(true);
                         },
                         child: const Text(

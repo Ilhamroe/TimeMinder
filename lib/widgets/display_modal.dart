@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
+import 'package:mobile_time_minder/pages/timer_page.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/cupertino_switch.dart';
 import 'package:mobile_time_minder/widgets/text.dart';
@@ -28,34 +29,25 @@ class _DisplayModalState extends State<DisplayModal> {
   int _counter = 0;
   int _counterBreakTime = 0;
   int _counterInterval = 0;
-  bool _isLoading = false;
+  bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
   bool isOptionOpen = false;
 
-  TextEditingController _namaTimerController = TextEditingController();
-  TextEditingController _deskripsiController = TextEditingController();
+  TextEditingController namaTimerController = TextEditingController();
+  TextEditingController deskripsiController = TextEditingController();
 
   //databases
   late List<Map<String, dynamic>> _allData = [];
 
-  @override
-  void initState() {
-    super.initState();
-    id = widget.id;
-    if (id != null) {
-      getSingleData(id!);
-    }
-  }
-
   void _refreshData() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      _isLoading = false;
+      isLoading = false;
     });
   }
 
@@ -65,8 +57,8 @@ class _DisplayModalState extends State<DisplayModal> {
     final int timerValue = data[0]['timer'] ?? 0;
 
     setState(() {
-      _namaTimerController.text = data[0]['title'];
-      _deskripsiController.text = data[0]['description'];
+      namaTimerController.text = data[0]['title'];
+      deskripsiController.text = data[0]['description'];
       _counter = timerValue;
       _counterBreakTime = data[0]['rest'] ?? 0;
       _counterInterval = data[0]['interval'] ?? 0;
@@ -76,8 +68,9 @@ class _DisplayModalState extends State<DisplayModal> {
   late OverlayEntry _overlayEntry;
   void _showOverlay(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
-    final double horizontalPadding = screenWidth * 0.05;
-    final double verticalPadding = 10.0;
+    final double screenHeight = MediaQuery.of(context).size.height;
+    final double horizontalPadding = screenWidth * 0.04;
+    final double verticalPadding = screenHeight * 0.01;
 
     _overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
@@ -94,7 +87,7 @@ class _DisplayModalState extends State<DisplayModal> {
               color: red,
               borderRadius: BorderRadius.circular(10.0),
             ),
-            child: Text(
+            child: const Text(
               'Nama Timer, Deskripsi, dan Waktu harus diisi.',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -107,17 +100,17 @@ class _DisplayModalState extends State<DisplayModal> {
         ),
       ),
     );
-    Overlay.of(context)!.insert(_overlayEntry);
+    Overlay.of(context).insert(_overlayEntry);
   }
 
   void _submitSetting() async {
-    final name = _namaTimerController.text.trim();
-    final description = _deskripsiController.text.trim();
+    final name = namaTimerController.text.trim();
+    final description = deskripsiController.text.trim();
     final counter = _counter;
 
     if (name.isEmpty || description.isEmpty || counter == 0) {
       _showOverlay(context);
-      Future.delayed(Duration(seconds: 1), () {
+      Future.delayed(const Duration(seconds: 1), () {
         _overlayEntry.remove();
       });
       return;
@@ -128,26 +121,33 @@ class _DisplayModalState extends State<DisplayModal> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(),
+          builder: (context) => const HomePage(),
         ),
       );
     } else {
       await _updateData(id!).then((value) => _refreshData());
-      Navigator.pop(context);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DetailListTimer(),
+        ),
+      );
     }
-
-    setState(() {
-      _counter = _settingTimeWidgetKey.currentState?.getCounter() ?? 0;
-    });
   }
 
   void _resetSetting() {
     setState(() {
-      _namaTimerController.clear();
-      _deskripsiController.clear();
+      namaTimerController.clear();
+      deskripsiController.clear();
       _settingTimeWidgetKey.currentState?.resetCounter();
       _settingBreakWidgetKey.currentState?.resetCounter();
       hideContainer = true;
+    });
+  }
+
+  void _handleTimerChange(int value) {
+    setState(() {
+      _counter = value;
     });
   }
 
@@ -163,19 +163,31 @@ class _DisplayModalState extends State<DisplayModal> {
     });
   }
 
-  void _openIconButtonPressed() {
-    setState(() {
-      isOptionOpen = !isOptionOpen;
-      hideContainer = !hideContainer;
-      statusSwitch = false;
-    });
+  void _openAnotherOption() {
+    if (namaTimerController.text.isNotEmpty &&
+        deskripsiController.text.isNotEmpty &&
+        _counter != 0) {
+      setState(() {
+        isOptionOpen = !isOptionOpen;
+        hideContainer = !hideContainer;
+        statusSwitch = false;
+      });
+    } else {
+      _showOverlay(context);
+      Future.delayed(
+        const Duration(seconds: 1),
+        () {
+          _overlayEntry.remove();
+        },
+      );
+    }
   }
 
   // add data
   Future<void> _addData() async {
     await SQLHelper.createData(
-        _namaTimerController.text,
-        _deskripsiController.text,
+        namaTimerController.text,
+        deskripsiController.text,
         _counter,
         _counterBreakTime,
         _counterInterval);
@@ -186,32 +198,36 @@ class _DisplayModalState extends State<DisplayModal> {
   Future<void> _updateData(int id) async {
     await SQLHelper.updateData(
         id,
-        _namaTimerController.text,
-        _deskripsiController.text,
+        namaTimerController.text,
+        deskripsiController.text,
         _counter,
         _counterBreakTime,
         _counterInterval);
     _refreshData();
   }
 
-  // delete data
-  void _deleteData(int id) async {
-    await SQLHelper.deleteData(id);
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      backgroundColor: Colors.redAccent,
-      content: Text("Data deleted"),
-      duration: Duration(milliseconds: 500),
-    ));
-    _refreshData();
+  @override
+  void initState() {
+    super.initState();
+    id = widget.id;
+    if (id != null) {
+      getSingleData(id!);
+    }
+  }
+
+  @override
+  void dispose() {
+    namaTimerController.dispose();
+    deskripsiController.dispose();
+    _overlayEntry.remove();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
-
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -221,8 +237,8 @@ class _DisplayModalState extends State<DisplayModal> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(20.0),
           ),
-          width: screenSize.width * 0.9,
-          padding: EdgeInsets.fromLTRB(26, 15, 26, 21),
+          width: double.infinity,
+          padding: const EdgeInsets.fromLTRB(26, 15, 26, 21),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -230,10 +246,10 @@ class _DisplayModalState extends State<DisplayModal> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(
+                    const Expanded(
                       child: CustomTextField(
                         labelText: 'Tambah waktumu sendiri',
-                        fontSize: 16,
+                        fontSize: 15.5,
                         fontFamily: 'Nunito-Bold',
                       ),
                     ),
@@ -241,91 +257,82 @@ class _DisplayModalState extends State<DisplayModal> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(Icons.close),
+                      icon: const Icon(Icons.close),
                     ),
                   ],
                 ),
-                SizedBox(height: 7),
-                CustomTextField(labelText: "Nama Timer : "),
+                const SizedBox(height: 6.4),
+                const CustomTextField(labelText: "Nama Timer : "),
                 TextField(
                   maxLength: 20,
                   maxLines: 1,
-                  controller: _namaTimerController,
-                  decoration: InputDecoration(
+                  controller: namaTimerController,
+                  decoration: const InputDecoration(
                     counterText: '',
                   ),
                 ),
-                SizedBox(height: 7),
-                CustomTextField(labelText: "Deskripsi : "),
+                const SizedBox(height: 6.4),
+                const CustomTextField(labelText: "Deskripsi : "),
                 TextField(
                   maxLength: 30,
                   maxLines: 1,
-                  controller: _deskripsiController,
-                  decoration: InputDecoration(
+                  controller: deskripsiController,
+                  decoration: const InputDecoration(
                     counterText: '',
                   ),
                 ),
-                SizedBox(height: 7),
+                const SizedBox(height: 6.4),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CustomTextField(labelText: "Waktu (dalam menit)"),
-                    SizedBox(height: 15),
+                    const CustomTextField(
+                        labelText: "Waktu Fokus (dalam menit)"),
+                    const SizedBox(height: 15),
                     SettingTimeWidget(
                       key: _settingTimeWidgetKey,
                       initialCounter: _counter,
-                      onChanged: (value) {
-                        setState(() {
-                          _counter = value;
-                        });
-                        _settingTimeWidgetKey.currentState
-                            ?.updateCounter(_counter);
-                      },
+                      onChanged: _handleTimerChange,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: CustomTextField(labelText: "Opsi Lainnya"),
                         ),
                         IconButton(
-                          onPressed: _namaTimerController.text.isNotEmpty &&
-                                  _deskripsiController.text.isNotEmpty &&
-                                  _counter != 0
-                              ? _openIconButtonPressed
-                              : null,
+                          onPressed: () => _openAnotherOption(),
                           icon: isOptionOpen
                               ? SvgPicture.asset(
                                   "assets/images/option_up.svg",
-                                  width: 30,
-                                  height: 30,
+                                  width: 28,
+                                  height: 28,
                                 )
                               : SvgPicture.asset(
                                   "assets/images/option.svg",
-                                  width: 30,
-                                  height: 30,
+                                  width: 28,
+                                  height: 28,
                                   color: darkGrey,
                                 ),
                         ),
                       ],
                     ),
                     AnimatedContainer(
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       height: hideContainer ? 0 : null,
                       child: Column(
                         children: [
-                          Divider(
+                          const Divider(
                             color: Colors.grey,
                             thickness: 1,
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: CustomTextField(
-                                    labelText: "Aktifkan mode istirahat"),
+                                    labelText: "Aktifkan mode istirahat\n(Min. Waktu Fokus 2 menit)"),
                               ),
                               CupertinoSwitchAdaptiveWidget(
                                 statusSwitch: statusSwitch,
@@ -337,15 +344,15 @@ class _DisplayModalState extends State<DisplayModal> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 10),
-                          Divider(
+                          const SizedBox(height: 10),
+                          const Divider(
                             color: Colors.grey,
                             thickness: 1,
                           ),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Row(
+                              const Row(
                                 children: [
                                   Expanded(
                                     child: CustomTextField(
@@ -358,7 +365,7 @@ class _DisplayModalState extends State<DisplayModal> {
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8),
+                              const SizedBox(height: 15),
                               SettingBreakWidget(
                                 key: _settingBreakWidgetKey,
                                 statusSwitch: statusSwitch,
@@ -370,7 +377,7 @@ class _DisplayModalState extends State<DisplayModal> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 10),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -381,7 +388,7 @@ class _DisplayModalState extends State<DisplayModal> {
                           borderSideColor: cetaceanBlue,
                           onPressed: _resetSetting,
                         ),
-                        SizedBox(width: 15),
+                        const SizedBox(width: 14),
                         CustomButton(
                           text: 'Terapkan',
                           primaryColor: ripeMango,

@@ -1,16 +1,16 @@
 import 'dart:ui';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/list_timer.dart';
-import 'package:mobile_time_minder/pages/display_modal.dart';
+import 'package:mobile_time_minder/pages/timer_page.dart';
+import 'package:mobile_time_minder/widgets/display_modal.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
-import 'package:intl/intl.dart';
+import '../widgets/bottom_navigation.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -27,10 +27,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late List<Map<String, dynamic>> _allData = [];
   List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
 
-  int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
-  bool _isLoading = false;
+  int counter = 0;
+  int counterBreakTime = 0;
+  int counterInterval = 0;
+  bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
   bool isSemuaSelected = true;
@@ -41,65 +41,20 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   void updateLabelColors(int selectedIndex) {
     for (int i = 0; i < labelColors.length; i++) {
-      labelColors[i] = cetaceanBlue;
+      labelColors[i] = i == selectedIndex ? offOrange : cetaceanBlue;
     }
-    labelColors[selectedIndex] = offOrange;
   }
 
   // refresh data
   Future<void> _refreshData() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      _isLoading = false;
+      isLoading = false;
     });
-  }
-
-  Future<void> _addData() async {
-    await SQLHelper.createData(
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    _refreshData();
-  }
-
-  // edit data
-  Future<void> _updateData(int id) async {
-    await SQLHelper.updateData(
-        id,
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    _refreshData();
-  }
-
-  void _submitSetting(int id) async {
-    final name = _namaTimerController.text.trim();
-    final description = _deskripsiController.text.trim();
-    final counter = _counter;
-
-    if (name.isEmpty || description.isEmpty || counter == 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text("Nama Timer, Deskripsi, dan Waktu harus diisi"),
-        duration: Duration(seconds: 1),
-      ));
-      return;
-    }
-    if (id == null) {
-      await _addData().then((data) => _refreshData());
-    } else {
-      await _updateData(id!);
-    }
-
-    Navigator.of(context).pop();
   }
 
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
@@ -108,16 +63,15 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      _counter = existingData['time'] ?? 0;
-      _counterBreakTime = existingData['rest'] ?? 0;
-      _counterInterval = existingData['interval'] ?? 0;
+      counter = existingData['time'] ?? 0;
+      counterBreakTime = existingData['rest'] ?? 0;
+      counterInterval = existingData['interval'] ?? 0;
     } else {
-      // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      _counter = 0;
-      _counterBreakTime = 0;
-      _counterInterval = 0;
+      counter = 0;
+      counterBreakTime = 0;
+      counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
@@ -145,16 +99,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
     onClose(newData);
     _refreshData();
+    if (_page != 0) {
+      setState(() {
+        _page = 0;
+        updateLabelColors(_page);
+        _refreshData();
+      });
+    }
   }
 
   late String _greeting;
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
-    _initializeGreeting();
-  }
 
   void _initializeGreeting() {
     final currentTime = DateTime.now();
@@ -163,9 +117,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() {
       if (currentHour >= 5 && currentHour < 12) {
         _greeting = 'Selamat Pagi';
-      } else if (currentHour >= 12 && currentHour < 17) {
+      } else if (currentHour >= 12 && currentHour < 15) {
         _greeting = 'Selamat Siang';
-      } else if (currentHour >= 17 && currentHour < 19) {
+      } else if (currentHour >= 15 && currentHour < 19) {
         _greeting = 'Selamat Sore';
       } else {
         _greeting = 'Selamat Malam';
@@ -174,9 +128,30 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   @override
+  void initState() {
+    super.initState();
+    _refreshData();
+    _initializeGreeting();
+    updateLabelColors(_page);
+  }
+
+  @override
+  void dispose() {
+    _namaTimerController.dispose();
+    _deskripsiController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    return PopScope(
+    return WillPopScope(
+      onWillPop: () async {
+        setState(() {
+          updateLabelColors(2);
+        });
+        return true;
+      },
       child: Scaffold(
         body: Container(
           width: double.infinity,
@@ -192,101 +167,73 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                leading: const Icon(Icons.arrow_back, color: ripeMango),
-                title: const SizedBox.shrink(),
+                leading: Icon(Icons.arrow_back, color: ripeMango),
+                title: SizedBox.shrink(),
                 floating: true,
                 snap: true,
                 backgroundColor: ripeMango,
                 elevation: 0,
+                expandedHeight: screenSize.height * 0.22,
+                pinned: true,
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: screenSize.width * 0.1,
+                      horizontal: screenSize.width * 0.14,
                       vertical: screenSize.height * 0.02,
                     ),
-                    child: Column(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Transform.translate(
-                              offset: Offset(screenSize.width * 0.03, 0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '$_greeting',
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: screenSize.width * 0.06,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: screenSize.height * 0.005,
-                                  ),
-                                  Text(
-                                    'Yuk, capai target',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: screenSize.width * 0.05,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    'fokusmu hari ini dan',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: screenSize.width * 0.05,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Selamat beraktivitas!',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      color: Colors.black,
-                                      fontSize: screenSize.width * 0.05,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Transform.translate(
-                              offset: Offset(screenSize.width * -0.03,
-                                  screenSize.height * 0.01),
-                              child: Container(
-                                width: screenSize.width * 0.3,
-                                height: screenSize.height * 0.2,
-                                padding: EdgeInsets.only(
-                                  top: screenSize.height * 0.01,
-                                  bottom: screenSize.height * 0.02,
-                                  left: screenSize.width * 0.07,
-                                ),
-                                margin: EdgeInsets.only(
-                                    top: screenSize.height * 0.01),
-                                child: SvgPicture.asset(
-                                  "assets/images/cat3.svg",
-                                  width: screenSize.width * 0.3,
-                                  height: screenSize.width * 0.3,
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '$_greeting',
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  color: Colors.black,
+                                  fontSize: screenSize.width * 0.06,
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
-                            ),
-                          ],
+                              SizedBox(
+                                height: screenSize.height * 0.005,
+                              ),
+                              Text(
+                                'Yuk, capai target\nfokusmu hari ini',
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: true,
+                                maxLines: 3,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  color: Colors.black,
+                                  fontSize: screenSize.width * 0.045,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: screenSize.width * 0.3,
+                          height: screenSize.height * 0.2,
+                          padding: EdgeInsets.only(
+                            top: screenSize.height * 0.01,
+                            bottom: screenSize.height * 0.02,
+                            left: screenSize.width * 0.07,
+                          ),
+                          child: SvgPicture.asset(
+                            "assets/images/cat3.svg",
+                            width: screenSize.width * 0.3,
+                            height: screenSize.width * 0.3,
+                          ),
                         ),
                       ],
                     ),
                   ),
                 ),
-                expandedHeight: screenSize.height * 0.22,
-                pinned: true,
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate(
@@ -340,7 +287,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                                 const SizedBox(width: 8),
                                 const Text(
-                                  "Timermu",
+                                  "Timer Mu",
                                   style: TextStyle(
                                     fontFamily: 'Nunito-Bold',
                                     fontSize: 14,
@@ -362,7 +309,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                   child: const Text(
                                     "Lihat Semua",
                                     style: TextStyle(
-                                      fontFamily: 'Nunito',
                                       fontSize: 12,
                                       color: ripeMango,
                                     ),
@@ -378,7 +324,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     );
                   },
-                  childCount: 1, // Hanya satu item dalam SliverList
+                  childCount: 1,
                 ),
               ),
             ],
@@ -392,41 +338,35 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
             CurvedNavigationBarItem(
               child: SvgPicture.asset(
                 "assets/images/solar.svg",
-                width: 20,
-                height: 20,
+                width: 25,
+                height: 25,
               ),
               label: _page == 0 ? null : "BERANDA",
               labelStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
                 color: labelColors[0],
-                fontFamily: 'Nunito-Bold',
+                fontFamily: 'Nunito',
               ),
             ),
             CurvedNavigationBarItem(
               child: const Icon(
                 Icons.add,
-                size: 20,
+                size: 25,
               ),
               label: "TAMBAH",
               labelStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
                 color: labelColors[1],
-                fontFamily: 'Nunito-Bold',
+                fontFamily: 'Nunito',
               ),
             ),
             CurvedNavigationBarItem(
               child: const Icon(
                 Icons.hourglass_empty_rounded,
-                size: 20,
+                size: 25,
               ),
               label: _page == 2 ? null : "TIMER",
               labelStyle: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12,
                 color: labelColors[2],
-                fontFamily: 'Nunito-Bold',
+                fontFamily: 'Nunito',
               ),
             ),
           ],

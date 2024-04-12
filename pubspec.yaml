@@ -1,7 +1,7 @@
 name: mobile_time_minder
 description: A new Flutter project.
 publish_to: "none"
-version: 0.1.0
+version: 0.1.1+1
 
 environment:
   sdk: ">=3.3.0 <4.0.0"
@@ -24,7 +24,8 @@ dependencies:
   audioplayers: ^6.0.0
   audioplayers_web: ^5.0.0
   circular_countdown_timer: ^0.2.3
-
+  permission_handler: ^11.3.1
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:
