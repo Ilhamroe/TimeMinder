@@ -4,4 +4,4 @@ TimeMinder Release Notes:
 2.Optimize Code
 3.Embo ngelu wes an
 
-Dev -> Hafis R dan segenap A2
+Dev -> Hafis R dan segenap A3
