@@ -6,7 +6,6 @@ import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/timer_player.dart';
 import 'package:mobile_time_minder/widgets/display_modal_edit.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/widgets/setting_time.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -21,8 +20,6 @@ class HomeTimermuTile extends StatefulWidget {
 }
 
 class _HomeTimermuTileState extends State<HomeTimermuTile> {
-  final GlobalKey<SettingTimeWidgetState> _settingTimeWidgetKey =
-      GlobalKey<SettingTimeWidgetState>();
   final List<Color> _customColors = [
     blueJeans,
     ripeMango,
@@ -31,7 +28,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     red,
   ];
 
-  int _counter = 0;
+  int counter = 0;
   int counterBreakTime = 0;
   int counterInterval = 0;
   bool _isLoading = false;
@@ -74,7 +71,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
       setState(() {
-        _counter = existingData['time'] ?? 0;
+        counter = existingData['time'] ?? 0;
       });
       counterBreakTime = existingData['rest'] ?? 0;
       counterInterval = existingData['interval'] ?? 0;
@@ -83,7 +80,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       _namaTimerController.text = '';
       _deskripsiController.text = '';
       setState(() {
-        _counter = 0;
+        counter = 0;
       });
       counterBreakTime = 0;
       counterInterval = 0;

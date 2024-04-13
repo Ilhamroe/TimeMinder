@@ -364,10 +364,10 @@ class _DisplayModalState extends State<DisplayModal> {
                                     labelText: "Aktifkan mode istirahat",
                                   ),
                                   Text(
-                                    "(Istirahat hanya pada waktu fokus \nmin 2 menit dan bilangan genap.\nInterval x2 pada waktu fokus min 3 menit)",
+                                    "Min 2 menit waktu fokus dan bilangan genap.",
                                     style: TextStyle(
                                       fontFamily: 'Nunito',
-                                      fontSize: 12,
+                                      fontSize: 11,
                                     ),
                                   ),
                                 ],

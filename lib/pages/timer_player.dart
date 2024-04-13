@@ -88,7 +88,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      'assets/images/cat_hello.png',
+                      'assets/images/confirm_popup.png',
                       fit: BoxFit.contain,
                       width: MediaQuery.of(context).size.width * 0.2,
                       height: MediaQuery.of(context).size.width * 0.2,
@@ -131,7 +131,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      'assets/images/cat_hello.png',
+                      'assets/images/confirm_popup.png',
                       fit: BoxFit.contain,
                       width: MediaQuery.of(context).size.width * 0.2,
                       height: MediaQuery.of(context).size.width * 0.2,
