@@ -11,7 +11,7 @@ import 'package:mobile_time_minder/widgets/setting_break.dart';
 import 'package:mobile_time_minder/widgets/button_exe.dart';
 
 class DisplayModalAdd extends StatefulWidget {
-  const DisplayModalAdd({Key? key, this.id}) : super(key: key);
+  const DisplayModalAdd({super.key, this.id});
   final int? id;
 
   @override
@@ -66,6 +66,7 @@ class _DisplayModalAddState extends State<DisplayModalAdd> {
   }
 
   late OverlayEntry _overlayEntry;
+
   void _showOverlay(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -395,20 +396,24 @@ class _DisplayModalAddState extends State<DisplayModalAdd> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CustomButton(
-                          text: '  Reset  ',
-                          primaryColor: Colors.white,
-                          onPrimaryColor: cetaceanBlue,
-                          borderSideColor: cetaceanBlue,
-                          onPressed: _resetSetting,
+                        Expanded(
+                          child: CustomButton(
+                            text: 'Reset',
+                            primaryColor: Colors.white,
+                            onPrimaryColor: cetaceanBlue,
+                            borderSideColor: cetaceanBlue,
+                            onPressed: _resetSetting,
+                          ),
                         ),
                         const SizedBox(width: 14.6),
-                        CustomButton(
-                          text: 'Terapkan',
-                          primaryColor: ripeMango,
-                          onPrimaryColor: pureWhite,
-                          borderSideColor: Colors.transparent,
-                          onPressed: _submitSetting,
+                        Expanded(
+                          child: CustomButton(
+                            text: 'Terapkan',
+                            primaryColor: ripeMango,
+                            onPrimaryColor: pureWhite,
+                            borderSideColor: Colors.transparent,
+                            onPressed: _submitSetting,
+                          ),
                         ),
                       ],
                     ),
