@@ -18,49 +18,68 @@ class SettingBreakWidget extends StatefulWidget {
 }
 
 class SettingBreakWidgetState extends State<SettingBreakWidget> {
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
-  TextEditingController _breakTimeController = TextEditingController();
-  TextEditingController _intervalController = TextEditingController();
+  int counterBreakTime = 0;
+  int counterInterval = 0;
+  TextEditingController breakTimeController = TextEditingController();
+  TextEditingController intervalController = TextEditingController();
 
   @override
   void dispose() {
-    _breakTimeController.dispose();
-    _intervalController.dispose();
+    breakTimeController.dispose();
+    intervalController.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    _breakTimeController.text = "0";
-    _intervalController.text = "0";
+    breakTimeController.text = "0";
+    intervalController.text = "0";
   }
 
   void _onBreakTimeChanged(String value) {
     if (widget.statusSwitch) {
       int breakTime = int.tryParse(value) ?? 0;
-      setState(() {
-        _counterBreakTime = breakTime;
-      });
-      widget.onBreakTimeChanged?.call(breakTime);
+      if (breakTime > 0) {
+        setState(() {
+          counterBreakTime = breakTime;
+        });
+        widget.onBreakTimeChanged?.call(breakTime);
+      }
     }
   }
 
   void _onIntervalChanged(String value) {
     if (widget.statusSwitch) {
       int interval = int.tryParse(value) ?? 0;
-      setState(() {
-        _counterInterval = interval;
-      });
-      widget.onIntervalChanged?.call(interval);
+      if (interval > 0) {
+        setState(() {
+          counterInterval = interval;
+        });
+        widget.onIntervalChanged?.call(interval);
+      }
     }
   }
 
   void resetCounter() {
     setState(() {
-      _counterBreakTime = 0;
-      _counterInterval = 0;
+      counterBreakTime = 0;
+      counterInterval = 0;
+    });
+  }
+
+  // Method untuk mengatur nilai awal input field pada SettingBreakWidget
+  void setBreakTimeCounter(int value) {
+    setState(() {
+      counterBreakTime = value;
+      breakTimeController.text = value.toString();
+    });
+  }
+
+  void setIntervalCounter(int value) {
+    setState(() {
+      counterInterval = value;
+      intervalController.text = value.toString();
     });
   }
 
@@ -88,10 +107,13 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     onPressed: widget.statusSwitch
                         ? () {
                             int currentValue =
-                                int.tryParse(_breakTimeController.text) ?? 0;
-                            _onBreakTimeChanged((currentValue - 1).toString());
-                            _breakTimeController.text =
-                                (currentValue - 1).toString();
+                                int.tryParse(breakTimeController.text) ?? 0;
+                            if (currentValue > 0) {
+                              _onBreakTimeChanged(
+                                  (currentValue - 1).toString());
+                              breakTimeController.text =
+                                  (currentValue - 1).toString();
+                            }
                           }
                         : null,
                     icon: const Icon(Icons.remove),
@@ -101,7 +123,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                 ),
                 Expanded(
                   child: TextFormField(
-                    controller: _breakTimeController,
+                    controller: breakTimeController,
                     keyboardType: TextInputType.number,
                     onChanged: _onBreakTimeChanged,
                     decoration: const InputDecoration(
@@ -120,9 +142,9 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     onPressed: widget.statusSwitch
                         ? () {
                             int currentValue =
-                                int.tryParse(_breakTimeController.text) ?? 0;
+                                int.tryParse(breakTimeController.text) ?? 0;
                             _onBreakTimeChanged((currentValue + 1).toString());
-                            _breakTimeController.text =
+                            breakTimeController.text =
                                 (currentValue + 1).toString();
                           }
                         : null,
@@ -156,10 +178,12 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     onPressed: widget.statusSwitch
                         ? () {
                             int currentValue =
-                                int.tryParse(_intervalController.text) ?? 0;
-                            _onIntervalChanged((currentValue - 1).toString());
-                            _intervalController.text =
-                                (currentValue - 1).toString();
+                                int.tryParse(intervalController.text) ?? 0;
+                            if (currentValue > 0) {
+                              _onIntervalChanged((currentValue - 1).toString());
+                              intervalController.text =
+                                  (currentValue - 1).toString();
+                            }
                           }
                         : null,
                     icon: const Icon(Icons.remove),
@@ -169,7 +193,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                 ),
                 Expanded(
                   child: TextFormField(
-                    controller: _intervalController,
+                    controller: intervalController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       border: InputBorder.none,
@@ -188,9 +212,9 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                     onPressed: widget.statusSwitch
                         ? () {
                             int currentValue =
-                                int.tryParse(_intervalController.text) ?? 0;
+                                int.tryParse(intervalController.text) ?? 0;
                             _onIntervalChanged((currentValue + 1).toString());
-                            _intervalController.text =
+                            intervalController.text =
                                 (currentValue + 1).toString();
                           }
                         : null,

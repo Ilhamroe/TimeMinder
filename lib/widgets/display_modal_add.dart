@@ -10,15 +10,15 @@ import 'package:mobile_time_minder/widgets/setting_time.dart';
 import 'package:mobile_time_minder/widgets/setting_break.dart';
 import 'package:mobile_time_minder/widgets/button_exe.dart';
 
-class DisplayModal extends StatefulWidget {
-  const DisplayModal({Key? key, this.id}) : super(key: key);
+class DisplayModalAdd extends StatefulWidget {
+  const DisplayModalAdd({super.key, this.id});
   final int? id;
 
   @override
-  State<DisplayModal> createState() => _DisplayModalState();
+  State<DisplayModalAdd> createState() => _DisplayModalAddState();
 }
 
-class _DisplayModalState extends State<DisplayModal> {
+class _DisplayModalAddState extends State<DisplayModalAdd> {
   final GlobalKey<SettingTimeWidgetState> _settingTimeWidgetKey =
       GlobalKey<SettingTimeWidgetState>();
 
@@ -38,7 +38,7 @@ class _DisplayModalState extends State<DisplayModal> {
   TextEditingController deskripsiController = TextEditingController();
 
   //databases
-  late List<Map<String, dynamic>> _allData = [];
+  late List<Map<String, dynamic>> allData = [];
 
   void _refreshData() async {
     setState(() {
@@ -46,7 +46,7 @@ class _DisplayModalState extends State<DisplayModal> {
     });
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
-      _allData = data;
+      allData = data;
       isLoading = false;
     });
   }
@@ -66,6 +66,7 @@ class _DisplayModalState extends State<DisplayModal> {
   }
 
   late OverlayEntry _overlayEntry;
+
   void _showOverlay(BuildContext context) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double screenHeight = MediaQuery.of(context).size.height;
@@ -326,13 +327,14 @@ class _DisplayModalState extends State<DisplayModal> {
                             color: Colors.grey,
                             thickness: 1,
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 9.1),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               const Expanded(
                                 child: CustomTextField(
-                                    labelText: "Aktifkan mode istirahat\n(Min. Waktu Fokus 2 menit)"),
+                                    labelText:
+                                        "Aktifkan mode istirahat\n(Istirahat min 2 menit hanya pada waktu fokus bilangan genap)"),
                               ),
                               CupertinoSwitchAdaptiveWidget(
                                 statusSwitch: statusSwitch,
@@ -344,7 +346,7 @@ class _DisplayModalState extends State<DisplayModal> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 9.1),
                           const Divider(
                             color: Colors.grey,
                             thickness: 1,
@@ -365,7 +367,7 @@ class _DisplayModalState extends State<DisplayModal> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 14.6),
                               SettingBreakWidget(
                                 key: _settingBreakWidgetKey,
                                 statusSwitch: statusSwitch,
@@ -377,24 +379,28 @@ class _DisplayModalState extends State<DisplayModal> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 10.4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        CustomButton(
-                          text: '  Reset  ',
-                          primaryColor: Colors.white,
-                          onPrimaryColor: cetaceanBlue,
-                          borderSideColor: cetaceanBlue,
-                          onPressed: _resetSetting,
+                        Expanded(
+                          child: CustomButton(
+                            text: 'Reset',
+                            primaryColor: Colors.white,
+                            onPrimaryColor: cetaceanBlue,
+                            borderSideColor: cetaceanBlue,
+                            onPressed: _resetSetting,
+                          ),
                         ),
-                        const SizedBox(width: 14),
-                        CustomButton(
-                          text: 'Terapkan',
-                          primaryColor: ripeMango,
-                          onPrimaryColor: pureWhite,
-                          borderSideColor: Colors.transparent,
-                          onPressed: _submitSetting,
+                        const SizedBox(width: 14.6),
+                        Expanded(
+                          child: CustomButton(
+                            text: 'Terapkan',
+                            primaryColor: ripeMango,
+                            onPrimaryColor: pureWhite,
+                            borderSideColor: Colors.transparent,
+                            onPressed: _submitSetting,
+                          ),
                         ),
                       ],
                     ),

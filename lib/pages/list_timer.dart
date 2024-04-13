@@ -6,7 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
-import 'package:mobile_time_minder/widgets/display_modal.dart';
+import 'package:mobile_time_minder/widgets/display_modal_edit.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
@@ -31,9 +31,9 @@ class _DetailListTimerState extends State<DetailListTimer>
   List<Color> labelColors = [cetaceanBlue, cetaceanBlue, offOrange];
 
   late TabController tabController;
-  int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
+  int counter = 0;
+  int counterBreakTime = 0;
+  int counterInterval = 0;
   bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
@@ -69,35 +69,22 @@ class _DetailListTimerState extends State<DetailListTimer>
     }
   }
 
-  // delete data
-  void _deleteData(int id) async {
-    await SQLHelper.deleteData(id);
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        backgroundColor: Colors.redAccent,
-        content: Text("Data deleted"),
-        duration: Duration(milliseconds: 500),
-      ));
-    }
-    _refreshData();
-  }
-
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
     if (id != null) {
       final existingData =
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      _counter = existingData['time'] ?? 0;
-      _counterBreakTime = existingData['rest'] ?? 0;
-      _counterInterval = existingData['interval'] ?? 0;
+      counter = existingData['time'] ?? 0;
+      counterBreakTime = existingData['rest'] ?? 0;
+      counterInterval = existingData['interval'] ?? 0;
     } else {
       // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
-      _counter = 0;
-      _counterBreakTime = 0;
-      _counterInterval = 0;
+      counter = 0;
+      counterBreakTime = 0;
+      counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
@@ -326,7 +313,6 @@ class _DetailListTimerState extends State<DetailListTimer>
         currentPageIndex: _page,
         onTap: (index) {
           setState(() {
-            print("Index: $index");
             _page = index;
             updateLabelColors(_page);
             switch (_page) {
