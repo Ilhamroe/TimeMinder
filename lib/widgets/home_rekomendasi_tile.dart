@@ -1,10 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
-import 'package:mobile_time_minder/widgets/display_modal.dart';
 import 'package:mobile_time_minder/pages/view_timer_rekomendasi.dart';
 import 'package:mobile_time_minder/theme.dart';
 
@@ -26,17 +24,11 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
     red,
   ];
 
-  late List<Map<String, dynamic>> _allData = [];
+  late List<Map<String, dynamic>> allData = [];
 
-  int counter = 0;
   int counterBreakTime = 0;
   int counterInterval = 0;
   bool isLoading = false;
-  bool statusSwitch = false;
-  bool hideContainer = true;
-
-  final TextEditingController _namaTimerController = TextEditingController();
-  final TextEditingController _deskripsiController = TextEditingController();
 
   // refresh data
   void _refreshData() async {
@@ -45,41 +37,9 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
     });
     final data = await SQLHelper.getAllData();
     setState(() {
-      _allData = data;
+      allData = data;
       isLoading = false;
     });
-  }
-
-  void _showModal(ModalCloseCallback onClose, [int? id]) async {
-    if (id != null) {
-      final existingData =
-          _allData.firstWhere((element) => element['id'] == id);
-      _namaTimerController.text = existingData['title'];
-      _deskripsiController.text = existingData['description'];
-      counter = existingData['time'] ?? 0;
-      counterBreakTime = existingData['rest'] ?? 0;
-      counterInterval = existingData['interval'] ?? 0;
-    } else {
-      // Jika data baru, reset nilai controller
-      _namaTimerController.text = '';
-      _deskripsiController.text = '';
-      counter = 0;
-      counterBreakTime = 0;
-      counterInterval = 0;
-    }
-
-    final newData = await showCupertinoModalPopup(
-      context: context,
-      builder: (_) => Container(
-        margin: const EdgeInsets.only(top: 170),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(70),
-        ),
-        child: DisplayModal(id: id),
-      ),
-    );
-    onClose(newData);
-    _refreshData();
   }
 
   @override

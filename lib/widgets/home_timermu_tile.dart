@@ -4,11 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/timer_player.dart';
-import 'package:mobile_time_minder/pages/view_timer_db.dart';
-import 'package:mobile_time_minder/widgets/display_modal.dart';
+import 'package:mobile_time_minder/widgets/display_modal_edit.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/setting_time.dart';
-import 'package:mobile_time_minder/pages/timer_player_copy.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -34,8 +32,8 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
   ];
 
   int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
+  int counterBreakTime = 0;
+  int counterInterval = 0;
   bool _isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
@@ -69,28 +67,6 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
     _refreshData();
   }
 
-  Future<void> _addData() async {
-    await SQLHelper.createData(
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    _refreshData();
-  }
-
-  // edit data
-  Future<void> _updateData(int id) async {
-    await SQLHelper.updateData(
-        id,
-        _namaTimerController.text,
-        _deskripsiController.text,
-        _counter,
-        _counterBreakTime,
-        _counterInterval);
-    _refreshData();
-  }
-
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
     if (id != null) {
       final existingData =
@@ -100,8 +76,8 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       setState(() {
         _counter = existingData['time'] ?? 0;
       });
-      _counterBreakTime = existingData['rest'] ?? 0;
-      _counterInterval = existingData['interval'] ?? 0;
+      counterBreakTime = existingData['rest'] ?? 0;
+      counterInterval = existingData['interval'] ?? 0;
     } else {
       // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
@@ -109,10 +85,8 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       setState(() {
         _counter = 0;
       });
-      _counterBreakTime = 0;
-      _counterInterval = 0;
-      // Perbarui nilai initialCounter di SettingTimeWidget
-      _settingTimeWidgetKey.currentState?.updateCounter(_counter);
+      counterBreakTime = 0;
+      counterInterval = 0;
     }
 
     final newData = await showCupertinoModalPopup(
@@ -128,7 +102,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
           // Modal content
           Center(
             child: Container(
-              margin: const EdgeInsets.only(top: 170),
+              margin: const EdgeInsets.only(top: 150),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(70),
               ),
@@ -372,7 +346,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                                                               child: TextButton(
                                                                 onPressed: () {
                                                                   if (index !=
-                                                                      null) {
+                                                                      false) {
                                                                     _deleteData(
                                                                         _allData[index]
                                                                             [

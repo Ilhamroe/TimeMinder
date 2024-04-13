@@ -7,10 +7,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/timer_page.dart';
-import 'package:mobile_time_minder/widgets/display_modal.dart';
+import 'package:mobile_time_minder/widgets/display_modal_add.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
-import '../widgets/bottom_navigation.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -27,7 +26,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late List<Map<String, dynamic>> _allData = [];
   List<Color> labelColors = [offOrange, cetaceanBlue, cetaceanBlue];
 
-  int counter = 0;
+  int? counter;
   int counterBreakTime = 0;
   int counterInterval = 0;
   bool isLoading = false;
@@ -36,8 +35,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   bool isSemuaSelected = true;
   bool isSettingPressed = false;
 
-  final TextEditingController _namaTimerController = TextEditingController();
-  final TextEditingController _deskripsiController = TextEditingController();
+  final TextEditingController namaTimerController = TextEditingController();
+  final TextEditingController deskripsiController = TextEditingController();
 
   void updateLabelColors(int selectedIndex) {
     for (int i = 0; i < labelColors.length; i++) {
@@ -57,18 +56,31 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
+  void getSingleData(int id) async {
+    final data = await SQLHelper.getSingleData(id);
+    final int timerValue = data[0]['timer'] ?? 0;
+
+    setState(() {
+      namaTimerController.text = data[0]['title'];
+      deskripsiController.text = data[0]['description'];
+      counter = timerValue;
+      counterBreakTime = data[0]['rest'] ?? 0;
+      counterInterval = data[0]['interval'] ?? 0;
+    });
+  }
+
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
     if (id != null) {
       final existingData =
           _allData.firstWhere((element) => element['id'] == id);
-      _namaTimerController.text = existingData['title'];
-      _deskripsiController.text = existingData['description'];
+      namaTimerController.text = existingData['title'];
+      deskripsiController.text = existingData['description'];
       counter = existingData['time'] ?? 0;
       counterBreakTime = existingData['rest'] ?? 0;
       counterInterval = existingData['interval'] ?? 0;
     } else {
-      _namaTimerController.text = '';
-      _deskripsiController.text = '';
+      namaTimerController.text = '';
+      deskripsiController.text = '';
       counter = 0;
       counterBreakTime = 0;
       counterInterval = 0;
@@ -87,11 +99,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           // Modal content
           Center(
             child: Container(
-              margin: const EdgeInsets.only(top: 170),
+              margin: const EdgeInsets.only(top: 150),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(70),
               ),
-              child: DisplayModal(id: id),
+              child: DisplayModalAdd(id: id),
             ),
           ),
         ],
@@ -133,12 +145,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _refreshData();
     _initializeGreeting();
     updateLabelColors(_page);
+    counter = 0;
   }
 
   @override
   void dispose() {
-    _namaTimerController.dispose();
-    _deskripsiController.dispose();
+    namaTimerController.dispose();
+    deskripsiController.dispose();
     super.dispose();
   }
 
@@ -167,8 +180,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: CustomScrollView(
             slivers: <Widget>[
               SliverAppBar(
-                leading: Icon(Icons.arrow_back, color: ripeMango),
-                title: SizedBox.shrink(),
+                leading: const Icon(Icons.arrow_back, color: ripeMango),
+                title: const SizedBox.shrink(),
                 floating: true,
                 snap: true,
                 backgroundColor: ripeMango,
@@ -178,8 +191,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 flexibleSpace: FlexibleSpaceBar(
                   background: Container(
                     padding: EdgeInsets.symmetric(
-                      horizontal: screenSize.width * 0.14,
-                      vertical: screenSize.height * 0.02,
+                      horizontal: screenSize.width * 0.15,
+                      vertical: screenSize.height * 0.04,
                     ),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
