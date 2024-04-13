@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           // Modal content
           Center(
             child: Container(
-              margin: const EdgeInsets.only(top: 170),
+              margin: const EdgeInsets.only(top: 150),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(70),
               ),

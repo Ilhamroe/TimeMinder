@@ -87,8 +87,6 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       });
       counterBreakTime = 0;
       counterInterval = 0;
-      // Perbarui nilai initialCounter di SettingTimeWidget
-      _settingTimeWidgetKey.currentState?.updateCounter(_counter);
     }
 
     final newData = await showCupertinoModalPopup(
@@ -104,7 +102,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
           // Modal content
           Center(
             child: Container(
-              margin: const EdgeInsets.only(top: 170),
+              margin: const EdgeInsets.only(top: 150),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(70),
               ),

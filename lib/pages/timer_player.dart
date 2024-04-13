@@ -256,27 +256,27 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Container(
-                      //   padding: const EdgeInsets.all(10),
-                      //   decoration: BoxDecoration(
-                      //     borderRadius: BorderRadius.circular(10),
-                      //     color: offYellow,
-                      //     border: Border.all(
-                      //       color: ripeMango,
-                      //       width: 1,
-                      //     ),
-                      //   ),
-                      //   child: Text(
-                      //     _jobsTimer[_currentJobIndex].title,
-                      //     textAlign: TextAlign.center,
-                      //     style: const TextStyle(
-                      //       fontFamily: 'Nunito-Bold',
-                      //       fontSize: 20,
-                      //       color: Colors.black,
-                      //     ),
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: offYellow,
+                          border: Border.all(
+                            color: ripeMango,
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          _jobsTimer[_currentJobIndex].title,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontFamily: 'Nunito-Bold',
+                            fontSize: 20,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
                       // Text(
                       //   '${_jobsTimer[_currentJobIndex].duration} menit',
                       //   textAlign: TextAlign.center,

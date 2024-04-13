@@ -5,12 +5,16 @@ class SettingBreakWidget extends StatefulWidget {
   final bool statusSwitch;
   final ValueChanged<int>? onBreakTimeChanged;
   final ValueChanged<int>? onIntervalChanged;
+  final int initialBreakTime;
+  final int initialInterval;
 
   const SettingBreakWidget({
     Key? key,
     required this.statusSwitch,
     this.onBreakTimeChanged,
     this.onIntervalChanged,
+    required this.initialBreakTime,
+    required this.initialInterval,
   }) : super(key: key);
 
   @override
@@ -33,8 +37,12 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
   @override
   void initState() {
     super.initState();
-    breakTimeController.text = "0";
-    intervalController.text = "0";
+    counterBreakTime = widget.initialBreakTime;
+    counterInterval = widget.initialInterval;
+    breakTimeController =
+        TextEditingController(text: counterBreakTime.toString());
+    intervalController =
+        TextEditingController(text: counterInterval.toString());
   }
 
   void _onBreakTimeChanged(String value) {

@@ -330,11 +330,22 @@ class _DisplayModalAddState extends State<DisplayModalAdd> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              const Expanded(
-                                child: CustomTextField(
-                                    labelText:
-                                        "Aktifkan mode istirahat\n(Istirahat min 2 menit hanya pada waktu fokus bilangan genap)"),
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomTextField(
+                                    labelText: "Aktifkan mode istirahat",
+                                  ),
+                                  Text(
+                                    "(Istirahat hanya pada waktu fokus \nmin 2 menit dan bilangan genap.\nInterval x2 pada waktu fokus min 3 menit)",
+                                    style: TextStyle(
+                                      fontFamily: 'Nunito',
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const Spacer(),
                               CupertinoSwitchAdaptiveWidget(
                                 statusSwitch: statusSwitch,
                                 onChanged: (value) {
@@ -372,6 +383,8 @@ class _DisplayModalAddState extends State<DisplayModalAdd> {
                                 statusSwitch: statusSwitch,
                                 onBreakTimeChanged: _handleBreakTimeChange,
                                 onIntervalChanged: _handleIntervalChange,
+                                initialBreakTime: _counterBreakTime,
+                                initialInterval: _counterInterval,
                               ),
                             ],
                           ),
