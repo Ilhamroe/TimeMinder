@@ -157,13 +157,6 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
           );
         }
       });
-      // if (_currentJobIndex % 2 != 0) {
-      //   _player.play(AssetSource('sounds/start.wav'));
-      //   _showNotification("Waktunya Istirahat");
-      // } else {
-      //   _player.play(AssetSource('sounds/pause.wav'));
-      //   _showNotification("Istirahat Selesai");
-      // }
     } else {
       _player.play(AssetSource('sounds/end.wav'));
       _showNotification("Timer Selesai");
