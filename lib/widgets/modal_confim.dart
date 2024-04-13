@@ -20,7 +20,7 @@ class ModalConfirm extends StatefulWidget {
 }
 
 class _ModalConfirmState extends State<ModalConfirm> {
-  late List<Map<String, dynamic>> _allData = [];
+  late List<Map<String, dynamic>> allData = [];
 
   bool isLoading = false;
   bool statusSwitch = false;
@@ -33,7 +33,7 @@ class _ModalConfirmState extends State<ModalConfirm> {
     });
     final data = await SQLHelper.getAllData();
     setState(() {
-      _allData = data;
+      allData = data;
       isLoading = false;
     });
   }
@@ -129,7 +129,7 @@ class _ModalConfirmState extends State<ModalConfirm> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => HomePage(),
+                            builder: (context) => const HomePage(),
                           ),
                         );
                       }

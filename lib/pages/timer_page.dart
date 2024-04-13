@@ -6,8 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
-import 'package:mobile_time_minder/widgets/display_modal.dart';
+import 'package:mobile_time_minder/widgets/display_modal_add.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
@@ -103,7 +102,7 @@ class _DetailListTimerState extends State<DetailListTimer>
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(70),
               ),
-              child: DisplayModal(id: id),
+              child: DisplayModalAdd(id: id),
             ),
           ),
         ],

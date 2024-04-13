@@ -34,7 +34,7 @@ class _TimerState extends State<TimerView> {
   late int _detik;
   bool isStarted = false;
   int focusedMins = 0;
-  late List<Map<String, dynamic>> _allData = [];
+  late List<Map<String, dynamic>> allData = [];
   bool isLoading = false;
   bool _isSoundPlayed = false;
   final player = AudioPlayer();
@@ -45,7 +45,7 @@ class _TimerState extends State<TimerView> {
     });
     final data = await SQLHelper.getAllData();
     setState(() {
-      _allData = data;
+      allData = data;
       isLoading = false;
     });
   }
@@ -72,15 +72,15 @@ class _TimerState extends State<TimerView> {
   }
 
   final CountDownController _controller = CountDownController();
-  void startTimer() {
-    const onesec = Duration(seconds: 1);
-  }
+  // void startTimer() {
+  //   const onesec = Duration(seconds: 1);
+  // }
 
   void _showPopup() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return ModalConfirm();
+        return const ModalConfirm();
       },
     );
   }
@@ -129,7 +129,7 @@ class _TimerState extends State<TimerView> {
           ),
           title: Column(
             children: [
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 _judul,
                 style: const TextStyle(
@@ -139,7 +139,7 @@ class _TimerState extends State<TimerView> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Text(
                 _deskripsi,
                 style: const TextStyle(
@@ -204,7 +204,7 @@ class _TimerState extends State<TimerView> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => HomePage(),
+                          builder: (context) => const HomePage(),
                         ),
                       );
                     },

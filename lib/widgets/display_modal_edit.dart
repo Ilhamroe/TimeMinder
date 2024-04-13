@@ -26,9 +26,9 @@ class _DisplayModalState extends State<DisplayModal> {
       GlobalKey<SettingBreakWidgetState>();
 
   int? id;
-  int _counter = 0;
-  int _counterBreakTime = 0;
-  int _counterInterval = 0;
+  late int _counter;
+  late int _counterBreakTime;
+  late int _counterInterval;
   bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
@@ -38,7 +38,7 @@ class _DisplayModalState extends State<DisplayModal> {
   TextEditingController deskripsiController = TextEditingController();
 
   //databases
-  late List<Map<String, dynamic>> _allData = [];
+  late List<Map<String, dynamic>> allData = [];
 
   void _refreshData() async {
     setState(() {
@@ -46,7 +46,7 @@ class _DisplayModalState extends State<DisplayModal> {
     });
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
-      _allData = data;
+      allData = data;
       isLoading = false;
     });
   }
@@ -62,6 +62,30 @@ class _DisplayModalState extends State<DisplayModal> {
       _counter = timerValue;
       _counterBreakTime = data[0]['rest'] ?? 0;
       _counterInterval = data[0]['interval'] ?? 0;
+    });
+
+    _setBreakWidgetCounter();
+  }
+
+  void _setBreakWidgetCounter() {
+    _settingBreakWidgetKey.currentState?.setBreakTimeCounter(_counterBreakTime);
+    _settingBreakWidgetKey.currentState?.setIntervalCounter(_counterInterval);
+  }
+
+  TextEditingController breakTimeController = TextEditingController();
+  TextEditingController intervalController = TextEditingController();
+
+  void setBreakTimeCounter(int value) {
+    setState(() {
+      _counterBreakTime = value;
+      breakTimeController.text = value.toString();
+    });
+  }
+
+  void setIntervalCounter(int value) {
+    setState(() {
+      _counterInterval = value;
+      intervalController.text = value.toString();
     });
   }
 
@@ -170,7 +194,12 @@ class _DisplayModalState extends State<DisplayModal> {
       setState(() {
         isOptionOpen = !isOptionOpen;
         hideContainer = !hideContainer;
-        statusSwitch = false;
+
+        if (_counterBreakTime != 0 && _counterInterval != 0) {
+          statusSwitch = true;
+        } else {
+          statusSwitch = false;
+        }
       });
     } else {
       _showOverlay(context);
@@ -326,14 +355,26 @@ class _DisplayModalState extends State<DisplayModal> {
                             color: Colors.grey,
                             thickness: 1,
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 9.1),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              const Expanded(
-                                child: CustomTextField(
-                                    labelText: "Aktifkan mode istirahat\n(Min. Waktu Fokus 2 menit)"),
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomTextField(
+                                    labelText: "Aktifkan mode istirahat",
+                                  ),
+                                  Text(
+                                    "(Istirahat hanya pada waktu fokus min 2 menit\ndan bilangan genap)",
+                                    style: TextStyle(
+                                      fontFamily: 'Nunito',
+                                      fontSize: 12,
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const Spacer(),
                               CupertinoSwitchAdaptiveWidget(
                                 statusSwitch: statusSwitch,
                                 onChanged: (value) {
@@ -344,7 +385,7 @@ class _DisplayModalState extends State<DisplayModal> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 9.1),
                           const Divider(
                             color: Colors.grey,
                             thickness: 1,
@@ -365,7 +406,7 @@ class _DisplayModalState extends State<DisplayModal> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 15),
+                              const SizedBox(height: 14.6),
                               SettingBreakWidget(
                                 key: _settingBreakWidgetKey,
                                 statusSwitch: statusSwitch,
@@ -377,7 +418,7 @@ class _DisplayModalState extends State<DisplayModal> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 10.4),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -388,7 +429,7 @@ class _DisplayModalState extends State<DisplayModal> {
                           borderSideColor: cetaceanBlue,
                           onPressed: _resetSetting,
                         ),
-                        const SizedBox(width: 14),
+                        const SizedBox(width: 14.6),
                         CustomButton(
                           text: 'Terapkan',
                           primaryColor: ripeMango,
