@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
+import 'package:mobile_time_minder/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({Key? key}) : super(key: key);
+  const SplashScreen({super.key});
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -28,6 +29,7 @@ class _SplashScreenState extends State<SplashScreen>
     animationController.forward();
     Future.delayed(const Duration(seconds: 2), () {
       checkFirstSeen();
+      Navigator.popAndPushNamed(context, AppRoutes.onboard);
     });
   }
 
@@ -52,6 +54,7 @@ class _SplashScreenState extends State<SplashScreen>
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: offOrange,
       body: Center(
         child: AnimatedBuilder(
           animation: animation,

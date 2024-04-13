@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/models/onboarding_items.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
@@ -30,40 +31,61 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
       appBar: AppBar(
-        actions: [skipBtn(context), const SizedBox(width: 20)],
+        centerTitle: true,
+        title: SvgPicture.asset(
+          "assets/images/TimeMinder.svg",
+          width: 170,
+        ),
       ),
       body: Container(
-        height: size.height,
-        width: size.width,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              pureWhite,
+              offOrange
+            ], // Sesuaikan dengan warna aksen yang diinginkan
+          ),
+        ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Expanded(
               child: PageView.builder(
-                  itemCount: OnboardData.onBoardItemList.length,
-                  physics: const NeverScrollableScrollPhysics(),
-                  controller: controller,
-                  onPageChanged: (v) {
-                    setState(() {
-                      selectedIndex = v;
-                    });
-                  },
-                  itemBuilder: (context, index) {
-                    return ContentTemplate(
-                        item: OnboardData.onBoardItemList[index]);
-                  }),
+                itemCount: OnboardData.onBoardItemList.length,
+                controller: controller,
+                onPageChanged: (v) {
+                  setState(() {
+                    selectedIndex = v;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  return ContentTemplate(
+                      item: OnboardData.onBoardItemList[index]);
+                },
+              ),
             ),
-            Row(
-              children: [
-                SizedBox(width: size.width * 0.05),
-                Row(
-                  children: [
-                    ...List.generate(
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.popAndPushNamed(context, AppRoutes.home);
+                    },
+                    child: Text(
+                      "skip",
+                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            fontWeight: FontWeight.bold,
+                            fontFamily: 'Nunito',
+                          ),
+                    ),
+                  ),
+                  Row(
+                    children: List.generate(
                       OnboardData.onBoardItemList.length,
                       (index) => AnimatedContainer(
                         duration: const Duration(milliseconds: 500),
@@ -75,64 +97,38 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             color: selectedIndex == index
                                 ? ripeMango
                                 : cetaceanBlue,
-                            borderRadius: BorderRadius.circular(8)),
+                            borderRadius: BorderRadius.circular(8)
+                        ),
                       ),
                     ),
-                  ],
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    if (selectedIndex < OnboardData.onBoardItemList.length - 1) {
-                      controller.animateToPage(selectedIndex + 1,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.ease);
-                    } else {
-                      Navigator.popAndPushNamed(context, AppRoutes.home);
-                    }
-                  },
-                  child: CircleAvatar(
-                    radius: 35,
-                    backgroundColor: ripeMango,
-                    child:
-                        selectedIndex != OnboardData.onBoardItemList.length - 1
-                            ? const Icon(
-                                Icons.arrow_forward_rounded,
-                                size: 40,
-                                color: Colors.black,
-                              )
-                            : Text(
-                                "Start",
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .titleMedium!
-                                    .copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'Nunito'
-                                    ),
-                              ),
                   ),
-                ),
-              ],
+                  GestureDetector(
+                    onTap: () {
+                      if (selectedIndex <
+                          OnboardData.onBoardItemList.length - 1) {
+                        controller.animateToPage(selectedIndex + 1,
+                            duration: const Duration(milliseconds: 500),
+                            curve: Curves.ease);
+                      } else {
+                        Navigator.popAndPushNamed(context, AppRoutes.home);
+                      }
+                    },
+                    child: Text(
+                      selectedIndex != OnboardData.onBoardItemList.length - 1
+                          ? ""
+                          : "start",
+                      style:
+                          Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Nunito',
+                              ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: size.height * 0.15),
           ],
         ),
-      ),
-    );
-  }
-
-  GestureDetector skipBtn(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.popAndPushNamed(context, AppRoutes.home);
-      },
-      child: Text(
-        "SKIP",
-        style: Theme.of(context)
-            .textTheme
-            .titleMedium!
-            .copyWith(fontWeight: FontWeight.bold),
       ),
     );
   }
