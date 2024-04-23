@@ -30,6 +30,7 @@ class TimerFinishDialog extends StatelessWidget {
                 height: MediaQuery.of(context).size.width * 0.2,
               ),
             ),
+            const SizedBox(height: 20.0),
             const Text(
               "Kembali ke Beranda,",
               textAlign: TextAlign.center,

@@ -331,11 +331,22 @@ class _DisplayModalAddState extends State<DisplayModalAdd> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              const Expanded(
-                                child: CustomTextField(
-                                    labelText:
-                                        "Aktifkan mode istirahat\n(Istirahat min 2 menit hanya pada waktu fokus bilangan genap)"),
+                              const Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomTextField(
+                                    labelText: "Aktifkan mode istirahat",
+                                  ),
+                                  Text(
+                                    "Min 2 menit waktu fokus dan bilangan genap.",
+                                    style: TextStyle(
+                                      fontFamily: 'Nunito',
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                ],
                               ),
+                              const Spacer(),
                               CupertinoSwitchAdaptiveWidget(
                                 statusSwitch: statusSwitch,
                                 onChanged: (value) {
@@ -373,6 +384,8 @@ class _DisplayModalAddState extends State<DisplayModalAdd> {
                                 statusSwitch: statusSwitch,
                                 onBreakTimeChanged: _handleBreakTimeChange,
                                 onIntervalChanged: _handleIntervalChange,
+                                initialBreakTime: _counterBreakTime,
+                                initialInterval: _counterInterval,
                               ),
                             ],
                           ),

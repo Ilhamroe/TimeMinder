@@ -41,11 +41,13 @@
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@mipmap/logo"
             />
+        <meta-data android:name="flutterEntrypoint" android:value="main"/>
         <service
             android:name="com.dexterous.flutterlocalnotifications.ForegroundService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false"/>
     </application>
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
     <uses-permission android:name="android.permission.VIBRATE" />

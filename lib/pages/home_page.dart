@@ -99,7 +99,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           // Modal content
           Center(
             child: Container(
-              margin: const EdgeInsets.only(top: 170),
+              margin: const EdgeInsets.only(top: 150),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(70),
               ),
@@ -206,12 +206,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 style: TextStyle(
                                   fontFamily: 'Nunito-Bold',
                                   color: Colors.black,
-                                  fontSize: screenSize.width * 0.06,
+                                  fontSize: screenSize.width * 0.05,
                                   fontWeight: FontWeight.w900,
                                 ),
                               ),
                               SizedBox(
-                                height: screenSize.height * 0.005,
+                                height: screenSize.height * 0.004,
                               ),
                               Text(
                                 'Yuk, capai target\nfokusmu hari ini',
@@ -222,7 +222,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 style: TextStyle(
                                   fontFamily: 'Nunito-Bold',
                                   color: Colors.black,
-                                  fontSize: screenSize.width * 0.045,
+                                  fontSize: screenSize.width * 0.04,
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),

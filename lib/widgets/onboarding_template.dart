@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/models/onboarding_items.dart';
 
 class ContentTemplate extends StatelessWidget {
@@ -15,27 +16,36 @@ class ContentTemplate extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Image.asset(
+        SvgPicture.asset(
           item.image,
           height: size.height * 0.3,
         ),
         FittedBox(
-          child: Text(
-            item.title,
-            style: Theme.of(context)
-                .textTheme
-                .headlineLarge!
-                .copyWith(fontFamily: 'Nunito-Bold'),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 30),
+            child: Text(
+              item.title,
+              style: Theme.of(context)
+                  .textTheme
+                  .headlineLarge!
+                  .copyWith(fontFamily: 'Nunito-Bold'),
+            ),
           ),
         ),
         SizedBox(height: size.height * 0.01),
-        Text(
-          item.shortDescription,
-          style: Theme.of(context)
-              .textTheme
-              .bodyLarge!
-              .copyWith(fontFamily: 'Nunito'),
-          textAlign: TextAlign.center,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: Text(
+            item.shortDescription,
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Nunito'
+                ),
+            textAlign: TextAlign.center,
+          ),
         ),
         SizedBox(height: size.height * 0.1),
       ],

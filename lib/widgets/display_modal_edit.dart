@@ -64,13 +64,13 @@ class _DisplayModalState extends State<DisplayModal> {
       _counterInterval = data[0]['interval'] ?? 0;
     });
 
-    _setBreakWidgetCounter();
+    // _setBreakWidgetCounter();
   }
 
-  void _setBreakWidgetCounter() {
-    _settingBreakWidgetKey.currentState?.setBreakTimeCounter(_counterBreakTime);
-    _settingBreakWidgetKey.currentState?.setIntervalCounter(_counterInterval);
-  }
+  // void _setBreakWidgetCounter() {
+  //   _settingBreakWidgetKey.currentState?.setBreakTimeCounter(_counterBreakTime);
+  //   _settingBreakWidgetKey.currentState?.setIntervalCounter(_counterInterval);
+  // }
 
   TextEditingController breakTimeController = TextEditingController();
   TextEditingController intervalController = TextEditingController();
@@ -78,14 +78,12 @@ class _DisplayModalState extends State<DisplayModal> {
   void setBreakTimeCounter(int value) {
     setState(() {
       _counterBreakTime = value;
-      breakTimeController.text = value.toString();
     });
   }
 
   void setIntervalCounter(int value) {
     setState(() {
       _counterInterval = value;
-      intervalController.text = value.toString();
     });
   }
 
@@ -366,10 +364,10 @@ class _DisplayModalState extends State<DisplayModal> {
                                     labelText: "Aktifkan mode istirahat",
                                   ),
                                   Text(
-                                    "(Istirahat hanya pada waktu fokus min 2 menit\ndan bilangan genap)",
+                                    "Min 2 menit waktu fokus dan bilangan genap.",
                                     style: TextStyle(
                                       fontFamily: 'Nunito',
-                                      fontSize: 12,
+                                      fontSize: 11,
                                     ),
                                   ),
                                 ],
@@ -412,6 +410,8 @@ class _DisplayModalState extends State<DisplayModal> {
                                 statusSwitch: statusSwitch,
                                 onBreakTimeChanged: _handleBreakTimeChange,
                                 onIntervalChanged: _handleIntervalChange,
+                                initialBreakTime: _counterBreakTime,
+                                initialInterval: _counterInterval,
                               ),
                             ],
                           ),

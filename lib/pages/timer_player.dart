@@ -88,7 +88,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      'assets/images/cat_hello.png',
+                      'assets/images/confirm_popup.png',
                       fit: BoxFit.contain,
                       width: MediaQuery.of(context).size.width * 0.2,
                       height: MediaQuery.of(context).size.width * 0.2,
@@ -131,7 +131,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Image.asset(
-                      'assets/images/cat_hello.png',
+                      'assets/images/confirm_popup.png',
                       fit: BoxFit.contain,
                       width: MediaQuery.of(context).size.width * 0.2,
                       height: MediaQuery.of(context).size.width * 0.2,
@@ -249,27 +249,28 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      // Container(
-                      //   padding: const EdgeInsets.all(10),
-                      //   decoration: BoxDecoration(
-                      //     borderRadius: BorderRadius.circular(10),
-                      //     color: offYellow,
-                      //     border: Border.all(
-                      //       color: ripeMango,
-                      //       width: 1,
-                      //     ),
-                      //   ),
-                      //   child: Text(
-                      //     _jobsTimer[_currentJobIndex].title,
-                      //     textAlign: TextAlign.center,
-                      //     style: const TextStyle(
-                      //       fontFamily: 'Nunito-Bold',
-                      //       fontSize: 20,
-                      //       color: Colors.black,
-                      //     ),
-                      //   ),
-                      // ),
-                      // const SizedBox(height: 10),
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: offYellow,
+                          border: Border.all(
+                            color: getColorRing(),
+                            width: 1,
+                          ),
+                        ),
+                        child: Text(
+                          _jobsTimer[_currentJobIndex].title,
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(
+                            fontFamily: 'Nunito-Bold',
+                            fontSize: 20,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.05),
                       // Text(
                       //   '${_jobsTimer[_currentJobIndex].duration} menit',
                       //   textAlign: TextAlign.center,
@@ -287,14 +288,11 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                         width: MediaQuery.of(context).size.width * 0.5,
                         height: MediaQuery.of(context).size.width * 0.5,
                         ringColor: ring,
-                        fillColor: _cDController.isPaused ? red : ripeMango,
+                        fillColor: getColorRing(),
                         fillGradient: LinearGradient(
                           begin: Alignment.bottomLeft,
                           end: Alignment.topRight,
-                          colors: [
-                            _cDController.isPaused ? red : ripeMango,
-                            offOrange
-                          ],
+                          colors: [getColorRing(), offOrange],
                         ),
                         strokeWidth: 20.0,
                         textStyle: const TextStyle(
@@ -460,6 +458,15 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
         _showNotification('Timer dihentikan');
       }
     });
+  }
+
+  Color getColorRing() {
+    if (_cDController.isPaused ||
+        _jobsTimer[_currentJobIndex].type == 'ISTIRAHAT') {
+      return red;
+    } else {
+      return ripeMango;
+    }
   }
 
   void _clearJobs() {

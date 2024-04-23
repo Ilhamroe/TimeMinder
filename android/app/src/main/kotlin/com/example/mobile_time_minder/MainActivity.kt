@@ -1,4 +1,4 @@
-package com.example.mobile_time_minder
+package com.a3.time_minder
 
 import io.flutter.embedding.android.FlutterActivity
 
