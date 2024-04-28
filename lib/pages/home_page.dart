@@ -2,12 +2,18 @@ import 'dart:ui';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter/widgets.dart';
+import 'package:mobile_time_minder/models/list_timer.dart';
+import 'package:mobile_time_minder/pages/view_timer_rekomendasi.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/timer_page.dart';
+import 'package:mobile_time_minder/widgets/card_home.dart';
 import 'package:mobile_time_minder/widgets/display_modal_add.dart';
+import 'package:mobile_time_minder/widgets/grid_rekomendasi.dart';
 import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
 
@@ -121,6 +127,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   late String _greeting;
+  late String _imagePath;
 
   void _initializeGreeting() {
     final currentTime = DateTime.now();
@@ -129,12 +136,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     setState(() {
       if (currentHour >= 5 && currentHour < 12) {
         _greeting = 'Selamat Pagi';
+        _imagePath = 'assets/images/pagi.svg';
       } else if (currentHour >= 12 && currentHour < 15) {
         _greeting = 'Selamat Siang';
+        _imagePath = 'assets/images/siang.svg';
       } else if (currentHour >= 15 && currentHour < 19) {
         _greeting = 'Selamat Sore';
+        _imagePath = 'assets/images/sore.svg';
       } else {
         _greeting = 'Selamat Malam';
+        _imagePath = 'assets/images/malam.svg';
       }
     });
   }
@@ -158,6 +169,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
+    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return WillPopScope(
       onWillPop: () async {
         setState(() {
@@ -166,255 +178,192 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         return true;
       },
       child: Scaffold(
-        body: Container(
-          width: double.infinity,
-          height: double.infinity,
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.center,
-              stops: [0.5, 1],
-              colors: [ripeMango, pureWhite],
-            ),
-          ),
-          child: CustomScrollView(
-            slivers: <Widget>[
-              SliverAppBar(
-                leading: const Icon(Icons.arrow_back, color: ripeMango),
-                title: const SizedBox.shrink(),
-                floating: true,
-                snap: true,
-                backgroundColor: ripeMango,
-                elevation: 0,
-                expandedHeight: screenSize.height * 0.22,
-                pinned: true,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: screenSize.width * 0.15,
-                      vertical: screenSize.height * 0.04,
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '$_greeting',
-                                style: TextStyle(
-                                  fontFamily: 'Nunito-Bold',
-                                  color: Colors.black,
-                                  fontSize: screenSize.width * 0.05,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ),
-                              SizedBox(
-                                height: screenSize.height * 0.004,
-                              ),
-                              Text(
-                                'Yuk, capai target\nfokusmu hari ini',
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: true,
-                                maxLines: 3,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                  fontFamily: 'Nunito-Bold',
-                                  color: Colors.black,
-                                  fontSize: screenSize.width * 0.04,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Container(
-                          width: screenSize.width * 0.3,
-                          height: screenSize.height * 0.2,
-                          padding: EdgeInsets.only(
-                            top: screenSize.height * 0.01,
-                            bottom: screenSize.height * 0.02,
-                            left: screenSize.width * 0.07,
-                          ),
-                          child: SvgPicture.asset(
-                            "assets/images/cat3.svg",
-                            width: screenSize.width * 0.3,
-                            height: screenSize.width * 0.3,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 22,
                 ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (BuildContext context, int index) {
-                    return Container(
-                      decoration: const BoxDecoration(
-                        color: pureWhite,
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(24.0),
-                          topRight: Radius.circular(24.0),
-                        ),
-                      ),
-                      padding: const EdgeInsets.only(
-                          left: 15.0, top: 50.0, right: 15.0),
-                      child: Column(
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         children: [
-                          Container(
-                            padding: const EdgeInsets.all(8.0),
-                            margin: const EdgeInsets.only(left: 8.0),
-                            child: Row(
-                              children: [
-                                SvgPicture.asset(
-                                  "assets/images/star.svg",
-                                ),
-                                const SizedBox(
-                                  width: 8,
-                                ),
-                                const Text(
-                                  "Rekomendasi",
-                                  style: TextStyle(
-                                    fontFamily: 'Nunito-Bold',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w900,
-                                    color: heliotrope,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          Text(
+                            '$_greeting',
+                            style: const TextStyle(
+                                fontFamily: 'Nunito-Bold',
+                                fontSize: 22.42,
+                                fontWeight: FontWeight.w900,
+                                color: Color(0xFF091B35)),
                           ),
-                          HomeRekomendasiTile(
-                              isSettingPressed: isSettingPressed),
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
-                            margin:
-                                const EdgeInsets.only(left: 8.0, right: 10.0),
-                            child: Row(
-                              children: [
-                                const Icon(
-                                  Icons.hourglass_empty,
-                                  color: ripeMango,
-                                ),
-                                const SizedBox(width: 8),
-                                const Text(
-                                  "Timer Mu",
-                                  style: TextStyle(
-                                    fontFamily: 'Nunito-Bold',
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w900,
-                                    color: ripeMango,
-                                  ),
-                                ),
-                                const Spacer(),
-                                GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const DetailListTimer(),
-                                      ),
-                                    );
-                                  },
-                                  child: const Text(
-                                    "Lihat Semua",
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: ripeMango,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          const SizedBox(
+                            width: 5,
                           ),
-                          HomeTimermuTile(
-                            isSettingPressed: isSettingPressed,
-                          ),
+                          SvgPicture.asset(_imagePath)
                         ],
                       ),
-                    );
-                  },
-                  childCount: 1,
+                      const Text(
+                        "Yuk capai target fokusmu hari ini",
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
+                          fontSize: 14,
+                          color: ripeMango,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-              ),
-            ],
+                const SizedBox(
+                  height: 17,
+                ),
+                const CardHome(),
+                const GridRekomendasi(),
+                // timermutile_home(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Row(
+                    children: [
+                      SvgPicture.asset('assets/images/timer.svg'),
+                      SizedBox(
+                        width: 8,
+                      ),
+                      Text(
+                        "Timer Mu",
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w900,
+                          color: cetaceanBlue,
+                        ),
+                      ),
+                      const Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const DetailListTimer(),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          "Lihat Semua",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: cetaceanBlue,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                _allData.isEmpty
+                    ? Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            "assets/images/cat_setting.svg",
+                            width: screenSize.width * 0.3,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          const Text(
+                            "Ayo tambahkan timer sesuai keinginanmu!",
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              fontSize: 14,
+                              color: darkGrey,
+                            ),
+                          ),
+                        ],
+                      )
+                    : HomeTimermuTile(isSettingPressed: isSettingPressed),
+              ],
+            ),
           ),
         ),
-        bottomNavigationBar: CurvedNavigationBar(
-          key: _bottomNavigationKey,
-          index: _page,
-          height: 65.0,
-          items: [
-            CurvedNavigationBarItem(
-              child: SvgPicture.asset(
-                "assets/images/solar.svg",
-                width: 25,
-                height: 25,
-              ),
-              label: _page == 0 ? null : "BERANDA",
-              labelStyle: TextStyle(
-                color: labelColors[0],
-                fontFamily: 'Nunito',
-              ),
-            ),
-            CurvedNavigationBarItem(
-              child: const Icon(
-                Icons.add,
-                size: 25,
-              ),
-              label: "TAMBAH",
-              labelStyle: TextStyle(
-                color: labelColors[1],
-                fontFamily: 'Nunito',
-              ),
-            ),
-            CurvedNavigationBarItem(
-              child: const Icon(
-                Icons.hourglass_empty_rounded,
-                size: 25,
-              ),
-              label: _page == 2 ? null : "TIMER",
-              labelStyle: TextStyle(
-                color: labelColors[2],
-                fontFamily: 'Nunito',
-              ),
-            ),
-          ],
-          backgroundColor: pureWhite,
-          color: offOrange,
-          animationCurve: Curves.bounceInOut,
-          animationDuration: const Duration(milliseconds: 500),
-          buttonBackgroundColor: const Color(0xFFFFBF1C),
-          onTap: (index) {
-            setState(
-              () {
-                _page = index;
-                updateLabelColors(_page);
-                switch (_page) {
-                  case 0:
-                    _refreshData();
-                    break;
-                  case 1:
-                    _showModal((int? id) {});
-                    break;
-                  case 2:
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const DetailListTimer(),
-                      ),
-                    );
-                    break;
-                }
-              },
-            );
-          },
-          letIndexChange: (index) => true,
-        ),
+        bottomNavigationBar: _navbar(context),
       ),
     );
   }
+
+  CurvedNavigationBar _navbar(BuildContext context) {
+    return CurvedNavigationBar(
+      key: _bottomNavigationKey,
+      index: _page,
+      height: 65.0,
+      items: [
+        CurvedNavigationBarItem(
+          child: SvgPicture.asset(
+            "assets/images/solar.svg",
+            width: 25,
+            height: 25,
+          ),
+          label: _page == 0 ? null : "BERANDA",
+          labelStyle: TextStyle(
+            color: labelColors[0],
+            fontFamily: 'Nunito',
+          ),
+        ),
+        CurvedNavigationBarItem(
+          child: const Icon(
+            Icons.add,
+            size: 25,
+          ),
+          label: "TAMBAH",
+          labelStyle: TextStyle(
+            color: labelColors[1],
+            fontFamily: 'Nunito',
+          ),
+        ),
+        CurvedNavigationBarItem(
+          child: const Icon(
+            Icons.hourglass_empty_rounded,
+            size: 25,
+          ),
+          label: _page == 2 ? null : "TIMER",
+          labelStyle: TextStyle(
+            color: labelColors[2],
+            fontFamily: 'Nunito',
+          ),
+        ),
+      ],
+      backgroundColor: pureWhite,
+      color: offOrange,
+      animationCurve: Curves.bounceInOut,
+      animationDuration: const Duration(milliseconds: 500),
+      buttonBackgroundColor: const Color(0xFFFFBF1C),
+      onTap: (index) {
+        setState(
+          () {
+            _page = index;
+            updateLabelColors(_page);
+            switch (_page) {
+              case 0:
+                _refreshData();
+                break;
+              case 1:
+                _showModal((int? id) {});
+                break;
+              case 2:
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const DetailListTimer(),
+                  ),
+                );
+                break;
+            }
+          },
+        );
+      },
+      letIndexChange: (index) => true,
+    );
+  }
 }
+

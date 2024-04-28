@@ -144,38 +144,28 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      // builder: (context) => DetailTimer(data: _allData[index]),
-
                       builder: (context) => CombinedTimerPage(
                         id: _allData[index]['id'],
                       ),
                     ),
                   );
-
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(
-                  //     builder: (context) => TimerPlayer(
-                  //       id: _allData[index]['id'], data: _allData[index]
-                  //     ),
-                  //   ),
-                  // );
                 },
                 child: Container(
-                  margin: const EdgeInsets.only(bottom: 13.0),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(16.0),
                     color: offOrange,
                   ),
                   child: ListTile(
                     contentPadding: const EdgeInsets.symmetric(
-                        vertical: 5.0, horizontal: 15.0),
+                        vertical: 5.0, horizontal: 19.0),
                     leading: ClipRRect(
-                      borderRadius: BorderRadius.circular(100),
+                      borderRadius: BorderRadius.circular(10),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                             vertical: 8, horizontal: 10),
-                        color: color,
+                        color: heliotrope,
                         child: SvgPicture.asset(
                           'assets/images/cat1.svg',
                           height: 30,
@@ -185,18 +175,18 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                     title: Text(
                       _allData[index]['title'],
                       style: const TextStyle(
-                        fontFamily: 'Nunito-Bold',
-                        fontWeight: FontWeight.w900,
-                        fontSize: 14,
-                      ),
+                          fontFamily: 'Nunito-Bold',
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14,
+                          color: cetaceanBlue),
                     ),
                     subtitle: Text(
                       _allData[index]['description'],
                       style: const TextStyle(
-                        fontFamily: 'Nunito',
-                        fontWeight: FontWeight.w600,
-                        fontSize: 12,
-                      ),
+                          fontFamily: 'Nunito',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12,
+                          color: cetaceanBlue),
                     ),
                     trailing: widget.isSettingPressed
                         ? SizedBox(
@@ -396,8 +386,33 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
                               const SizedBox(
                                 height: 8.0,
                               ),
-                              SvgPicture.asset(
-                                'assets/images/button.svg',
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CombinedTimerPage(
+                                        id: _allData[index]['id'],
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 1, horizontal: 7),
+                                  decoration: BoxDecoration(
+                                    color: ripeMango,
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  child: const Text(
+                                    "Mulai",
+                                    style: TextStyle(
+                                      fontFamily: 'Nunito',
+                                      fontSize: 8,
+                                      color: pureWhite,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),

@@ -48,23 +48,15 @@ class _DetailListTimerState extends State<DetailListTimer>
     }
   }
 
-  // refresh data
-  void _refreshData() async {
+  Future<void> _refreshData() async {
     setState(() {
       isLoading = true;
     });
-    try {
-      final data = await SQLHelper.getAllData();
-      setState(() {
-        _allData = data;
-        isLoading = false;
-      });
-    } catch (e) {
-      logger.e("Terjadi error saat refresh data: $e");
-      setState(() {
-        isLoading = false;
-      });
-    }
+    final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
+    setState(() {
+      _allData = data;
+      isLoading = false;
+    });
   }
 
   void _showModal(ModalCloseCallback onClose, [int? id]) async {
@@ -126,6 +118,7 @@ class _DetailListTimerState extends State<DetailListTimer>
   @override
   void initState() {
     super.initState();
+    _refreshData();
     tabController =
         TabController(initialIndex: selectedIndex, length: 2, vsync: this);
     tabController.animation?.addListener(() {
@@ -318,14 +311,35 @@ class _DetailListTimerState extends State<DetailListTimer>
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   if (index == 0) {
-                    return HomeRekomendasiTile(
-                        isSettingPressed: isSettingPressed);
+                    return HomeRekomendasiTile();
                   } else {
-                    return HomeTimermuTile(isSettingPressed: isSettingPressed);
+                    return _allData.isEmpty
+                        ? Center(
+                            child: Text(
+                              "Belum ada timer",
+                              style: TextStyle(
+                                fontFamily: 'Nunito',
+                                fontSize: 14,
+                                color: darkGrey,
+                              ),
+                            ),
+                          )
+                        : HomeTimermuTile(isSettingPressed: isSettingPressed);
                   }
                 },
               ),
-              HomeTimermuTile(isSettingPressed: isSettingPressed),
+              _allData.isEmpty
+                  ? Center(
+                      child: Text(
+                        "Belum ada timer",
+                        style: TextStyle(
+                          fontFamily: 'Nunito',
+                          fontSize: 14,
+                          color: darkGrey,
+                        ),
+                      ),
+                    )
+                  : HomeTimermuTile(isSettingPressed: isSettingPressed),
             ],
           ),
         ),
@@ -373,7 +387,7 @@ class _DetailListTimerState extends State<DetailListTimer>
           color: offOrange,
           animationCurve: Curves.bounceInOut,
           animationDuration: const Duration(milliseconds: 500),
-          buttonBackgroundColor: const Color(0xFFFFBF1C),
+          buttonBackgroundColor: ripeMango,
           onTap: (index) {
             setState(
               () {

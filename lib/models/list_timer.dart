@@ -25,4 +25,10 @@ var Timerlist = [
     description: 'Produktivitas waktu panjang',
     time: '00:40:00',
   ),
+  Timer(
+    image: 'assets/images/cat1.svg',
+    title: 'Pomodoro',
+    description: 'Fokus dengan pomodoro',
+    time: '00:25:00',
+  ),
 ];
