@@ -1,18 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/models/list_timer.dart';
 import 'package:mobile_time_minder/pages/view_timer_rekomendasi.dart';
 import 'package:mobile_time_minder/theme.dart';
 
-typedef ModalCloseCallback = void Function(int? id);
-
 class HomeRekomendasiTile extends StatefulWidget {
-  final bool isSettingPressed;
-
-  const HomeRekomendasiTile({Key? key, required this.isSettingPressed})
-      : super(key: key);
+  const HomeRekomendasiTile({super.key});
 
   @override
   State<HomeRekomendasiTile> createState() => _HomeRekomendasiTileState();
@@ -23,30 +17,6 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
     heliotrope,
     red,
   ];
-
-  late List<Map<String, dynamic>> allData = [];
-
-  int counterBreakTime = 0;
-  int counterInterval = 0;
-  bool isLoading = false;
-
-  // refresh data
-  void _refreshData() async {
-    setState(() {
-      isLoading = true;
-    });
-    final data = await SQLHelper.getAllData();
-    setState(() {
-      allData = data;
-      isLoading = false;
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _refreshData();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -78,7 +48,8 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
               leading: ClipRRect(
                 borderRadius: BorderRadius.circular(100),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
                   color: color,
                   child: SvgPicture.asset(
                     Timerlist[index].image,
@@ -129,17 +100,5 @@ class _HomeRekomendasiTileState extends State<HomeRekomendasiTile> {
         );
       },
     );
-  }
-
-  String _formatTime(int time) {
-    int hours = time ~/ 60;
-    int minutes = time % 60;
-    int seconds = 0;
-
-    String _padLeft(int value) {
-      return value.toString().padLeft(2, '0');
-    }
-
-    return '${_padLeft(hours)}:${_padLeft(minutes)}:${_padLeft(seconds)}';
   }
 }
