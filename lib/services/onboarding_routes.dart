@@ -8,7 +8,7 @@ class AppRoutes {
   static const String splash = "/";
   static const String onboard = "/onboard";
   static const String home = "/home";
-  static const String listTimer = "list_timer";
+  static const String listTimer = "/list_timer";
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
