@@ -6,7 +6,7 @@ class SQLLogger {
         id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
         title TEXT NOT NULL,
         description TEXT NOT NULL,
-        length INTEGER NOT NULL,
+        length INTEGER NOT NULL, 
         passed INTEGER NOT NULL,
         createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
       )''');
