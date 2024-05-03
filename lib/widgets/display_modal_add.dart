@@ -3,7 +3,9 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/pages/timer_page.dart';
+import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/alert_data.dart';
 import 'package:mobile_time_minder/widgets/cupertino_switch.dart';
 import 'package:mobile_time_minder/widgets/text.dart';
 import 'package:mobile_time_minder/widgets/setting_time.dart';
@@ -108,31 +110,21 @@ class _DisplayModalAddState extends State<DisplayModalAdd> {
     final name = namaTimerController.text.trim();
     final description = deskripsiController.text.trim();
     final counter = _counter;
-
     if (name.isEmpty || description.isEmpty || counter == 0) {
-      _showOverlay(context);
-      Future.delayed(const Duration(seconds: 1), () {
-        _overlayEntry.remove();
-      });
-      return;
-    }
-
-    if (id == null) {
-      await _addData().then((data) => _refreshData());
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const HomePage(),
-        ),
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertData();
+        },
       );
     } else {
-      await _updateData(id!).then((value) => _refreshData());
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const DetailListTimer(),
-        ),
-      );
+      if (id == null) {
+        await _addData().then((data) => _refreshData());
+        Navigator.popAndPushNamed(context, AppRoutes.navbar);
+      } else {
+        await _updateData(id!).then((value) => _refreshData());
+        Navigator.popAndPushNamed(context, AppRoutes.listTimer);
+      }
     }
   }
 

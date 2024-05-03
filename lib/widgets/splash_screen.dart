@@ -37,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool seen = (prefs.getBool('seen') ?? false);
     if (seen) {
-      Navigator.popAndPushNamed(context, AppRoutes.home);
+      Navigator.popAndPushNamed(context, AppRoutes.navbar);
     } else {
       await prefs.setBool('seen', true);
       Navigator.popAndPushNamed(context, AppRoutes.onboard);

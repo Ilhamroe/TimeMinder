@@ -4,10 +4,7 @@ import 'package:mobile_time_minder/theme.dart';
 class CardHome extends StatelessWidget {
   const CardHome({
     super.key,
-    // required this.context,
   });
-
-  // final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
