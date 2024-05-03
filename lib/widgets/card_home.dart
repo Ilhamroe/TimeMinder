@@ -14,7 +14,7 @@ class CardHome extends StatelessWidget {
       width: screenSize.width,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(22),
+        borderRadius: BorderRadius.circular(20),
         color: cetaceanBlue,
       ),
       child: Stack(
@@ -23,9 +23,9 @@ class CardHome extends StatelessWidget {
             'assets/images/cardd.png',
             height: double.infinity,
             width: double.infinity,
-            fit: BoxFit.fill,
+            fit: BoxFit.cover,
           ),
-          const Positioned.fill(
+          Positioned.fill(
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 22),
               child: Column(
@@ -33,11 +33,11 @@ class CardHome extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    'Oops! Sepertinya kamu\n belum memulai timer hari ini',
+                    'Oops! Sepertinya kamu belum\n memulai timer hari ini',
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: 'Nunito',
-                        fontSize: 25,
+                        fontSize: screenSize.width * 0.05,
                         fontWeight: FontWeight.w500,
                         height: 1.5,
                         color: pureWhite),
@@ -46,7 +46,7 @@ class CardHome extends StatelessWidget {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: 'Nunito-Bold',
-                          fontSize: 22,
+                          fontSize: screenSize.width * 0.067,
                           color: pureWhite)),
                 ],
               ),

@@ -46,9 +46,10 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       shrinkWrap: true,
       itemCount: Timerlist.length,
       itemBuilder: (context, index) {
@@ -62,42 +63,42 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
             );
           },
           child: Container(
-            margin: const EdgeInsets.only(bottom: 13.0),
+            margin: const EdgeInsets.only(top: 14.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.0),
               color: offOrange,
             ),
             child: ListTile(
               contentPadding:
-                  const EdgeInsets.symmetric(vertical: 3.0, horizontal: 19.0),
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 19.0),
               leading: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  MediaQuery.of(context).size.width * 0.04,
-                ),
+                borderRadius: BorderRadius.circular(10),
                 child: Container(
                   padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                      const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                   color: heliotrope,
                   child: SvgPicture.asset(
                     Timerlist[index].image,
-                    height: 30,
+                    height: 35,
                   ),
                 ),
               ),
               title: Text(
                 Timerlist[index].title,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Nunito-Bold',
                   fontWeight: FontWeight.w900,
-                  fontSize: 14,
+                  fontSize: screenSize.width * 0.039,
+                  color: cetaceanBlue,
                 ),
               ),
               subtitle: Text(
                 Timerlist[index].description,
-                style: const TextStyle(
+                style: TextStyle(
                   fontFamily: 'Nunito',
                   fontWeight: FontWeight.w600,
-                  fontSize: 12,
+                  fontSize: screenSize.width * 0.033,
+                  color: cetaceanBlue,
                 ),
               ),
               trailing: Column(
@@ -107,18 +108,41 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
                   ),
                   Text(
                     Timerlist[index].time,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontFamily: 'DMSans',
                       fontWeight: FontWeight.w600,
-                      fontSize: 8,
+                      fontSize: screenSize.width * 0.025,
                       color: darkGrey,
                     ),
                   ),
                   const SizedBox(
                     height: 8.0,
                   ),
-                  SvgPicture.asset(
-                    'assets/images/button.svg',
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TimerView(timerIndex: index),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 1, horizontal: 7),
+                      decoration: BoxDecoration(
+                        color: ripeMango,
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Text(
+                        "Mulai",
+                        style: TextStyle(
+                          fontFamily: 'Nunito',
+                          fontSize: screenSize.width * 0.025,
+                          color: pureWhite,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

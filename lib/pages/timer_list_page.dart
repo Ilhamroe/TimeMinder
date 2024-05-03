@@ -118,7 +118,7 @@ class _ListTimerPageState extends State<ListTimerPage> {
   Widget build(BuildContext context) {
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
       shrinkWrap: true,
       itemCount: _allData.length,
       itemBuilder: (context, int index) {
@@ -132,18 +132,16 @@ class _ListTimerPageState extends State<ListTimerPage> {
             );
           },
           child: Container(
-            margin: const EdgeInsets.only(bottom: 13.0),
+            margin: const EdgeInsets.only(top: 14.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(16.0),
               color: offOrange,
             ),
             child: ListTile(
               contentPadding:
-                  const EdgeInsets.symmetric(vertical: 3.0, horizontal: 19.0),
+                  const EdgeInsets.symmetric(vertical: 5.0, horizontal: 19.0),
               leading: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  MediaQuery.of(context).size.width * 0.04,
-                ),
+                borderRadius: BorderRadius.circular(10),
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
@@ -160,6 +158,7 @@ class _ListTimerPageState extends State<ListTimerPage> {
                   fontFamily: 'Nunito-Bold',
                   fontWeight: FontWeight.w900,
                   fontSize: 14,
+                  color: cetaceanBlue
                 ),
               ),
               subtitle: Text(
@@ -168,6 +167,7 @@ class _ListTimerPageState extends State<ListTimerPage> {
                   fontFamily: 'Nunito',
                   fontWeight: FontWeight.w600,
                   fontSize: 12,
+                  color: cetaceanBlue
                 ),
               ),
               trailing: widget.isSettingPressed

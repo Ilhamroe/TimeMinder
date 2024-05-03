@@ -34,7 +34,7 @@ class TimerJobs {
     return jobsTimer;
   }
 
-  int findIntervalLoop(int interval){
+  int findIntervalLoop(int interval) {
     return interval * 2 + 1;
   }
 }

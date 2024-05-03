@@ -1,6 +1,5 @@
 import 'dart:ui';
 import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -10,10 +9,7 @@ import 'package:mobile_time_minder/pages/timer_list_page.dart';
 import 'package:mobile_time_minder/pages/timer_recommendation_page.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/widgets/display_modal_add.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
-import 'package:mobile_time_minder/widgets/home_rekomendasi_tile.dart';
-import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
 
 final logger = Logger();
 typedef ModalCloseCallback = void Function(int? id);
@@ -25,12 +21,8 @@ class DetailListTimer extends StatefulWidget {
   State<DetailListTimer> createState() => _DetailListTimerState();
 }
 
-class _DetailListTimerState extends State<DetailListTimer>
-    with TickerProviderStateMixin {
-  int _page = 2;
-  final GlobalKey<CurvedNavigationBarState> _bottomNavigationKey = GlobalKey();
+class _DetailListTimerState extends State<DetailListTimer> with TickerProviderStateMixin {
   late List<Map<String, dynamic>> _allData = [];
-  List<Color> labelColors = [cetaceanBlue, cetaceanBlue, offOrange];
 
   late TabController tabController;
   int counter = 0;
@@ -163,6 +155,7 @@ class _DetailListTimerState extends State<DetailListTimer>
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
+      backgroundColor: pureWhite,
       appBar: AppBar(
         centerTitle: true,
         title: const Text(
@@ -204,6 +197,7 @@ class _DetailListTimerState extends State<DetailListTimer>
           child: TabBar(
             controller: tabController,
             physics: const NeverScrollableScrollPhysics(),
+            dividerColor: Colors.transparent,
             onTap: (index) {
               setState(() {
                 selectedIndex;
@@ -255,7 +249,7 @@ class _DetailListTimerState extends State<DetailListTimer>
                     child: Align(
                       alignment: Alignment.center,
                       child: Text(
-                        'Timer Anda',
+                        'Timer mu',
                         style: TextStyle(
                             color:
                                 selectedIndex == 0 ? cetaceanBlue : pureWhite),
@@ -268,8 +262,7 @@ class _DetailListTimerState extends State<DetailListTimer>
             indicatorSize: TabBarIndicatorSize.tab,
             indicator: const UnderlineTabIndicator(
               borderSide: BorderSide(
-                width: 1,
-                color: halfGrey,
+                color: Colors.transparent,
               ),
             ),
             labelColor: pureWhite,
@@ -278,13 +271,10 @@ class _DetailListTimerState extends State<DetailListTimer>
           ),
         ),
       ),
-      body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: TabBarView(
+      body: TabBarView(
           controller: tabController,
           children: [
             ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
               itemCount: 2,
               shrinkWrap: true,
               itemBuilder: (BuildContext context, int index) {
@@ -300,36 +290,32 @@ class _DetailListTimerState extends State<DetailListTimer>
                 }
               },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: _allData.isEmpty
-                  ? Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        SvgPicture.asset(
-                          "assets/images/cat_setting.svg",
-                          width: screenSize.width * 0.3,
+            _allData.isEmpty
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SvgPicture.asset(
+                        "assets/images/cat_setting.svg",
+                        width: screenSize.width * 0.3,
+                      ),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.02),
+                      const Text(
+                        "Ayo tambahkan timer sesuai keinginanmu!",
+                        style: TextStyle(
+                          fontFamily: 'Nunito',
+                          fontSize: 14,
+                          color: darkGrey,
                         ),
-                        SizedBox(
-                            height: MediaQuery.of(context).size.width * 0.02),
-                        const Text(
-                          "Ayo tambahkan timer sesuai keinginanmu!",
-                          style: TextStyle(
-                            fontFamily: 'Nunito',
-                            fontSize: 14,
-                            color: darkGrey,
-                          ),
-                        ),
-                      ],
-                    )
-                  : ListTimerPage(
-                      isSettingPressed: isSettingPressed,
-                    ),
-            )
+                      ),
+                    ],
+                  )
+                : ListTimerPage(
+                    isSettingPressed: isSettingPressed,
+                  )
           ],
         ),
-      ),
     );
   }
 }
