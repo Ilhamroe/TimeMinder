@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
+import 'package:mobile_time_minder/services/timer_jobs.dart';
 import 'package:mobile_time_minder/widgets/display_modal_add.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
@@ -171,6 +172,7 @@ class _DetailListTimerState extends State<DetailListTimer>
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () async {
         setState(() {
@@ -296,50 +298,31 @@ class _DetailListTimerState extends State<DetailListTimer>
               ),
               labelColor: Colors.white,
               splashFactory: NoSplash.splashFactory,
-              overlayColor: MaterialStateProperty.all(Colors.transparent),
+              // overlayColor: MaterialStateProperty.all(Colors.transparent),
             ),
           ),
         ),
         body: Padding(
-          padding: const EdgeInsets.only(top: 20.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
           child: TabBarView(
             controller: tabController,
             children: [
               ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
                 itemCount: 2,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   if (index == 0) {
                     return HomeRekomendasiTile();
                   } else {
-                    return _allData.isEmpty
-                        ? Center(
-                            child: Text(
-                              "Belum ada timer",
-                              style: TextStyle(
-                                fontFamily: 'Nunito',
-                                fontSize: 14,
-                                color: darkGrey,
-                              ),
-                            ),
-                          )
-                        : HomeTimermuTile(isSettingPressed: isSettingPressed);
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 20.0),
+                      child: HomeTimermuTile(isSettingPressed: isSettingPressed),
+                    );
                   }
                 },
               ),
-              _allData.isEmpty
-                  ? Center(
-                      child: Text(
-                        "Belum ada timer",
-                        style: TextStyle(
-                          fontFamily: 'Nunito',
-                          fontSize: 14,
-                          color: darkGrey,
-                        ),
-                      ),
-                    )
-                  : HomeTimermuTile(isSettingPressed: isSettingPressed),
+              Center(
+                child: HomeTimermuTile(isSettingPressed: isSettingPressed)),
             ],
           ),
         ),

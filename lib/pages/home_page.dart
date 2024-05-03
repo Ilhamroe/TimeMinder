@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(
+                const SizedBox(
                   height: 22,
                 ),
                 Padding(
@@ -191,9 +191,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         children: [
                           Text(
                             '$_greeting',
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontFamily: 'Nunito-Bold',
-                                fontSize: 22.42,
+                                fontSize: screenSize.width * 0.063,
                                 fontWeight: FontWeight.w900,
                                 color: Color(0xFF091B35)),
                           ),
@@ -203,36 +203,36 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           SvgPicture.asset(_imagePath)
                         ],
                       ),
-                      const Text(
+                      Text(
                         "Yuk capai target fokusmu hari ini",
                         style: TextStyle(
                           fontFamily: 'Nunito-Bold',
-                          fontSize: 14,
+                          fontSize: screenSize.width * 0.04,
                           color: ripeMango,
                         ),
                       )
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 17,
+                SizedBox(
+                  height: screenSize.height * 0.03,
                 ),
                 const CardHome(),
+                const SizedBox(height: 10,),
                 const GridRekomendasi(),
-                // timermutile_home(),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   child: Row(
                     children: [
                       SvgPicture.asset('assets/images/timer.svg'),
-                      SizedBox(
+                      const SizedBox(
                         width: 8,
                       ),
                       Text(
                         "Timer Mu",
                         style: TextStyle(
                           fontFamily: 'Nunito-Bold',
-                          fontSize: 14,
+                          fontSize: screenSize.width * 0.04,
                           fontWeight: FontWeight.w900,
                           color: cetaceanBlue,
                         ),
@@ -247,10 +247,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             ),
                           );
                         },
-                        child: const Text(
+                        child: Text(
                           "Lihat Semua",
                           style: TextStyle(
-                            fontSize: 12,
+                            fontSize: screenSize.width * 0.034,
                             color: cetaceanBlue,
                           ),
                         ),
@@ -258,28 +258,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     ],
                   ),
                 ),
-                _allData.isEmpty
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            "assets/images/cat_setting.svg",
-                            width: screenSize.width * 0.3,
-                          ),
-                          const SizedBox(
-                            height: 8,
-                          ),
-                          const Text(
-                            "Ayo tambahkan timer sesuai keinginanmu!",
-                            style: TextStyle(
-                              fontFamily: 'Nunito',
-                              fontSize: 14,
-                              color: darkGrey,
-                            ),
-                          ),
-                        ],
-                      )
-                    : HomeTimermuTile(isSettingPressed: isSettingPressed),
+                SizedBox(height: screenSize.height * 0.015,),
+                Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: HomeTimermuTile(isSettingPressed: isSettingPressed),
+                    ),
               ],
             ),
           ),
