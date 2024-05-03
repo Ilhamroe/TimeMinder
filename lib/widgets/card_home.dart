@@ -4,10 +4,7 @@ import 'package:mobile_time_minder/theme.dart';
 class CardHome extends StatelessWidget {
   const CardHome({
     super.key,
-    // required this.context,
   });
-
-  // final BuildContext context;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +14,7 @@ class CardHome extends StatelessWidget {
       width: screenSize.width,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(22),
         color: cetaceanBlue,
       ),
       child: Stack(
@@ -40,7 +37,7 @@ class CardHome extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(
                         fontFamily: 'Nunito',
-                        fontSize: 18,
+                        fontSize: 25,
                         fontWeight: FontWeight.w500,
                         height: 1.5,
                         color: pureWhite),

@@ -6,6 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
+import 'package:mobile_time_minder/pages/timer_list_page.dart';
+import 'package:mobile_time_minder/pages/timer_recommendation_page.dart';
+import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/widgets/display_modal_add.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/theme.dart';
@@ -41,12 +44,6 @@ class _DetailListTimerState extends State<DetailListTimer>
 
   final TextEditingController _namaTimerController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
-
-  void updateLabelColors(int selectedIndex) {
-    for (int i = 0; i < labelColors.length; i++) {
-      labelColors[i] = i == selectedIndex ? offOrange : cetaceanBlue;
-    }
-  }
 
   Future<void> _refreshData() async {
     setState(() {
@@ -102,12 +99,6 @@ class _DetailListTimerState extends State<DetailListTimer>
     );
     onClose(newData);
     _refreshData();
-    if (_page != 2) {
-      setState(() {
-        _page = 2;
-        updateLabelColors(_page);
-      });
-    }
   }
 
   bool swipeIsInProgress = false;
@@ -158,7 +149,6 @@ class _DetailListTimerState extends State<DetailListTimer>
         }
       }
     });
-    updateLabelColors(_page);
   }
 
   @override
@@ -171,248 +161,173 @@ class _DetailListTimerState extends State<DetailListTimer>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () async {
-        setState(() {
-          updateLabelColors(0);
-        });
-        return true;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          title: const Text(
-            "Timer",
-            style: TextStyle(color: cetaceanBlue, fontFamily: 'Nunito-Bold'),
+    final Size screenSize = MediaQuery.of(context).size;
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        title: const Text(
+          "Timer",
+          style: TextStyle(color: cetaceanBlue, fontFamily: 'Nunito-Bold'),
+        ),
+        leading: IconButton(
+          iconSize: Checkbox.width,
+          key: const Key('back'),
+          onPressed: () {
+            Navigator.popAndPushNamed(context, AppRoutes.navbar);
+          },
+          padding: const EdgeInsets.only(left: 15),
+          icon: SvgPicture.asset(
+            "assets/images/button_back.svg",
+            width: 24,
+            height: 24,
           ),
-          leading: IconButton(
-            iconSize: Checkbox.width,
-            key: const Key('back'),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const HomePage(),
-                ),
-              );
-            },
-            padding: const EdgeInsets.only(left: 15),
+        ),
+        actions: [
+          IconButton(
+            padding: const EdgeInsets.only(right: 15),
+            key: const Key('setting'),
             icon: SvgPicture.asset(
-              "assets/images/button_back.svg",
+              "assets/images/settings.svg",
               width: 24,
               height: 24,
             ),
+            onPressed: () {
+              setState(() {
+                isSettingPressed = !isSettingPressed;
+              });
+            },
           ),
-          actions: [
-            IconButton(
-              padding: const EdgeInsets.only(right: 15),
-              key: const Key('setting'),
-              icon: SvgPicture.asset(
-                "assets/images/settings.svg",
-                width: 24,
-                height: 24,
-              ),
-              onPressed: () {
-                setState(() {
-                  isSettingPressed = !isSettingPressed;
-                });
-              },
-            ),
-          ],
-          backgroundColor: pureWhite,
-          bottom: PreferredSize(
-            preferredSize: const Size.fromHeight(60.0),
-            child: TabBar(
-              controller: tabController,
-              physics: const NeverScrollableScrollPhysics(),
-              onTap: (index) {
-                setState(() {
-                  selectedIndex;
-                });
-              },
-              tabs: [
-                Tab(
-                  height: 60,
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      left: 15,
-                    ),
-                    child: Container(
-                      alignment: Alignment.centerRight,
-                      height: 40,
-                      width: MediaQuery.of(context).size.width * 0.35,
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      decoration: BoxDecoration(
-                        color: selectedIndex == 0 ? ripeMango : halfGrey,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Semua',
-                          style: TextStyle(
-                              color: selectedIndex == 0
-                                  ? Colors.white
-                                  : cetaceanBlue),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Tab(
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                      right: 15,
-                    ),
-                    child: Container(
-                      alignment: Alignment.topCenter,
-                      height: 40,
-                      width: MediaQuery.of(context).size.width * 0.35,
-                      padding: const EdgeInsets.only(left: 20, right: 20),
-                      decoration: BoxDecoration(
-                        color: selectedIndex == 0 ? halfGrey : ripeMango,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Timer Anda',
-                          style: TextStyle(
-                              color: selectedIndex == 0
-                                  ? cetaceanBlue
-                                  : Colors.white),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicator: const UnderlineTabIndicator(
-                borderSide: BorderSide(
-                  width: 1,
-                  color: halfGrey,
-                ),
-              ),
-              labelColor: Colors.white,
-              splashFactory: NoSplash.splashFactory,
-              overlayColor: MaterialStateProperty.all(Colors.transparent),
-            ),
-          ),
-        ),
-        body: Padding(
-          padding: const EdgeInsets.only(top: 20.0),
-          child: TabBarView(
+        ],
+        backgroundColor: pureWhite,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(60.0),
+          child: TabBar(
             controller: tabController,
-            children: [
-              ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                itemCount: 2,
-                shrinkWrap: true,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index == 0) {
-                    return HomeRekomendasiTile();
-                  } else {
-                    return _allData.isEmpty
-                        ? Center(
-                            child: Text(
-                              "Belum ada timer",
-                              style: TextStyle(
-                                fontFamily: 'Nunito',
-                                fontSize: 14,
-                                color: darkGrey,
-                              ),
-                            ),
-                          )
-                        : HomeTimermuTile(isSettingPressed: isSettingPressed);
-                  }
-                },
-              ),
-              _allData.isEmpty
-                  ? Center(
+            physics: const NeverScrollableScrollPhysics(),
+            onTap: (index) {
+              setState(() {
+                selectedIndex;
+              });
+            },
+            tabs: [
+              Tab(
+                height: 60,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 15,
+                  ),
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    height: 40,
+                    width: MediaQuery.of(context).size.width * 0.35,
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: selectedIndex == 0 ? ripeMango : halfGrey,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
                       child: Text(
-                        "Belum ada timer",
+                        'Semua',
                         style: TextStyle(
-                          fontFamily: 'Nunito',
-                          fontSize: 14,
-                          color: darkGrey,
-                        ),
+                            color:
+                                selectedIndex == 0 ? pureWhite : cetaceanBlue),
                       ),
-                    )
-                  : HomeTimermuTile(isSettingPressed: isSettingPressed),
+                    ),
+                  ),
+                ),
+              ),
+              Tab(
+                height: 60,
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    right: 15,
+                  ),
+                  child: Container(
+                    alignment: Alignment.topCenter,
+                    height: 40,
+                    width: MediaQuery.of(context).size.width * 0.35,
+                    padding: const EdgeInsets.only(left: 20, right: 20),
+                    decoration: BoxDecoration(
+                      color: selectedIndex == 0 ? halfGrey : ripeMango,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Timer Anda',
+                        style: TextStyle(
+                            color:
+                                selectedIndex == 0 ? cetaceanBlue : pureWhite),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
+            indicatorSize: TabBarIndicatorSize.tab,
+            indicator: const UnderlineTabIndicator(
+              borderSide: BorderSide(
+                width: 1,
+                color: halfGrey,
+              ),
+            ),
+            labelColor: pureWhite,
+            splashFactory: NoSplash.splashFactory,
+            overlayColor: MaterialStateProperty.all(Colors.transparent),
           ),
         ),
-        bottomNavigationBar: CurvedNavigationBar(
-          key: _bottomNavigationKey,
-          index: _page,
-          height: 65.0,
-          items: [
-            CurvedNavigationBarItem(
-              child: SvgPicture.asset(
-                "assets/images/solar.svg",
-                width: 25,
-                height: 25,
-              ),
-              label: "BERANDA",
-              labelStyle: TextStyle(
-                color: labelColors[0],
-                fontFamily: 'Nunito',
-              ),
-            ),
-            CurvedNavigationBarItem(
-              child: const Icon(
-                Icons.add,
-                size: 25,
-              ),
-              label: "TAMBAH",
-              labelStyle: TextStyle(
-                color: labelColors[1],
-                fontFamily: 'Nunito',
-              ),
-            ),
-            CurvedNavigationBarItem(
-              child: const Icon(
-                Icons.hourglass_empty_rounded,
-                size: 25,
-              ),
-              label: _page == 2 ? null : "TIMER",
-              labelStyle: TextStyle(
-                color: labelColors[2],
-                fontFamily: 'Nunito',
-              ),
-            ),
-          ],
-          backgroundColor: pureWhite,
-          color: offOrange,
-          animationCurve: Curves.bounceInOut,
-          animationDuration: const Duration(milliseconds: 500),
-          buttonBackgroundColor: ripeMango,
-          onTap: (index) {
-            setState(
-              () {
-                _page = index;
-                updateLabelColors(index);
-                switch (index) {
-                  case 0:
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const HomePage(),
-                      ),
-                    );
-                    break;
-                  case 1:
-                    _showModal((int? id) {});
-                    break;
-                  case 2:
-                    _refreshData();
-                    break;
+      ),
+      body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+        child: TabBarView(
+          controller: tabController,
+          children: [
+            ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              itemCount: 2,
+              shrinkWrap: true,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == 0) {
+                  return RecommendationTimerPage(
+                      isSettingPressed: isSettingPressed);
+                } else {
+                  return _allData.isEmpty
+                      ? const Center(child: Text(""))
+                      : ListTimerPage(
+                          isSettingPressed: isSettingPressed,
+                        );
                 }
               },
-            );
-          },
-          letIndexChange: (index) => true,
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: _allData.isEmpty
+                  ? Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset(
+                          "assets/images/cat_setting.svg",
+                          width: screenSize.width * 0.3,
+                        ),
+                        SizedBox(
+                            height: MediaQuery.of(context).size.width * 0.02),
+                        const Text(
+                          "Ayo tambahkan timer sesuai keinginanmu!",
+                          style: TextStyle(
+                            fontFamily: 'Nunito',
+                            fontSize: 14,
+                            color: darkGrey,
+                          ),
+                        ),
+                      ],
+                    )
+                  : ListTimerPage(
+                      isSettingPressed: isSettingPressed,
+                    ),
+            )
+          ],
         ),
       ),
     );

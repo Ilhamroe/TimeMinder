@@ -4,26 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/view_list_timer.dart';
-import 'package:mobile_time_minder/widgets/display_modal_edit.dart';
 import 'package:mobile_time_minder/theme.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
-class HomeTimermuTile extends StatefulWidget {
+class ListTimerPage extends StatefulWidget {
   final bool isSettingPressed;
 
-  const HomeTimermuTile({Key? key, required this.isSettingPressed})
+  const ListTimerPage({Key? key, required this.isSettingPressed})
       : super(key: key);
 
   @override
-  State<HomeTimermuTile> createState() => _HomeTimermuTileState();
+  State<ListTimerPage> createState() => _ListTimerPageState();
 }
 
-class _HomeTimermuTileState extends State<HomeTimermuTile> {
+class _ListTimerPageState extends State<ListTimerPage> {
   int counter = 0;
   int counterBreakTime = 0;
   int counterInterval = 0;
-  bool _isLoading = false;
+  bool isLoading = false;
   bool statusSwitch = false;
   bool hideContainer = true;
 
@@ -34,12 +33,12 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
   // refresh data
   Future<void> _refreshData() async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
       _allData = data;
-      _isLoading = false;
+      isLoading = false;
     });
   }
 
@@ -62,9 +61,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
           _allData.firstWhere((element) => element['id'] == id);
       _namaTimerController.text = existingData['title'];
       _deskripsiController.text = existingData['description'];
-      setState(() {
-        counter = existingData['time'] ?? 0;
-      });
+      counter = existingData['time'] ?? 0;
       counterBreakTime = existingData['rest'] ?? 0;
       counterInterval = existingData['interval'] ?? 0;
     } else {
@@ -94,7 +91,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(70),
               ),
-              child: DisplayModal(id: id),
+              // child: DisplayModal(id: id),
             ),
           ),
         ],

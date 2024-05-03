@@ -74,7 +74,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.popAndPushNamed(context, AppRoutes.home);
+                      Navigator.popAndPushNamed(context, AppRoutes.navbar);
                     },
                     child: Text(
                       "skip",
@@ -110,7 +110,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                             duration: const Duration(milliseconds: 500),
                             curve: Curves.ease);
                       } else {
-                        Navigator.popAndPushNamed(context, AppRoutes.home);
+                        Navigator.popAndPushNamed(context, AppRoutes.navbar);
                       }
                     },
                     child: Text(

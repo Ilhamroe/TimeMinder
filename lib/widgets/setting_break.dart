@@ -22,6 +22,7 @@ class SettingBreakWidget extends StatefulWidget {
 }
 
 class SettingBreakWidgetState extends State<SettingBreakWidget> {
+  bool statusSwitch = false;
   int counterBreakTime = 0;
   int counterInterval = 0;
   TextEditingController breakTimeController = TextEditingController();
@@ -76,7 +77,6 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
     });
   }
 
-  // Method untuk mengatur nilai awal input field pada SettingBreakWidget
   void setBreakTimeCounter(int value) {
     setState(() {
       counterBreakTime = value;
@@ -130,20 +130,34 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Expanded(
-                  child: TextFormField(
-                    controller: breakTimeController,
-                    keyboardType: TextInputType.number,
-                    onChanged: _onBreakTimeChanged,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: darkGrey,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: widget.statusSwitch
+                      ? TextFormField(
+                          controller: breakTimeController,
+                          keyboardType: TextInputType.number,
+                          onChanged: _onBreakTimeChanged,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: darkGrey,
+                          ),
+                          textAlign: TextAlign.center,
+                        )
+                      : TextFormField(
+                          controller: breakTimeController,
+                          enabled: false,
+                          decoration: const InputDecoration(
+                            border: InputBorder.none,
+                            contentPadding: EdgeInsets.zero,
+                          ),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: darkGrey,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                 ),
                 Container(
                   child: IconButton(
@@ -200,21 +214,35 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                   ),
                 ),
                 Expanded(
-                  child: TextFormField(
-                    controller: intervalController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      contentPadding: EdgeInsets.zero,
-                    ),
-                    onChanged: _onIntervalChanged,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: darkGrey,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
+                    child: widget.statusSwitch
+                        ? TextFormField(
+                            controller: intervalController,
+                            keyboardType: TextInputType.number,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            onChanged: _onIntervalChanged,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: darkGrey,
+                            ),
+                            textAlign: TextAlign.center,
+                          )
+                        : TextFormField(
+                            controller: intervalController,
+                            enabled: false,
+                            decoration: const InputDecoration(
+                              border: InputBorder.none,
+                              contentPadding: EdgeInsets.zero,
+                            ),
+                            onChanged: _onIntervalChanged,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: darkGrey,
+                            ),
+                            textAlign: TextAlign.center,
+                          )),
                 Container(
                   child: IconButton(
                     onPressed: widget.statusSwitch
