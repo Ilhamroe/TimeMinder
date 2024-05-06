@@ -6,7 +6,6 @@ import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/timer_page.dart';
 import 'package:mobile_time_minder/widgets/card_home.dart';
 import 'package:mobile_time_minder/widgets/grid_rekomendasi.dart';
-import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -79,7 +78,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
-    // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Scaffold(
         body: SafeArea(
           child: SingleChildScrollView(

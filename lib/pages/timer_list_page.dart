@@ -155,20 +155,18 @@ class _ListTimerPageState extends State<ListTimerPage> {
               title: Text(
                 _allData[index]['title'],
                 style: const TextStyle(
-                  fontFamily: 'Nunito-Bold',
-                  fontWeight: FontWeight.w900,
-                  fontSize: 14,
-                  color: cetaceanBlue
-                ),
+                    fontFamily: 'Nunito-Bold',
+                    fontWeight: FontWeight.w900,
+                    fontSize: 14,
+                    color: cetaceanBlue),
               ),
               subtitle: Text(
                 _allData[index]['description'],
                 style: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                  color: cetaceanBlue
-                ),
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    color: cetaceanBlue),
               ),
               trailing: widget.isSettingPressed
                   ? SizedBox(
