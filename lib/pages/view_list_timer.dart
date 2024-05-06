@@ -6,7 +6,6 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:mobile_time_minder/models/notif.dart';
-import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
 import 'package:mobile_time_minder/widgets/modal_confim.dart';
