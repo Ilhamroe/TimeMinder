@@ -11,15 +11,16 @@ class GridRekomendasi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Size screenSize = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 22.5),
       child: GridView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
+            crossAxisCount: Timerlist.length,
             crossAxisSpacing: 14.0,
-            mainAxisExtent: 153,
+            mainAxisExtent: screenSize.width * 0.46,
           ),
           itemCount: Timerlist.length,
           itemBuilder: (context, int index) {
@@ -30,15 +31,15 @@ class GridRekomendasi extends StatelessWidget {
               ),
               child: Column(children: [
                 Container(
-                  margin: EdgeInsets.only(top: 10),
+                  margin: const EdgeInsets.only(top: 12),
                   padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 14),
+                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(17.5),
                       color: heliotrope),
                   child: SvgPicture.asset(
                     Timerlist[index].image,
-                    height: 37,
+                    height: 40,
                   ),
                 ),
                 Padding(
@@ -48,18 +49,18 @@ class GridRekomendasi extends StatelessWidget {
                     children: [
                       Text(
                         Timerlist[index].title,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontFamily: 'Nunito',
-                            fontSize: 10,
+                            fontSize: screenSize.width * 0.029,
                             fontWeight: FontWeight.bold,
                             color: cetaceanBlue),
                       ),
                       const SizedBox(height: 4.0),
                       Text(
                         Timerlist[index].description,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontFamily: 'Nunito',
-                            fontSize: 6,
+                            fontSize: screenSize.width * 0.02,
                             fontWeight: FontWeight.w800,
                             color: cetaceanBlue),
                         textAlign: TextAlign.center,
@@ -67,11 +68,12 @@ class GridRekomendasi extends StatelessWidget {
                       const SizedBox(height: 4.0),
                       Text(
                         Timerlist[index].time,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontFamily: 'Nunito',
-                            fontSize: 6,
+                            fontSize: screenSize.width * 0.02,
                             fontWeight: FontWeight.w800,
                             color: darkGrey),
+                          textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 4.0),
                       GestureDetector(
@@ -91,12 +93,12 @@ class GridRekomendasi extends StatelessWidget {
                             color: ripeMango,
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          child: const Center(
+                          child: Center(
                             child: Text(
                               "Mulai",
                               style: TextStyle(
                                 fontFamily: 'Nunito',
-                                fontSize: 8,
+                                fontSize: screenSize.width * 0.025,
                                 color: pureWhite,
                               ),
                             ),

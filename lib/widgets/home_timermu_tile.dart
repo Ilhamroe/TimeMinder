@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +21,6 @@ class HomeTimermuTile extends StatefulWidget {
 }
 
 class _HomeTimermuTileState extends State<HomeTimermuTile> {
-  final List<Color> _customColors = [
-    blueJeans,
-    ripeMango,
-    darkGrey,
-    heliotrope,
-    red,
-  ];
-
   int counter = 0;
   int counterBreakTime = 0;
   int counterInterval = 0;
@@ -39,6 +32,7 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
   final TextEditingController _deskripsiController = TextEditingController();
 
   late List<Map<String, dynamic>> _allData = [];
+
   // refresh data
   Future<void> _refreshData() async {
     setState(() {
@@ -76,7 +70,6 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
       counterBreakTime = existingData['rest'] ?? 0;
       counterInterval = existingData['interval'] ?? 0;
     } else {
-      // Jika data baru, reset nilai controller
       _namaTimerController.text = '';
       _deskripsiController.text = '';
       setState(() {
@@ -128,17 +121,12 @@ class _HomeTimermuTileState extends State<HomeTimermuTile> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const Center(
-            child: CircularProgressIndicator(),
-          )
-        : ListView.builder(
+    return ListView.builder(
             physics: const NeverScrollableScrollPhysics(),
             padding: const EdgeInsets.all(8.0),
             shrinkWrap: true,
             itemCount: _allData.length,
             itemBuilder: (context, int index) {
-              final color = _customColors[index % _customColors.length];
               return GestureDetector(
                 onTap: () {
                   Navigator.push(

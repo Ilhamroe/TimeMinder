@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
+import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/models/notif.dart';
 import 'package:audioplayers/audioplayers.dart';
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin= FlutterLocalNotificationsPlugin();
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -24,7 +25,7 @@ class _ModalConfirmState extends State<ModalConfirm> {
 
   bool isLoading = false;
   bool statusSwitch = false;
-  final player= AudioPlayer();
+  final player = AudioPlayer();
 
   // refresh data
   void _refreshData() async {
@@ -42,6 +43,7 @@ class _ModalConfirmState extends State<ModalConfirm> {
     int generateRandomId() {
       return DateTime.now().millisecondsSinceEpoch.remainder(100000);
     }
+
     Notif.showBigTextNotification(
         id: generateRandomId(),
         title: "TimeMinder",
@@ -124,14 +126,9 @@ class _ModalConfirmState extends State<ModalConfirm> {
                         widget.onConfirm!();
                         Navigator.pop(context);
                       } else {
-                        _showNotification("Timer dihentikan");               
+                        _showNotification("Timer dihentikan");
                         _refreshData();
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomePage(),
-                          ),
-                        );
+                        Navigator.popAndPushNamed(context, AppRoutes.navbar);
                       }
                     },
                     child: const Text(
