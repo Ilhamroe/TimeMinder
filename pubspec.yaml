@@ -27,6 +27,8 @@ dependencies:
   permission_handler: ^11.3.1
   fluttertoast: ^8.2.5
   double_back_to_close_app: ^2.1.0
+  easy_date_timeline: ^1.0.7
+  table_calendar: ^3.1.1
 
 dev_dependencies:
   flutter_test:
