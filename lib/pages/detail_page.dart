@@ -1,12 +1,11 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_time_minder/database/db_logger.dart';
-import 'package:table_calendar/table_calendar.dart'; // Import db_logger.dart untuk mengambil data dari database
-
-import '../theme.dart';
+import 'package:table_calendar/table_calendar.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mobile_time_minder/theme.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({Key? key}) : super(key: key);
@@ -19,12 +18,17 @@ class _DetailPageState extends State<DetailPage> {
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
-
   bool isOptionOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: pureWhite,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
@@ -49,15 +53,15 @@ class _DetailPageState extends State<DetailPage> {
                   IconButton(
                     icon: isOptionOpen
                         ? SvgPicture.asset(
-                      "assets/images/option_up.svg",
-                      width: 28,
-                      height: 28,
-                    )
+                            "assets/images/option_up.svg",
+                            width: 28,
+                            height: 28,
+                          )
                         : SvgPicture.asset(
-                      "assets/images/option.svg",
-                      width: 28,
-                      height: 28,
-                    ),
+                            "assets/images/option.svg",
+                            width: 28,
+                            height: 28,
+                          ),
                     onPressed: () {
                       setState(() {
                         isOptionOpen = !isOptionOpen;
@@ -193,11 +197,6 @@ class _DetailPageState extends State<DetailPage> {
       },
     );
   }
-
-
-
-
-
 
   Future<bool> _checkDataExist(int date) async {
     try {

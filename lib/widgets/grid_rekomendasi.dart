@@ -11,71 +11,91 @@ class GridRekomendasi extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 28.0, horizontal: 22.5),
+      padding: EdgeInsets.symmetric(
+        vertical: MediaQuery.of(context).size.height * 0.03,
+        horizontal: MediaQuery.of(context).size.width * 0.05,
+      ),
       child: GridView.builder(
-          physics: const NeverScrollableScrollPhysics(),
-          shrinkWrap: true,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: Timerlist.length,
-            crossAxisSpacing: 14.0,
-            mainAxisExtent: screenSize.width * 0.46,
-          ),
-          itemCount: Timerlist.length,
-          itemBuilder: (context, int index) {
-            return Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(7.71),
-                color: offOrange,
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: MediaQuery.of(context).size.width < 200 ? 2 : 3,
+          crossAxisSpacing: MediaQuery.of(context).size.width * 0.03,
+          mainAxisExtent: MediaQuery.of(context).size.width * 0.49,
+        ),
+        itemCount: Timerlist.length,
+        itemBuilder: (context, int index) {
+          return Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(
+                MediaQuery.of(context).size.width * 0.03,
               ),
-              child: Column(children: [
+              color: offOrange,
+            ),
+            child: Column(
+              children: [
                 Container(
-                  margin: const EdgeInsets.only(top: 12),
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                  margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.width * 0.03,
+                  ),
+                  padding: EdgeInsets.symmetric(
+                    vertical: MediaQuery.of(context).size.width * 0.03,
+                    horizontal: MediaQuery.of(context).size.width * 0.04,
+                  ),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(17.5),
-                      color: heliotrope),
+                    borderRadius: BorderRadius.circular(
+                      MediaQuery.of(context).size.width * 0.04,
+                    ),
+                    color: heliotrope,
+                  ),
                   child: SvgPicture.asset(
                     Timerlist[index].image,
-                    height: 40,
+                    height: MediaQuery.of(context).size.width * 0.1,
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width * 0.02,
+                    vertical: MediaQuery.of(context).size.width * 0.02,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
                         Timerlist[index].title,
                         style: TextStyle(
-                            fontFamily: 'Nunito',
-                            fontSize: screenSize.width * 0.029,
-                            fontWeight: FontWeight.bold,
-                            color: cetaceanBlue),
+                          fontFamily: 'Nunito',
+                          fontSize: MediaQuery.of(context).size.width * 0.037,
+                          fontWeight: FontWeight.bold,
+                          color: cetaceanBlue,
+                        ),
                       ),
-                      const SizedBox(height: 4.0),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.01),
                       Text(
                         Timerlist[index].description,
                         style: TextStyle(
-                            fontFamily: 'Nunito',
-                            fontSize: screenSize.width * 0.02,
-                            fontWeight: FontWeight.w800,
-                            color: cetaceanBlue),
+                          fontFamily: 'Nunito',
+                          fontSize: MediaQuery.of(context).size.width * 0.025,
+                          fontWeight: FontWeight.w800,
+                          color: cetaceanBlue,
+                        ),
                         textAlign: TextAlign.center,
                       ),
-                      const SizedBox(height: 4.0),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.01),
                       Text(
                         Timerlist[index].time,
                         style: TextStyle(
-                            fontFamily: 'Nunito',
-                            fontSize: screenSize.width * 0.02,
-                            fontWeight: FontWeight.w800,
-                            color: darkGrey),
-                          textAlign: TextAlign.center,
+                          fontFamily: 'Nunito',
+                          fontSize: MediaQuery.of(context).size.width * 0.025,
+                          fontWeight: FontWeight.w800,
+                          color: darkGrey,
+                        ),
                       ),
-                      const SizedBox(height: 4.0),
+                      SizedBox(
+                          height: MediaQuery.of(context).size.width * 0.01),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -87,18 +107,24 @@ class GridRekomendasi extends StatelessWidget {
                           );
                         },
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 1, horizontal: 16),
+                          padding: EdgeInsets.symmetric(
+                            vertical: MediaQuery.of(context).size.width * 0.002,
+                            horizontal:
+                                MediaQuery.of(context).size.width * 0.01,
+                          ),
                           decoration: BoxDecoration(
                             color: ripeMango,
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(
+                              MediaQuery.of(context).size.width * 0.02,
+                            ),
                           ),
                           child: Center(
                             child: Text(
                               "Mulai",
                               style: TextStyle(
                                 fontFamily: 'Nunito',
-                                fontSize: screenSize.width * 0.025,
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.032,
                                 color: pureWhite,
                               ),
                             ),
@@ -108,9 +134,11 @@ class GridRekomendasi extends StatelessWidget {
                     ],
                   ),
                 ),
-              ]),
-            );
-          }),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }
