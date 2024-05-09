@@ -3,10 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/detail_page.dart';
 import 'package:mobile_time_minder/pages/faq.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/pages/timer_page.dart';
+import 'package:mobile_time_minder/pages/detail_page.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/display_modal_add.dart';
 import 'package:mobile_time_minder/widgets/double_tap_closed.dart';
@@ -167,10 +167,19 @@ class _NavbarBottomState extends State<NavbarBottom> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SvgPicture.asset(
-                              'assets/images/home.svg',
-                              color: currentTab == 0 ? ripeMango : cetaceanBlue,
-                            ),
+                            currentTab == 0
+                                ? SvgPicture.asset(
+                                    'assets/images/home_bold.svg',
+                                    color: currentTab == 0
+                                        ? ripeMango
+                                        : cetaceanBlue,
+                                  )
+                                : SvgPicture.asset(
+                                    'assets/images/home.svg',
+                                    color: currentTab == 0
+                                        ? ripeMango
+                                        : cetaceanBlue,
+                                  ),
                             Text(
                               'Beranda',
                               style: TextStyle(
@@ -193,6 +202,11 @@ class _NavbarBottomState extends State<NavbarBottom> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            currentTab == 1 ?
+                            SvgPicture.asset(
+                              'assets/images/timer_bold.svg',
+                              color: currentTab == 1 ? ripeMango : cetaceanBlue,
+                            ) :
                             SvgPicture.asset(
                               'assets/images/timer.svg',
                               color: currentTab == 1 ? ripeMango : cetaceanBlue,
@@ -224,7 +238,11 @@ class _NavbarBottomState extends State<NavbarBottom> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            currentTab == 2 ?
                             SvgPicture.asset(
+                              'assets/images/detail_bold.svg',
+                              color: currentTab == 2 ? ripeMango : cetaceanBlue,
+                            ):SvgPicture.asset(
                               'assets/images/detail.svg',
                               color: currentTab == 2 ? ripeMango : cetaceanBlue,
                             ),
@@ -250,7 +268,11 @@ class _NavbarBottomState extends State<NavbarBottom> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            currentTab == 3 ?
                             SvgPicture.asset(
+                              'assets/images/bantuan_bold.svg',
+                              color: currentTab == 3 ? ripeMango : cetaceanBlue,
+                            ) :SvgPicture.asset(
                               'assets/images/bantuan.svg',
                               color: currentTab == 3 ? ripeMango : cetaceanBlue,
                             ),

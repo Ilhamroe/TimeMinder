@@ -27,7 +27,8 @@ class SQLLogger {
       'title': title,
       'description': description,
       'length': length,
-      'passed': passed
+      'passed': passed,
+      'createdAt': DateTime.now().toString()
     };
     final id = await db.insert('data', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
