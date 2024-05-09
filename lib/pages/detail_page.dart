@@ -3,18 +3,62 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_time_minder/database/db_logger.dart';
+import 'package:mobile_time_minder/services/tooltip_storage.dart';
+import 'package:mobile_time_minder/widgets/tooltip_detailpage.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class DetailPage extends StatefulWidget {
-  const DetailPage({Key? key}) : super(key: key);
+  const DetailPage({super.key});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  final calendarKey = GlobalKey();
+  final detailTimerKey = GlobalKey();
+
+  late TutorialCoachMark tutorialCoachMark;
+
+  bool isSaved = true;
+
+  void _initdetailPageInAppTour() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: detailPageTargets(
+        calendarKey: calendarKey,
+        detailTimerKey: detailTimerKey,
+      ),
+      pulseEnable: false,
+      colorShadow: darkGrey,
+      paddingFocus: 20,
+      hideSkip: true,
+      opacityShadow: 0.5,
+      onFinish: () {
+        print("Completed!");
+        SaveDetailPageTour().saveDetailPageStatus();
+      },
+    );
+  }
+
+  void _showInAppTour() {
+    Future.delayed(const Duration(seconds: 2), () {
+      SaveDetailPageTour().getDetailPageStatus().then((value) => {
+            if (value == false)
+              {
+                print("User has not seen this tutor"),
+                tutorialCoachMark.show(context: context)
+              }
+            else
+              {print("User has seen this tutor")}
+          });
+    });
+  }
+
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -23,6 +67,8 @@ class _DetailPageState extends State<DetailPage> {
   @override
   void initState() {
     super.initState();
+    _initdetailPageInAppTour();
+    _showInAppTour();
   }
 
   @override
@@ -38,44 +84,46 @@ class _DetailPageState extends State<DetailPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              margin: EdgeInsets.all(15),
-              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 5),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _slideDate(),
-                  ),
-                  IconButton(
-                    icon: isOptionOpen
-                        ? SvgPicture.asset(
-                            "assets/images/option_up.svg",
-                            width: 28,
-                            height: 28,
-                          )
-                        : SvgPicture.asset(
-                            "assets/images/option.svg",
-                            width: 28,
-                            height: 28,
-                          ),
-                    onPressed: () {
-                      setState(() {
-                        isOptionOpen = !isOptionOpen;
-                      });
-                    },
-                  ),
-                ],
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              child: Container(
+                key: calendarKey,
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                ),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: _slideDate(),
+                    ),
+                    IconButton(
+                      icon: isOptionOpen
+                          ? SvgPicture.asset(
+                              "assets/images/option_up.svg",
+                              width: 28,
+                              height: 28,
+                            )
+                          : SvgPicture.asset(
+                              "assets/images/option.svg",
+                              width: 28,
+                              height: 28,
+                            ),
+                      onPressed: () {
+                        setState(() {
+                          isOptionOpen = !isOptionOpen;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
-            SizedBox(height: 32.0),
             if (isOptionOpen) _kalender(),
             Container(
-              height: 32.0,
-              decoration: BoxDecoration(
+              height: 10.0,
+              decoration: const BoxDecoration(
                 border: Border(
                   bottom: BorderSide(
                     color: Colors.orange,
@@ -84,33 +132,37 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               ),
             ),
-            SizedBox(height: 32.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: SvgPicture.asset(
-                    "assets/images/Detailpic.svg",
-                    height: 30,
-                    width: 30,
+            const SizedBox(height: 20.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Column(
+                key: detailTimerKey,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SvgPicture.asset(
+                        "assets/images/Detailpic.svg",
+                        height: 30,
+                        width: 30,
+                      ),
+                      const SizedBox(width: 15.0),
+                      const Text(
+                        'Detail',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontFamily: "nunito",
+                          color: ripeMango,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(width: 15.0),
-                Text(
-                  'Detail',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontFamily: "nunito",
-                    color: ripeMango,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+                  const SizedBox(height: 32.0),
+                  _buildListView(),
+                ],
+              ),
             ),
-            SizedBox(height: 32.0),
-            _buildListView(),
-            SizedBox(height: 60.0),
           ],
         ),
       ),
@@ -231,7 +283,11 @@ class _DetailPageState extends State<DetailPage> {
                   SizedBox(height: 16),
                   Text(
                     'Tambahkan TimerMu Hari ini',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: TextStyle(
+                      fontSize: 16, 
+                      color: Colors.grey,
+                      fontFamily: "Nunito",
+                    ),
                   ),
                 ],
               ),

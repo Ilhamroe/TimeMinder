@@ -13,8 +13,7 @@ class GridRekomendasi extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(
-        vertical: MediaQuery.of(context).size.height * 0.03,
-        horizontal: MediaQuery.of(context).size.width * 0.05,
+        vertical: MediaQuery.of(context).size.height * 0.02,
       ),
       child: GridView.builder(
         physics: const NeverScrollableScrollPhysics(),
