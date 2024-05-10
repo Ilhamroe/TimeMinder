@@ -12,24 +12,25 @@ class CardHome extends StatefulWidget {
 class _CardHomeState extends State<CardHome> {
   bool isLoading = false;
   late List<Map<String, dynamic>> _allLogData = [];
+  num totalPassed = 0;
 
   Future<void> _refreshLogData() async {
     setState(() {
       isLoading = true;
     });
     final List<Map<String, dynamic>> logData = await SQLLogger.getAllData();
-    print('Value of _allLogData after refresh: $_allLogData');
+    // print('Value of _allLogData after refresh: $_allLogData');
     setState(() {
       _allLogData = logData;
       isLoading = false;
     });
+    _totalPassed();
   }
 
-  int totalPassed = 0;
-  void _totalPassed(num totalPassed) {
-    if (_allLogData != null && _allLogData!.isNotEmpty) {
-      for (int i = 0; i < _allLogData!.length; i++) {
-        if (_allLogData![i]['passed'] != null) {
+  void _totalPassed() {
+    if (_allLogData.isNotEmpty) {
+      for (int i = 0; i < _allLogData.length; i++) {
+        if (_allLogData[i]['passed'] != null) {
           totalPassed += _allLogData[i]['passed'];
         }
       }
@@ -81,32 +82,50 @@ class _CardHomeState extends State<CardHome> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
-                    'Oops! Sepertinya kamu belum\n memulai timer hari ini',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontFamily: 'Nunito',
-                        fontSize: screenSize.width * 0.05,
-                        fontWeight: FontWeight.w500,
-                        height: 1.5,
-                        color: pureWhite),
-                  ),
                   _allLogData.isEmpty
-                      ? Text(
-                          'Yuk, mulai sekarang!',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontFamily: 'Nunito-Bold',
-                              fontSize: screenSize.width * 0.067,
-                              color: pureWhite),
+                      ? Column(
+                          children: [
+                            Text(
+                              'Oops! Sepertinya kamu belum\n memulai timer hari ini',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontSize: screenSize.width * 0.05,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.5,
+                                  color: pureWhite),
+                            ),
+                            Text(
+                              'Yuk, mulai sekarang!',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  fontSize: screenSize.width * 0.067,
+                                  color: pureWhite),
+                            )
+                          ],
                         )
-                      : Text(
-                          _allLogData[index]['passed'] ?? '',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontFamily: 'Nunito-Bold',
-                              fontSize: screenSize.width * 0.067,
-                              color: pureWhite),
+                      : Column(
+                          children: [
+                            Text(
+                              'Hari ini kamu sudah fokus',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontFamily: 'Nunito',
+                                  fontSize: screenSize.width * 0.05,
+                                  fontWeight: FontWeight.w500,
+                                  height: 1.5,
+                                  color: pureWhite),
+                            ),
+                            Text(
+                              _allLogData[index]['passed'],
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  fontSize: screenSize.width * 0.067,
+                                  color: pureWhite),
+                            ),
+                          ],
                         ),
                 ],
               ),

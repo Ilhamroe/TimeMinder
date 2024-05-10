@@ -30,6 +30,7 @@ dependencies:
   fluttertoast: ^8.2.5
   double_back_to_close_app: ^2.1.0
   easy_date_timeline: ^1.0.7
+  tutorial_coach_mark: ^1.2.11
 
 dev_dependencies:
   flutter_test:

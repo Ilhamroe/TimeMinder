@@ -6,16 +6,60 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_time_minder/database/db_logger.dart';
+import 'package:mobile_time_minder/services/tooltip_storage.dart';
+import 'package:mobile_time_minder/widgets/tooltip_detailpage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class DetailPage extends StatefulWidget {
-  const DetailPage({Key? key}) : super(key: key);
+  const DetailPage({super.key});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
 }
 
 class _DetailPageState extends State<DetailPage> {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  final calendarKey = GlobalKey();
+  final detailTimerKey = GlobalKey();
+
+  late TutorialCoachMark tutorialCoachMark;
+
+  bool isSaved = true;
+
+  void _initdetailPageInAppTour() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: detailPageTargets(
+        calendarKey: calendarKey,
+        detailTimerKey: detailTimerKey,
+      ),
+      pulseEnable: false,
+      colorShadow: darkGrey,
+      paddingFocus: 20,
+      hideSkip: true,
+      opacityShadow: 0.5,
+      onFinish: () {
+        print("Completed!");
+        SaveDetailPageTour().saveDetailPageStatus();
+      },
+    );
+  }
+
+  void _showInAppTour() {
+    Future.delayed(const Duration(seconds: 2), () {
+      SaveDetailPageTour().getDetailPageStatus().then((value) => {
+            if (value == false)
+              {
+                print("User has not seen this tutor"),
+                tutorialCoachMark.show(context: context)
+              }
+            else
+              {print("User has seen this tutor")}
+          });
+    });
+  }
+
   DateTime _selectedDay = DateTime.now();
   DateTime _focusedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -24,6 +68,8 @@ class _DetailPageState extends State<DetailPage> {
   @override
   void initState() {
     super.initState();
+    _initdetailPageInAppTour();
+    _showInAppTour();
   }
 
   @override
@@ -61,6 +107,7 @@ class _DetailPageState extends State<DetailPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
+              key: calendarKey,
               margin:
                   const EdgeInsets.symmetric(horizontal: 5.0, vertical: 1.0),
               padding:
@@ -107,40 +154,45 @@ class _DetailPageState extends State<DetailPage> {
                     ],
                   )
                 : SizedBox(height: 32.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0, vertical: 8.0),
-                    child: Row(
-                      children: [
-                        SvgPicture.asset(
-                          'assets/images/detail.svg',
-                          color: ripeMango,
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            "Detail",
-                            style: TextStyle(
-                              fontFamily: 'Nunito-Bold',
-                              fontSize: 14,
-                              fontWeight: FontWeight.w900,
+            Column(
+              key: detailTimerKey,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 8.0),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/images/detail.svg',
                               color: ripeMango,
                             ),
-                          ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                "Detail",
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w900,
+                                  color: ripeMango,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 30.0),
-              child: _buildListView(),
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 30.0),
+                  child: _buildListView(),
+                ),
+              ],
             ),
           ],
         ),
@@ -261,7 +313,11 @@ class _DetailPageState extends State<DetailPage> {
                   SizedBox(height: 16),
                   Text(
                     'Tambahkan TimerMu Hari ini',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                      fontFamily: "Nunito",
+                    ),
                   ),
                 ],
               ),
