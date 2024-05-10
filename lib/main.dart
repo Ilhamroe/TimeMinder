@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_time_minder/pages/detail_log.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -30,8 +28,7 @@ class _MainAppState extends State<MainApp> {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.splash,
-      // onGenerateRoute: AppRoutes.generateRoute,
-      home: DetailLog(),
+      onGenerateRoute: AppRoutes.generateRoute,
     );
   }
 }
