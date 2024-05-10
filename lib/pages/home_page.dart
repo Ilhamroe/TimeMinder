@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_time_minder/pages/timer_list_page.dart';
+import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/services/tooltip_storage.dart';
+import 'package:mobile_time_minder/database/db_logger.dart';
+import 'package:mobile_time_minder/widgets/timer_timermu.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
@@ -85,6 +87,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
+  late List<Map<String, dynamic>> _allLogData = [];
+
+  Future<void> _refreshLogData() async {
+    setState(() {
+      isLoading = true;
+    });
+    final List<Map<String, dynamic>> logData = await SQLLogger.getAllData();
+    setState(() {
+      _allLogData = logData;
+      isLoading = false;
+    });
+  }
+
   void _initializeGreeting() {
     final currentTime = DateTime.now();
     final currentHour = currentTime.hour;
@@ -112,6 +127,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _inithomePageInAppTour();
     _showInAppTour();
     _refreshData();
+    _refreshLogData();
     _initializeGreeting();
     counter = 0;
   }
@@ -172,20 +188,16 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 22),
-                child: SizedBox(
-                  key: cardHomeKey,
-                  child: const CardHome()
-                ),
+                child: SizedBox(key: cardHomeKey, child: const CardHome()),
               ),
               const SizedBox(
                 height: 10,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22),
-                child: SizedBox(
-                  key: gridRekomendasiKey,
-                  child: const GridRekomendasi()
-                ),
+                padding: EdgeInsets.symmetric(
+                    vertical: screenSize.height * 0.03, horizontal: 20),
+                key: gridRekomendasiKey,
+                child: const GridRekomendasi(),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
@@ -208,24 +220,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           ),
                         ),
                         const Spacer(),
-                        GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const DetailListTimer(),
-                              ),
-                            );
-                          },
-                          child: Text(
-                            "Lihat Semua",
-                            style: TextStyle(
-                              fontFamily: 'Nunito',
-                              fontSize: screenSize.width * 0.034,
-                              color: cetaceanBlue,
-                            ),
-                          ),
-                        ),
+                        // GestureDetector(
+                        //   onTap: () {
+                        //    Navigator.popAndPushNamed(context, AppRoutes.listTimer);
+                        //   },
+                        //   child: Text(
+                        //     "Lihat Semua",
+                        //     style: TextStyle(
+                        //       fontFamily: 'Nunito',
+                        //       fontSize: screenSize.width * 0.034,
+                        //       color: cetaceanBlue,
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                     SizedBox(
@@ -240,7 +247,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 width: screenSize.width * 0.3,
                               ),
                               SizedBox(
-                                  height: MediaQuery.of(context).size.width * 0.02),
+                                  height:
+                                      MediaQuery.of(context).size.width * 0.02),
                               const Text(
                                 "Ayo tambahkan timer sesuai keinginanmu!",
                                 style: TextStyle(
@@ -253,7 +261,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           )
                         : Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            child: ListTimerPage(isSettingPressed: isSettingPressed),
+                            child: ListTimerPage(
+                                isSettingPressed: isSettingPressed),
                           ),
                   ],
                 ),

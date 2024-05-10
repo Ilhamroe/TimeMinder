@@ -1,13 +1,14 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_time_minder/database/db_logger.dart';
 import 'package:mobile_time_minder/services/tooltip_storage.dart';
 import 'package:mobile_time_minder/widgets/tooltip_detailpage.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobile_time_minder/theme.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 class DetailPage extends StatefulWidget {
@@ -77,91 +78,121 @@ class _DetailPageState extends State<DetailPage> {
       backgroundColor: pureWhite,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.white,
-        title: const Text('Detail'),
+        backgroundColor: pureWhite,
+        title: const Text(
+          'Detail',
+          style: TextStyle(fontFamily: 'Nunito-Bold'),
+        ),
+        leading: IconButton(
+          iconSize: Checkbox.width,
+          key: const Key('back'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NavbarBottom(),
+              ),
+            );
+          },
+          padding: const EdgeInsets.only(left: 15),
+          icon: SvgPicture.asset(
+            "assets/images/button_back.svg",
+            width: 24,
+            height: 24,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-              child: Container(
-                key: calendarKey,
-                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: _slideDate(),
-                    ),
-                    IconButton(
-                      icon: isOptionOpen
-                          ? SvgPicture.asset(
-                              "assets/images/option_up.svg",
-                              width: 28,
-                              height: 28,
-                            )
-                          : SvgPicture.asset(
-                              "assets/images/option.svg",
-                              width: 28,
-                              height: 28,
-                            ),
-                      onPressed: () {
-                        setState(() {
-                          isOptionOpen = !isOptionOpen;
-                        });
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            if (isOptionOpen) _kalender(),
             Container(
-              height: 10.0,
-              decoration: const BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.orange,
-                    width: 1.0,
-                  ),
+              key: calendarKey,
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 5.0, vertical: 1.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: halfGrey),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(6.0),
                 ),
               ),
-            ),
-            const SizedBox(height: 20.0),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Column(
-                key: detailTimerKey,
+              child: Row(
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SvgPicture.asset(
-                        "assets/images/Detailpic.svg",
-                        height: 30,
-                        width: 30,
-                      ),
-                      const SizedBox(width: 15.0),
-                      const Text(
-                        'Detail',
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontFamily: "nunito",
-                          color: ripeMango,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+                  Expanded(
+                    child: _slideDate(),
                   ),
-                  const SizedBox(height: 32.0),
-                  _buildListView(),
+                  IconButton(
+                    icon: isOptionOpen
+                        ? SvgPicture.asset(
+                            "assets/images/option_up.svg",
+                            width: 28,
+                            height: 28,
+                          )
+                        : SvgPicture.asset(
+                            "assets/images/option.svg",
+                            width: 28,
+                            height: 28,
+                          ),
+                    onPressed: () {
+                      setState(() {
+                        isOptionOpen = !isOptionOpen;
+                      });
+                    },
+                  ),
                 ],
               ),
+            ),
+            isOptionOpen
+                ? Column(
+                    children: [
+                      _kalender(),
+                      const Divider(
+                        color: ripeMango,
+                      ),
+                    ],
+                  )
+                : SizedBox(height: 32.0),
+            Column(
+              key: detailTimerKey,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0, vertical: 8.0),
+                        child: Row(
+                          children: [
+                            SvgPicture.asset(
+                              'assets/images/detail.svg',
+                              color: ripeMango,
+                            ),
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                "Detail",
+                                style: TextStyle(
+                                  fontFamily: 'Nunito-Bold',
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w900,
+                                  color: ripeMango,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 30.0),
+                  child: _buildListView(),
+                ),
+              ],
             ),
           ],
         ),
@@ -205,25 +236,24 @@ class _DetailPageState extends State<DetailPage> {
       lastDay: DateTime.utc(2100),
       focusedDay: _focusedDay,
       calendarFormat: _calendarFormat,
-      weekendDays: [DateTime.saturday, DateTime.sunday],
-      weekNumbersVisible: false,
       locale: 'id_ID',
-      headerStyle: HeaderStyle(
+      headerStyle: const HeaderStyle(
         formatButtonVisible: false,
         titleCentered: true,
       ),
       calendarStyle: CalendarStyle(
-        cellMargin: EdgeInsets.all(4.0), // Jarak antar sel
         todayDecoration: BoxDecoration(
           color: cetaceanBlue,
-          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: cetaceanBlue),
+          shape: BoxShape.circle,
         ),
+        todayTextStyle: const TextStyle(color: pureWhite),
         selectedDecoration: BoxDecoration(
-          color: offBlue, // Warna biru untuk hari yang ditekan
-          borderRadius: BorderRadius.circular(10), // BorderRadius 10
-          border: Border.all(color: blueJeans), // Warna border hitam
+          color: offBlue,
+          border: Border.all(color: blueJeans),
+          shape: BoxShape.circle,
         ),
-        selectedTextStyle: TextStyle(color: Colors.black),
+        selectedTextStyle: const TextStyle(color: cetaceanBlue),
       ),
       selectedDayPredicate: (day) {
         return isSameDay(_selectedDay, day);
@@ -284,7 +314,7 @@ class _DetailPageState extends State<DetailPage> {
                   Text(
                     'Tambahkan TimerMu Hari ini',
                     style: TextStyle(
-                      fontSize: 16, 
+                      fontSize: 16,
                       color: Colors.grey,
                       fontFamily: "Nunito",
                     ),

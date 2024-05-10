@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -37,7 +38,12 @@ class _SplashScreenState extends State<SplashScreen>
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool seen = (prefs.getBool('seen') ?? false);
     if (seen) {
-      Navigator.popAndPushNamed(context, AppRoutes.navbar);
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const NavbarBottom(),
+        ),
+      );
     } else {
       await prefs.setBool('seen', true);
       Navigator.popAndPushNamed(context, AppRoutes.onboard);
@@ -68,8 +74,8 @@ class _SplashScreenState extends State<SplashScreen>
             height: size.height,
             width: size.width,
             child: Image.asset(
-              'assets/images/splash1.png', 
-              height: 200, 
+              'assets/images/splash1.png',
+              height: 200,
             ),
           ),
         ),

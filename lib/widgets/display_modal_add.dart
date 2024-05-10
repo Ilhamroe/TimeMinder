@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/home_page.dart';
-import 'package:mobile_time_minder/pages/timer_page.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/alert_data.dart';

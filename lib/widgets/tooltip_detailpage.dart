@@ -44,7 +44,7 @@ List<TargetFocus> detailPageTargets({
         align: ContentAlign.bottom,
         builder: (context, controller) {
           return CoachMarkDesc(
-            step: "1/2",
+            step: "2/2",
             title: "Detail aktivitas.",
             desc: "Ini adalah daftar aktivitas timer yang telah kamu lakukan hari ini.",
             skip: "Lewati",
