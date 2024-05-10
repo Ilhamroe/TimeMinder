@@ -101,6 +101,18 @@ class _ListTimerPageState extends State<ListTimerPage> {
     _refreshData();
   }
 
+  String _formatTime(int time) {
+    int hours = time ~/ 60;
+    int minutes = time % 60;
+    int seconds = 0;
+
+    String _padLeft(int value) {
+      return value.toString().padLeft(2, '0');
+    }
+
+    return '${_padLeft(hours)}:${_padLeft(minutes)}:${_padLeft(seconds)}';
+  }
+
   @override
   void initState() {
     super.initState();
@@ -155,20 +167,18 @@ class _ListTimerPageState extends State<ListTimerPage> {
               title: Text(
                 _allData[index]['title'],
                 style: const TextStyle(
-                  fontFamily: 'Nunito-Bold',
-                  fontWeight: FontWeight.w900,
-                  fontSize: 14,
-                  color: cetaceanBlue
-                ),
+                    fontFamily: 'Nunito-Bold',
+                    fontWeight: FontWeight.w900,
+                    fontSize: 14,
+                    color: cetaceanBlue),
               ),
               subtitle: Text(
                 _allData[index]['description'],
                 style: const TextStyle(
-                  fontFamily: 'Nunito',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                  color: cetaceanBlue
-                ),
+                    fontFamily: 'Nunito',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    color: cetaceanBlue),
               ),
               trailing: widget.isSettingPressed
                   ? SizedBox(
@@ -344,7 +354,7 @@ class _ListTimerPageState extends State<ListTimerPage> {
                           style: const TextStyle(
                             fontFamily: 'DMSans',
                             fontWeight: FontWeight.w600,
-                            fontSize: 8,
+                            fontSize: 9,
                             color: darkGrey,
                           ),
                         ),
@@ -372,7 +382,7 @@ class _ListTimerPageState extends State<ListTimerPage> {
                               "Mulai",
                               style: TextStyle(
                                 fontFamily: 'Nunito',
-                                fontSize: 8,
+                                fontSize: 10,
                                 color: pureWhite,
                               ),
                             ),
@@ -385,17 +395,5 @@ class _ListTimerPageState extends State<ListTimerPage> {
         );
       },
     );
-  }
-
-  String _formatTime(int time) {
-    int hours = time ~/ 60;
-    int minutes = time % 60;
-    int seconds = 0;
-
-    String _padLeft(int value) {
-      return value.toString().padLeft(2, '0');
-    }
-
-    return '${_padLeft(hours)}:${_padLeft(minutes)}:${_padLeft(seconds)}';
   }
 }

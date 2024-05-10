@@ -1,11 +1,12 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
+import 'package:mobile_time_minder/theme.dart';
+import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_time_minder/database/db_logger.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mobile_time_minder/theme.dart';
 
 class DetailPage extends StatefulWidget {
   const DetailPage({Key? key}) : super(key: key);
@@ -31,19 +32,44 @@ class _DetailPageState extends State<DetailPage> {
       backgroundColor: pureWhite,
       appBar: AppBar(
         centerTitle: true,
-        backgroundColor: Colors.white,
-        title: const Text('Detail'),
+        backgroundColor: pureWhite,
+        title: const Text(
+          'Detail',
+          style: TextStyle(fontFamily: 'Nunito-Bold'),
+        ),
+        leading: IconButton(
+          iconSize: Checkbox.width,
+          key: const Key('back'),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NavbarBottom(),
+              ),
+            );
+          },
+          padding: const EdgeInsets.only(left: 15),
+          icon: SvgPicture.asset(
+            "assets/images/button_back.svg",
+            width: 24,
+            height: 24,
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: EdgeInsets.all(15),
-              padding: EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 5.0, vertical: 1.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 5.0, vertical: 10.0),
               decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                border: Border.all(color: halfGrey),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(6.0),
+                ),
               ),
               child: Row(
                 children: [
@@ -71,46 +97,51 @@ class _DetailPageState extends State<DetailPage> {
                 ],
               ),
             ),
-            SizedBox(height: 32.0),
-            if (isOptionOpen) _kalender(),
-            Container(
-              height: 32.0,
-              decoration: BoxDecoration(
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.orange,
-                    width: 1.0,
-                  ),
-                ),
+            isOptionOpen
+                ? Column(
+                    children: [
+                      _kalender(),
+                      const Divider(
+                        color: ripeMango,
+                      ),
+                    ],
+                  )
+                : SizedBox(height: 32.0),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 8.0),
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/images/detail.svg',
+                          color: ripeMango,
+                        ),
+                        const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            "Detail",
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              fontSize: 14,
+                              fontWeight: FontWeight.w900,
+                              color: ripeMango,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
               ),
             ),
-            SizedBox(height: 32.0),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 15),
-                  child: SvgPicture.asset(
-                    "assets/images/Detailpic.svg",
-                    height: 30,
-                    width: 30,
-                  ),
-                ),
-                SizedBox(width: 15.0),
-                Text(
-                  'Detail',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    fontFamily: "nunito",
-                    color: ripeMango,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 30.0),
+              child: _buildListView(),
             ),
-            SizedBox(height: 32.0),
-            _buildListView(),
-            SizedBox(height: 60.0),
           ],
         ),
       ),
@@ -153,25 +184,24 @@ class _DetailPageState extends State<DetailPage> {
       lastDay: DateTime.utc(2100),
       focusedDay: _focusedDay,
       calendarFormat: _calendarFormat,
-      weekendDays: [DateTime.saturday, DateTime.sunday],
-      weekNumbersVisible: false,
       locale: 'id_ID',
-      headerStyle: HeaderStyle(
+      headerStyle: const HeaderStyle(
         formatButtonVisible: false,
         titleCentered: true,
       ),
       calendarStyle: CalendarStyle(
-        cellMargin: EdgeInsets.all(4.0), // Jarak antar sel
         todayDecoration: BoxDecoration(
           color: cetaceanBlue,
-          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: cetaceanBlue),
+          shape: BoxShape.circle,
         ),
+        todayTextStyle: const TextStyle(color: pureWhite),
         selectedDecoration: BoxDecoration(
-          color: offBlue, // Warna biru untuk hari yang ditekan
-          borderRadius: BorderRadius.circular(10), // BorderRadius 10
-          border: Border.all(color: blueJeans), // Warna border hitam
+          color: offBlue,
+          border: Border.all(color: blueJeans),
+          shape: BoxShape.circle,
         ),
-        selectedTextStyle: TextStyle(color: Colors.black),
+        selectedTextStyle: const TextStyle(color: cetaceanBlue),
       ),
       selectedDayPredicate: (day) {
         return isSameDay(_selectedDay, day);

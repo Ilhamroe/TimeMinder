@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_time_minder/pages/timer_list_page.dart';
+import 'package:mobile_time_minder/database/db_logger.dart';
+import 'package:mobile_time_minder/widgets/timer_timermu.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
@@ -38,6 +39,19 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
+  late List<Map<String, dynamic>> _allLogData = [];
+
+  Future<void> _refreshLogData() async {
+    setState(() {
+      isLoading = true;
+    });
+    final List<Map<String, dynamic>> logData = await SQLLogger.getAllData();
+    setState(() {
+      _allLogData = logData;
+      isLoading = false;
+    });
+  }
+
   void _initializeGreeting() {
     final currentTime = DateTime.now();
     final currentHour = currentTime.hour;
@@ -63,6 +77,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _refreshData();
+    _refreshLogData();
     _initializeGreeting();
     counter = 0;
   }
@@ -125,7 +140,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               const SizedBox(
                 height: 10,
               ),
-              const GridRekomendasi(),
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: screenSize.height * 0.03, horizontal: 20),
+                child: const GridRekomendasi(),
+              ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Row(
@@ -186,10 +204,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ],
                     )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: ListTimerPage(isSettingPressed: isSettingPressed),
-                    ),
+                  : ListTimerPage(isSettingPressed: isSettingPressed),
               SizedBox(
                 height: screenSize.height * 0.05,
               ),
