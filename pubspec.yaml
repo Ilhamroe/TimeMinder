@@ -26,10 +26,11 @@ dependencies:
   circular_countdown_timer: ^0.2.3
   permission_handler: ^11.3.1
   get: ^4.6.6
-  easy_date_timeline: ^1.0.6
   table_calendar: ^3.1.1
   fluttertoast: ^8.2.5
   double_back_to_close_app: ^2.1.0
+  easy_date_timeline: ^1.0.7
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
