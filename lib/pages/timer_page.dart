@@ -1,12 +1,11 @@
 import 'dart:ui';
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/timer_list_page.dart';
-import 'package:mobile_time_minder/pages/timer_recommendation_page.dart';
+import 'package:mobile_time_minder/widgets/timer_timermu.dart';
+import 'package:mobile_time_minder/widgets/timer_recommendation.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/widgets/display_modal_add.dart';
 import 'package:mobile_time_minder/theme.dart';
@@ -15,7 +14,7 @@ final logger = Logger();
 typedef ModalCloseCallback = void Function(int? id);
 
 class DetailListTimer extends StatefulWidget {
-  const DetailListTimer({Key? key});
+  const DetailListTimer({super.key});
 
   @override
   State<DetailListTimer> createState() => _DetailListTimerState();

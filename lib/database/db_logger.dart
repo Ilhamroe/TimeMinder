@@ -15,19 +15,20 @@ class SQLLogger {
   static Future<sql.Database> db() async {
     return sql.openDatabase("database_name.db", version: 1,
         onCreate: (sql.Database database, int version) async {
-          await createTable(database);
-        });
+      await createTable(database);
+    });
   }
 
-  static Future<int> createData(String title, String description, int length,
-      int passed) async {
+  static Future<int> createData(
+      String title, String description, int length, int passed) async {
     final db = await SQLLogger.db();
 
     final data = {
       'title': title,
       'description': description,
       'length': length,
-      'passed': passed
+      'passed': passed,
+      'createdAt': DateTime.now().toString()
     };
     final id = await db.insert('data', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
@@ -45,8 +46,8 @@ class SQLLogger {
     return db.query('data', where: "id = ?", whereArgs: [id], limit: 1);
   }
 
-  static Future<int> updateData(int id, String title, String description,
-      int length, int passed) async {
+  static Future<int> updateData(
+      int id, String title, String description, int length, int passed) async {
     final db = await SQLLogger.db();
     final data = {
       'title': title,
@@ -56,7 +57,7 @@ class SQLLogger {
       'createdAt': DateTime.now().toString()
     };
     final result =
-    await db.update('data', data, where: 'id = ?', whereArgs: [id]);
+        await db.update('data', data, where: 'id = ?', whereArgs: [id]);
     return result;
   }
 

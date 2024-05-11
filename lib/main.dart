@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_time_minder/pages/detail_log.dart';
 import 'package:mobile_time_minder/pages/faq_page.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/services/onboarding_routes.dart';
