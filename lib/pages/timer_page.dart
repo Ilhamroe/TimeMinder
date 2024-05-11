@@ -1,5 +1,4 @@
 import 'dart:ui';
-import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -15,7 +14,7 @@ final logger = Logger();
 typedef ModalCloseCallback = void Function(int? id);
 
 class DetailListTimer extends StatefulWidget {
-  const DetailListTimer({Key? key});
+  const DetailListTimer({super.key});
 
   @override
   State<DetailListTimer> createState() => _DetailListTimerState();
