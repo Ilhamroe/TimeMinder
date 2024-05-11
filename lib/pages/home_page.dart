@@ -4,6 +4,7 @@ import 'package:mobile_time_minder/theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/timer_page.dart';
+import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
 import 'package:mobile_time_minder/widgets/card_home.dart';
 import 'package:mobile_time_minder/widgets/grid_rekomendasi.dart';
 import 'package:mobile_time_minder/widgets/home_timermu_tile.dart';
@@ -81,6 +82,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     final Size screenSize = MediaQuery.of(context).size;
     // SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Scaffold(
+      bottomNavigationBar: NavbarBottom(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(

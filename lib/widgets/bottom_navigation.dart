@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
 import 'package:mobile_time_minder/pages/detail_page.dart';
-import 'package:mobile_time_minder/pages/faq.dart';
+import 'package:mobile_time_minder/pages/faq_page.dart';
 import 'package:mobile_time_minder/pages/home_page.dart';
 import 'package:mobile_time_minder/pages/timer_page.dart';
 import 'package:mobile_time_minder/theme.dart';
