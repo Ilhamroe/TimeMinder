@@ -15,3 +15,4 @@ const Color red = Color(0xFFE53E42);
 const Color redDeep = Color.fromARGB(255, 255, 0, 0);
 const Color ring = Color(0xFFE9E9FF);
 const Color ripeMango = Color(0xFFFFCE38);
+const Color gallery= Color(0xFFEDEDED);
