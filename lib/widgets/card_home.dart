@@ -22,7 +22,6 @@ class _CardHomeState extends State<CardHome> {
     return Container(
       height: screenSize.height * .18,
       width: screenSize.width,
-      margin: const EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
         color: cetaceanBlue,

@@ -40,10 +40,7 @@ class ContentTemplate extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .bodyLarge!
-                .copyWith(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: 'Nunito'
-                ),
+                .copyWith(fontWeight: FontWeight.bold, fontFamily: 'Nunito'),
             textAlign: TextAlign.center,
           ),
         ),

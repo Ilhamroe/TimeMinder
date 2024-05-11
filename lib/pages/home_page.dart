@@ -185,8 +185,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 height: screenSize.height * 0.03,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 22),
-                child: SizedBox(key: cardHomeKey, child: const CardHome()),
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                key: cardHomeKey,
+                child: const CardHome(),
               ),
               const SizedBox(
                 height: 10,

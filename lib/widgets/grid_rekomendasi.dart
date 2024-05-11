@@ -111,9 +111,7 @@ class GridRekomendasi extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       color: ripeMango,
-                      borderRadius: BorderRadius.circular(
-                        MediaQuery.of(context).size.width * 0.02,
-                      ),
+                      borderRadius: BorderRadius.circular(5),
                     ),
                     child: Center(
                       child: Text(
