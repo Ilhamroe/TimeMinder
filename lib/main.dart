@@ -30,8 +30,8 @@ class _MainAppState extends State<MainApp> {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       initialRoute: AppRoutes.splash,
-      // onGenerateRoute: AppRoutes.generateRoute,
-      home: FaqPage(),
+      onGenerateRoute: AppRoutes.generateRoute,
+      // home: FaqPage(),
     );
   }
 }

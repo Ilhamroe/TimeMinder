@@ -1,22 +1,15 @@
 import 'package:easy_date_timeline/easy_date_timeline.dart';
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-=======
 import 'package:mobile_time_minder/theme.dart';
 import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
 import 'package:table_calendar/table_calendar.dart';
->>>>>>> a2b75bc9f6df31744c7cd6a628d0858e344db823
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile_time_minder/database/db_logger.dart';
 import 'package:mobile_time_minder/services/tooltip_storage.dart';
 import 'package:mobile_time_minder/widgets/tooltip_detailpage.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-<<<<<<< HEAD
-import 'package:mobile_time_minder/theme.dart';
-=======
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
->>>>>>> a2b75bc9f6df31744c7cd6a628d0858e344db823
 
 class DetailPage extends StatefulWidget {
   const DetailPage({super.key});
@@ -85,10 +78,6 @@ class _DetailPageState extends State<DetailPage> {
       backgroundColor: pureWhite,
       appBar: AppBar(
         centerTitle: true,
-<<<<<<< HEAD
-        backgroundColor: Colors.white,
-        title: const Text('Detail'),
-=======
         backgroundColor: pureWhite,
         title: const Text(
           'Detail',
@@ -112,7 +101,6 @@ class _DetailPageState extends State<DetailPage> {
             height: 24,
           ),
         ),
->>>>>>> a2b75bc9f6df31744c7cd6a628d0858e344db823
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -206,12 +194,6 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               ],
             ),
-<<<<<<< HEAD
-            SizedBox(height: 32.0),
-            _buildListView(),
-            SizedBox(height: 60.0),
-=======
->>>>>>> a2b75bc9f6df31744c7cd6a628d0858e344db823
           ],
         ),
       ),
