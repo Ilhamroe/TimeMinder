@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mobile_time_minder/services/onboarding_routes.dart';
 import 'package:mobile_time_minder/services/tooltip_storage.dart';
 import 'package:mobile_time_minder/database/db_logger.dart';
 import 'package:mobile_time_minder/widgets/timer_timermu.dart';
 import 'package:mobile_time_minder/theme.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mobile_time_minder/database/db_helper.dart';
-import 'package:mobile_time_minder/pages/timer_page.dart';
-import 'package:mobile_time_minder/widgets/bottom_navigation.dart';
 import 'package:mobile_time_minder/widgets/card_home.dart';
 import 'package:mobile_time_minder/widgets/grid_rekomendasi.dart';
 import 'package:mobile_time_minder/widgets/tooltip_homepage.dart';
@@ -145,7 +142,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     final Size screenSize = MediaQuery.of(context).size;
     return Scaffold(
-      bottomNavigationBar: NavbarBottom(),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
