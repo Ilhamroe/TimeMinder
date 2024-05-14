@@ -50,7 +50,7 @@ class _HelpThreeState extends State<HelpThree> with SingleTickerProviderStateMix
           )
         ),
         title: Text(
-          "Fitur izinkan latar belakang",
+          "Menghapus Timer",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: MediaQuery.of(context).size.width * 0.0525,
@@ -69,7 +69,9 @@ class _HelpThreeState extends State<HelpThree> with SingleTickerProviderStateMix
               SizedBox(height: MediaQuery.of(context).size.height * 0.0175,),
               Row(
                 children: [
-                  Flexible(child: Text("Apakah bisa timer dijalankan di latar belakang?", 
+                  Flexible(
+                    child: Text(
+                    "Bagaimana jika saya ingin menghapus timer yang telah saya tambahkan?", 
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.0425,
                     fontWeight: FontWeight.bold),)),

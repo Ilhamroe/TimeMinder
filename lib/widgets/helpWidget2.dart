@@ -50,7 +50,7 @@ class _HelpTwoState extends State<HelpTwo> with TickerProviderStateMixin{
           )
         ),
         title: Text(
-          "Menghapus dan Mengedit Timer",
+          "Mengedit Timer",
           style: TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: MediaQuery.of(context).size.width * 0.0525,
@@ -71,7 +71,7 @@ class _HelpTwoState extends State<HelpTwo> with TickerProviderStateMixin{
                 children: [
                   Flexible(
                     child: Text(
-                      "Bagaimana jika saya ingin mengedit atau menghapus timer yang telah saya tambahkan?", 
+                      "Bagaimana jika saya ingin mengedit timer yang telah saya tambahkan?", 
                   style: TextStyle(
                     fontSize: MediaQuery.of(context).size.width * 0.0425,
                     fontWeight: FontWeight.bold),)),

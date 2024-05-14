@@ -29,9 +29,9 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      initialRoute: AppRoutes.splash,
-      onGenerateRoute: AppRoutes.generateRoute,
-      // home: FaqPage(),
+      // initialRoute: AppRoutes.splash,
+      // onGenerateRoute: AppRoutes.generateRoute,
+      home: FaqPage(),
     );
   }
 }

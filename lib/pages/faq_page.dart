@@ -23,11 +23,11 @@ class _FaqPageState extends State<FaqPage> {
     },
     {
     "id" : 1,
-    "title": "Bagaimana jika ingin mengedit atau menghapus timer yang telah ditambahkan?",
+    "title": "Bagaimana jika saya ingin mengedit timer yang telah saya tambahkan?",
     },
     {
     "id" : 2,
-    "title": "Apakah bisa timer dijalankan di latar belakang?",
+    "title": "Bagaimana jika saya ingin menghapus timer yang telah saya tambahkan?",
     },
     {
     "id" : 3,
@@ -141,11 +141,11 @@ class _FaqPageState extends State<FaqPage> {
                         ),
                         shape: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
+                          borderSide: const BorderSide(
                             color: gallery
                           )
                         ),
-                        trailing: Icon(
+                        trailing: const Icon(
                           Icons.arrow_forward_ios_rounded,
                           size: 14,
                         ),

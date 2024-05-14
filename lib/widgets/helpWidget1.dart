@@ -289,7 +289,8 @@ class _SlideImageState extends State<SlideImage> {
           padding: const EdgeInsets.all(0),
           child: SlideTransition(
             position: widget.offsetAnimation,
-            child: Image.asset(widget.image, width: widget.width, height: widget.height,)),
+            child: SvgPicture.asset(widget.image, width: widget.width, height: widget.height,)
+          ),
       );
   }
 }
