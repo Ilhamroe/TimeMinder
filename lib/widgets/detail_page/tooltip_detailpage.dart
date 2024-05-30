@@ -22,9 +22,7 @@ List<TargetFocus> detailPageTargets({
             step: "1/2",
             title: "Fitur kalender.",
             desc: "Klik tombol dropdown untuk melihat kalender lebih lengkap.",
-            skip: "Lewati",
-            next: "Selanjutnya",
-            onSkip: () {
+            onPrevious: () {
               controller.skip();
             },
             onNext: () {
@@ -48,9 +46,7 @@ List<TargetFocus> detailPageTargets({
             step: "2/2",
             title: "Detail aktivitas.",
             desc: "Ini adalah daftar aktivitas timer yang telah kamu lakukan hari ini.",
-            skip: "Lewati",
-            next: "Selesai",
-            onSkip: () {
+            onPrevious: () {
               controller.skip();
             },
             onNext: () {

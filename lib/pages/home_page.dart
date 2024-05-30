@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _showInAppTour() {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 30), () {
       SaveInAppTour().getHomePageStatus().then((value) => {
             if (value == false)
               {
