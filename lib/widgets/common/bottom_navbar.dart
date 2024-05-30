@@ -11,6 +11,7 @@ import 'package:time_minder/pages/timer_page.dart';
 import 'package:time_minder/utils/colors.dart';
 import 'package:time_minder/widgets/modal_timer/add_modal.dart';
 import 'package:time_minder/widgets/common/double_tap_close.dart';
+import 'package:time_minder/widgets/common/custom_painter.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -57,25 +58,33 @@ class _NavbarBottomState extends State<NavbarBottom> {
 
     final newData = await showCupertinoModalPopup(
       context: context,
-      builder: (_) => Stack(
-        children: [
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-            child: Container(
-              color: Colors.transparent,
+      builder: (_) => GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop(); // closing modal outtap
+        },
+        child: Stack(
+          children: [
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+              child: Container(
+                color: Colors.transparent,
+              ),
             ),
-          ),
-          // Modal content
-          Center(
-            child: Container(
-              margin: const EdgeInsets.only(top: 125).h,
+            Center(
+              child: GestureDetector(
+                onTap: () {}, // mencegah closing saat tap di area modal
+                child: Container(
+                  // height: 500,
+                  margin: const EdgeInsets.only(top: 125).h,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(70).w,
+                  ),
+                  child: ModalAdd(id: id),
+                ),
               ),
-              child: ModalAdd(id: id),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
     onClose(newData);
@@ -103,36 +112,36 @@ class _NavbarBottomState extends State<NavbarBottom> {
           child: currentScreen,
           bucket: bucket,
         ),
-        floatingActionButton: Transform.rotate(
-          angle: 45 * 3.1415926535 / 180,
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFFCE38), Color(0xFFE2A203)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-              borderRadius: BorderRadius.circular(16.0).w,
+      floatingActionButton: Transform.rotate(
+        angle: 45 * 3.1415926535 / 180,
+        child: Container(
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFFFFCE38), Color(0xFFE2A203)],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
             ),
-            child: FloatingActionButton(
-              onPressed: () {
-                _showModal((int? id) {});
-              },
-              backgroundColor: Colors.transparent,
-              foregroundColor: Colors.transparent,
-              focusElevation: 0.0,
-              hoverElevation: 0.0,
-              highlightElevation: 0.0,
-              elevation: 0.0,
-              splashColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              child: SvgPicture.asset(
-                'assets/images/cross.svg',
-                color: Colors.white,
-              ),
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: FloatingActionButton(
+            onPressed: () {
+              _showModal((int? id) {});
+            },
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.transparent,
+            focusElevation: 0.0,
+            hoverElevation: 0.0,
+            highlightElevation: 0.0,
+            elevation: 0.0,
+            splashColor: Colors.transparent,
+            hoverColor: Colors.transparent,
+            child: CustomPaint(
+              size: const Size(24, 24), // You can adjust the size
+              painter: PlusPainter(),
             ),
           ),
         ),
+      ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: Container(
           height: 64.h,
