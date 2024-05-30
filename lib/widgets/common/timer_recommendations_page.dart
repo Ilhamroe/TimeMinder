@@ -50,7 +50,7 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
   Widget build(BuildContext context) {
     final selectedItemsProvider = Provider.of<SelectedItemsProvider>(context);
     final selectedItems = selectedItemsProvider.selectedItems;
-    final Size screenSize = MediaQuery.of(context).size;
+    // final Size screenSize = MediaQuery.of(context).size;
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -85,16 +85,14 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
           child: Container(
             margin: const EdgeInsets.only(top: 14.0).h,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0).w,
+              borderRadius: BorderRadius.circular(12.0).w,
               color: offOrange,
             ),
             child: ListTile(
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 3.0, horizontal: 19.0).w,
               leading: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  screenSize.width * 0.04,
-                ).w,
+                borderRadius: BorderRadius.circular(5).w,
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 10).w,
@@ -123,9 +121,9 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
               ),
               trailing: Column(
                 children: [
-                  SizedBox(
-                    height: 12.h,
-                  ),
+                  // SizedBox(
+                  //   height: 12.h,
+                  // ),
                   Text(
                     timerList[index].time,
                     style: TextStyle(

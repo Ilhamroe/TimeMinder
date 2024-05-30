@@ -5,8 +5,8 @@ import 'package:time_minder/database/db_calendar.dart';
 import 'package:time_minder/database/db_helper.dart';
 import 'package:time_minder/utils/colors.dart';
 import 'package:time_minder/widgets/common/timer_list_page_no_hold.dart';
-import 'package:time_minder/widgets/home_page/card_home.dart';
-import 'package:time_minder/widgets/home_page/gird_recommendation.dart';
+import 'package:time_minder/widgets/home_page/banner_home.dart';
+import 'package:time_minder/widgets/home_page/grid_recommendation.dart';
 import 'package:time_minder/widgets/home_page/tooltip_homepage.dart';
 import 'package:time_minder/services/tooltip_storage.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -158,9 +158,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              SizedBox(height: 20.h),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20).w,
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 25).w,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -175,7 +174,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             color: cetaceanBlue,
                           ),
                         ),
-                        SizedBox(width: 15.w),
                         SvgPicture.asset(_imagePath)
                       ],
                     ),
@@ -190,7 +188,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ],
                 ),
               ),
-              SizedBox(height: 28.sp),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20).w,
                 child: SizedBox(key: cardHomeKey, child: const CardHome()),
@@ -232,9 +229,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                             children: [
                               SvgPicture.asset(
                                 "assets/images/cat_setting.svg",
-                                width: screenSize.width * 0.3.w,
+                                width: 130.w,
+                                height: 130.h,
                               ),
-                              SizedBox(height: 10.sp),
+                              10.verticalSpace,
                               Text(
                                 "Ayo tambahkan timer sesuai keinginanmu!",
                                 style: TextStyle(

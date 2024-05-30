@@ -194,10 +194,9 @@ class _EditModalState extends State<EditModal> {
 
   @override
   Widget build(BuildContext context) {
-    // final Size screenSize = MediaQuery.of(context).size;
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20).w,
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -205,10 +204,10 @@ class _EditModalState extends State<EditModal> {
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20.0),
+            borderRadius: BorderRadius.circular(20.0).w,
           ),
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(26, 15, 26, 21),
+          padding: const EdgeInsets.fromLTRB(26, 15, 26, 21).w,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,10 +215,10 @@ class _EditModalState extends State<EditModal> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: CustomTextField(
                         labelText: 'Tambah waktumu sendiri',
-                        fontSize: 15.5,
+                        fontSize: 15.5.sp,
                         fontFamily: 'Nunito-Bold',
                       ),
                     ),
