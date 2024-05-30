@@ -50,7 +50,7 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   void _showInAppTour() {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 30), () {
       SaveDetailPageTour().getDetailPageStatus().then((value) => {
             if (value == false)
               {
