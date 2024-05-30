@@ -68,9 +68,9 @@ class _NavbarBottomState extends State<NavbarBottom> {
           // Modal content
           Center(
             child: Container(
-              margin: const EdgeInsets.only(top: 150).h,
+              margin: const EdgeInsets.only(top: 125).h,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(70).r,
+                borderRadius: BorderRadius.circular(70).w,
               ),
               child: ModalAdd(id: id),
             ),
@@ -112,7 +112,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
               ),
-              borderRadius: BorderRadius.circular(16.0).r,
+              borderRadius: BorderRadius.circular(16.0).w,
             ),
             child: FloatingActionButton(
               onPressed: () {
@@ -146,6 +146,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
             ],
           ),
           child: BottomAppBar(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12).w,
             elevation: 8.0.r,
             color: pureWhite,
             surfaceTintColor: Colors.transparent,
@@ -158,6 +159,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       MaterialButton(
+                        padding: const EdgeInsets.symmetric(horizontal: 10).w,
                         minWidth: 10.w,
                         onPressed: () {
                           setState(() {
@@ -193,6 +195,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
                         ),
                       ),
                       MaterialButton(
+                        padding: const EdgeInsets.symmetric(horizontal: 10).w,
                         minWidth: 10.w,
                         onPressed: () {
                           setState(() {
@@ -229,10 +232,12 @@ class _NavbarBottomState extends State<NavbarBottom> {
                       ),
                     ],
                   ),
+                  Spacer(),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       MaterialButton(
+                        padding: const EdgeInsets.symmetric(horizontal: 10).w,
                         minWidth: 10.w,
                         onPressed: () {
                           setState(() {
@@ -268,6 +273,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
                         ),
                       ),
                       MaterialButton(
+                        padding: const EdgeInsets.symmetric(horizontal: 10).w,
                         minWidth: 10.w,
                         onPressed: () {
                           setState(() {

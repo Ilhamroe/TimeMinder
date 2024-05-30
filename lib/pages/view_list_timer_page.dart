@@ -214,6 +214,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
         backgroundColor: pureWhite,
         appBar: AppBar(
           leading: IconButton(
+            padding: const EdgeInsets.only(left: 20).w,
             onPressed: () {
               _showPopup();
             },
@@ -258,10 +259,10 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
             ),
             width: screenSize.width,
             height: screenSize.height,
-            padding: EdgeInsets.symmetric(
-              horizontal: screenSize.width * 0.1.w,
-              vertical: screenSize.height * 0.05.w,
-            ),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 40,
+            ).w,
             child: Center(
               child: FutureBuilder<List<Map<String, dynamic>>>(
                 future: _dataFuture,
@@ -308,22 +309,22 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                               colors: [getColorRing(), offOrange],
                             ),
                             strokeWidth: 20.0,
-                            textStyle: TextStyle(
-                              fontSize: screenSize.width * 0.1.sp,
-                              color:
-                                  _cDController.isPaused ? red : cetaceanBlue,
-                              fontWeight: FontWeight.bold,
-                            ),
                             isReverse: true,
                             isReverseAnimation: false,
                             isTimerTextShown: true,
                             strokeCap: StrokeCap.round,
+                            textStyle: TextStyle(
+                              fontSize: 36.sp,
+                              color:
+                                  _cDController.isPaused ? red : cetaceanBlue,
+                              fontWeight: FontWeight.bold,
+                            ),
                             onStart: () {
                               _player.play(AssetSource('sounds/start.wav'));
                               _showNotification("Timer dimulai");
                             },
                             onComplete: () => _queueTimerJob()),
-                        SizedBox(height: screenSize.height * 0.05.h),
+                        SizedBox(height: screenSize.height * 0.07.h),
                         _jobsTimer[_currentJobIndex].type == 'ISTIRAHAT'
                             ? Container(
                                 child: SvgPicture.asset(
@@ -341,23 +342,27 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                                         alignment: Alignment.center,
                                         children: [
                                           Container(
-                                            width: screenSize.width * 0.15.w,
-                                            height: screenSize.width * 0.15.h,
+                                            width: 50.w,
+                                            height: 50.h,
                                             decoration: BoxDecoration(
                                               color: offBlue,
                                               borderRadius:
-                                                  BorderRadius.circular(20).w,
+                                                  BorderRadius.circular(16).w,
                                             ),
                                           ),
-                                          GestureDetector(
-                                            onTap: _pauseOrResume,
-                                            child: SvgPicture.asset(
-                                              _cDController.isPaused
-                                                  ? "assets/images/play.svg"
-                                                  : "assets/images/pause.svg",
-                                              width: screenSize.width * 0.07.w,
-                                              height: screenSize.width * 0.07.h,
-                                              color: blueJeans,
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.all(10.0).w,
+                                            child: GestureDetector(
+                                              onTap: _pauseOrResume,
+                                              child: SvgPicture.asset(
+                                                _cDController.isPaused
+                                                    ? "assets/images/play.svg"
+                                                    : "assets/images/pause.svg",
+                                                width: 25.w,
+                                                height: 25.h,
+                                                color: blueJeans,
+                                              ),
                                             ),
                                           ),
                                         ],
@@ -404,12 +409,12 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                                         alignment: Alignment.center,
                                         children: [
                                           Container(
-                                            width: screenSize.width * 0.15.w,
-                                            height: screenSize.width * 0.15.h,
+                                            width: 50.w,
+                                            height: 50.h,
                                             decoration: BoxDecoration(
                                               color: offBlue,
                                               borderRadius:
-                                                  BorderRadius.circular(20).w,
+                                                  BorderRadius.circular(16).w,
                                             ),
                                           ),
                                           IconButton(
@@ -491,7 +496,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
         return AlertDialog(
           surfaceTintColor: pureWhite,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0).w,
+            borderRadius: BorderRadius.circular(13.47).w,
           ),
           content: SizedBox(
             width: screenSize.width * 0.55.w,
@@ -516,7 +521,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Nunito',
-                    fontSize: 19.sp,
+                    fontSize: 16.84.sp,
                   ),
                 ),
                 SizedBox(height: 20.h),
@@ -525,23 +530,24 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0).r,
+                        borderRadius: BorderRadius.circular(11.79).w,
                         color: halfGrey,
                       ),
                       child: TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text(
+                        child: Text(
                           "Tidak",
-                          style: TextStyle(color: offGrey),
+                          style:
+                              TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),
                     SizedBox(width: 30.w),
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0).r,
+                        borderRadius: BorderRadius.circular(11.79).w,
                         color: ripeMango,
                       ),
                       child: TextButton(
@@ -553,9 +559,10 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                             buttonConfirm();
                           }
                         },
-                        child: const Text(
+                        child: Text(
                           "Ya",
-                          style: TextStyle(color: offGrey),
+                          style:
+                              TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),

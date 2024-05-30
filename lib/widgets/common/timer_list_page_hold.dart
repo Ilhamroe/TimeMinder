@@ -31,13 +31,11 @@ class _ListTimerPageHoldState extends State<ListTimerPageHold> {
 
   @override
   Widget build(BuildContext context) {
-    // final Size screenSize = MediaQuery.of(context).size;
     return Consumer<SelectedItemsProvider>(
       builder: (context, selectedItemsProvider, _) {
         final selectedItemsProvider =
             Provider.of<SelectedItemsProvider>(context);
         final selectedItems = selectedItemsProvider.selectedItems;
-        final Size screenSize = MediaQuery.of(context).size;
         return ListView.builder(
           physics: const NeverScrollableScrollPhysics(),
           shrinkWrap: true,
@@ -78,7 +76,7 @@ class _ListTimerPageHoldState extends State<ListTimerPageHold> {
                   Container(
                     margin: const EdgeInsets.only(top: 14.0).h,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0).w,
+                      borderRadius: BorderRadius.circular(12.0).w,
                       color: offOrange,
                     ),
                     child: ListTile(
@@ -86,13 +84,9 @@ class _ListTimerPageHoldState extends State<ListTimerPageHold> {
                               vertical: 3.0, horizontal: 19.0)
                           .w,
                       leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          screenSize.width * 0.04,
-                        ).w,
+                        borderRadius: BorderRadius.circular(5).w,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 10)
-                              .w,
+                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10).w,
                           color: heliotrope,
                           child: SvgPicture.asset(
                             'assets/images/cat1.svg',

@@ -90,9 +90,9 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
           // Modal content
           Center(
             child: Container(
-              margin: const EdgeInsets.only(top: 150),
+              margin: const EdgeInsets.only(top: 125).h,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(70),
+                borderRadius: BorderRadius.circular(70).w,
               ),
               child: EditModal(id: id),
             ),
@@ -268,7 +268,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                     surfaceTintColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius:
-                                          BorderRadius.circular(10.0).w,
+                                          BorderRadius.circular(13.47).w,
                                     ),
                                     content: SizedBox(
                                       width: screenSize.width * 0.55.w,
@@ -292,7 +292,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontFamily: 'Nunito',
-                                              fontSize: 19.sp,
+                                              fontSize: 16.84.sp,
                                             ),
                                           ),
                                           SizedBox(height: 20.h),
@@ -304,7 +304,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                              10.0)
+                                                              11.79)
                                                           .w,
                                                   color: halfGrey,
                                                 ),
@@ -312,10 +312,11 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
-                                                  child: const Text(
+                                                  child: Text(
                                                     "Tidak",
                                                     style: TextStyle(
-                                                        color: offGrey),
+                                                        fontSize: 16.84.sp,
+                                                        color: pureWhite),
                                                   ),
                                                 ),
                                               ),
@@ -324,7 +325,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                              10.0)
+                                                              11.79)
                                                           .w,
                                                   color: ripeMango,
                                                 ),
@@ -344,10 +345,11 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                                       Navigator.pop(context);
                                                     });
                                                   },
-                                                  child: const Text(
+                                                  child: Text(
                                                     "Ya",
                                                     style: TextStyle(
-                                                        color: offGrey),
+                                                        fontSize: 16.84.sp,
+                                                        color: pureWhite),
                                                   ),
                                                 ),
                                               ),
@@ -486,8 +488,8 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                 children: [
                   _allData.isEmpty
                       ? Padding(
-                        padding: const EdgeInsets.only(top: 69.0).w,
-                        child: Column(
+                          padding: const EdgeInsets.only(top: 69.0).w,
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -507,7 +509,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                               ),
                             ],
                           ),
-                      )
+                        )
                       : ListTimerPageHold(
                           allData: _allData,
                         ),

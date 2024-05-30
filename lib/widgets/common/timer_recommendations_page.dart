@@ -85,16 +85,14 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
           child: Container(
             margin: const EdgeInsets.only(top: 14.0).h,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0).w,
+              borderRadius: BorderRadius.circular(12.0).w,
               color: offOrange,
             ),
             child: ListTile(
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 3.0, horizontal: 19.0).w,
               leading: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  screenSize.width * 0.04,
-                ).w,
+                borderRadius: BorderRadius.circular(5).w,
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 10).w,
