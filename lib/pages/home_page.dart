@@ -149,111 +149,140 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   DateTime timeBackPressed = DateTime.now();
 
-  @override
-  Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: pureWhite,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 20.h),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20).w,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          '$_greeting ',
-                          style: TextStyle(
-                            fontFamily: 'Nunito-Bold',
-                            fontSize: 22.42.sp,
-                            fontWeight: FontWeight.w900,
-                            color: cetaceanBlue,
-                          ),
+@override
+Widget build(BuildContext context) {
+  final screenSize = MediaQuery.of(context).size;
+  return Scaffold(
+    backgroundColor: pureWhite,
+    body: SafeArea(
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(height: 20.h),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20).w,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(
+                        '$_greeting ',
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
+                          fontSize: 22.42.sp,
+                          fontWeight: FontWeight.w900,
+                          color: cetaceanBlue,
                         ),
-                        SizedBox(width: 15.w),
-                        SvgPicture.asset(_imagePath)
-                      ],
-                    ),
-                    Text(
-                      "Yuk capai target fokusmu hari ini",
-                      style: TextStyle(
-                        fontFamily: 'Nunito-Bold',
-                        fontSize: 14.sp,
-                        color: ripeMango,
                       ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 28.sp),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20).w,
-                child: SizedBox(key: cardHomeKey, child: const CardHome()),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: screenSize.height * 0.03.h,
-                  horizontal: screenSize.width * 0.05.w,
-                ),
-                child: SizedBox(key: gridRekomendasiKey, child: const GridRekomendasi()),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: screenSize.height * 0.03,
-                  right: screenSize.width * 0.05,
-                  left: screenSize.width * 0.05,
-                ).r,
-                child: Column(
-                  key: timerMuKey,
-                  children: [
-                    Row(
-                      children: [
-                        SvgPicture.asset('assets/images/timer.svg'),
-                        SizedBox(width: 10.w),
-                        Text(
-                          "Timer Mu",
-                          style: TextStyle(
-                            fontFamily: 'Nunito-Bold',
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w900,
-                            color: cetaceanBlue,
-                          ),
-                        ),
-                      ],
+                      SizedBox(width: 15.w),
+                      SvgPicture.asset(_imagePath)
+                    ],
+                  ),
+                  Text(
+                    "Yuk capai target fokusmu hari ini",
+                    style: TextStyle(
+                      fontFamily: 'Nunito-Bold',
+                      fontSize: 14.sp,
+                      color: ripeMango,
                     ),
-                    _allData.isEmpty
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                "assets/images/cat_setting.svg",
-                                width: screenSize.width * 0.3.w,
-                              ),
-                              SizedBox(height: 10.sp),
-                              Text(
-                                "Ayo tambahkan timer sesuai keinginanmu!",
-                                style: TextStyle(
-                                  fontFamily: 'Nunito',
-                                  fontSize: 14.sp,
-                                  color: darkGrey,
-                                ),
-                              ),
-                            ],
-                          )
-                        : ListTimerPageNoHold(
-                            isSettingPressed: isSettingPressed)
-                  ],
-                ),
+                  )
+                ],
               ),
-            ],
-          ),
+            ),
+            SizedBox(height: 28.sp),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20).w,
+              child: SizedBox(key: cardHomeKey, child: const CardHome()),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: screenSize.height * 0.03.h,
+                horizontal: screenSize.width * 0.05.w,
+              ),
+              child: SizedBox(key: gridRekomendasiKey, child: const GridRekomendasi()),
+            ),
+            Padding(
+              padding: EdgeInsets.only(
+                bottom: screenSize.height * 0.03,
+                right: screenSize.width * 0.05,
+                left: screenSize.width * 0.05,
+              ).r,
+              child: Column(
+                key: timerMuKey,
+                children: [
+                  Row(
+                    children: [
+                      SvgPicture.asset('assets/images/timer.svg'),
+                      SizedBox(width: 10.w),
+                      Text(
+                        "Timer Mu",
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
+                          fontSize: 14.sp,
+                          fontWeight: FontWeight.w900,
+                          color: cetaceanBlue,
+                        ),
+                      ),
+                    ],
+                  ),
+                  FutureBuilder(
+                    future: _loadData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: halfGrey,
+                            strokeWidth: 4,
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Error loading data',
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              fontSize: 14.sp,
+                              color: darkGrey,
+                            ),
+                          ),
+                        );
+                      } else if (_allData.isEmpty) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            SvgPicture.asset(
+                              "assets/images/cat_setting.svg",
+                              width: screenSize.width * 0.3.w,
+                            ),
+                            SizedBox(height: 10.sp),
+                            Text(
+                              "Ayo tambahkan timer sesuai keinginanmu!",
+                              style: TextStyle(
+                                fontFamily: 'Nunito',
+                                fontSize: 14.sp,
+                                color: darkGrey,
+                              ),
+                            ),
+                          ],
+                        );
+                      } else {
+                        return ListTimerPageNoHold(isSettingPressed: isSettingPressed);
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
+Future<void> _loadData() async {
+  await Future.delayed(const Duration(milliseconds: 200));
+}
+
 }
