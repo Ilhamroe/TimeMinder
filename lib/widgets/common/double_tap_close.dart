@@ -7,7 +7,10 @@ class DoubleBackToCloseApp extends StatefulWidget {
   final Widget child;
   final String snackBarMessage;
 
-  const DoubleBackToCloseApp({super.key, required this.child, this.snackBarMessage = 'Tap back again to leave'});
+  const DoubleBackToCloseApp(
+      {super.key,
+      required this.child,
+      this.snackBarMessage = 'Tap back again to leave'});
 
   @override
   _DoubleBackToCloseAppState createState() => _DoubleBackToCloseAppState();
@@ -21,7 +24,8 @@ class _DoubleBackToCloseAppState extends State<DoubleBackToCloseApp> {
     return WillPopScope(
       onWillPop: () async {
         if (_lastTimeBackButtonWasTapped == null ||
-            DateTime.now().difference(_lastTimeBackButtonWasTapped!) > const Duration(milliseconds: 1500)) {
+            DateTime.now().difference(_lastTimeBackButtonWasTapped!) >
+                const Duration(milliseconds: 1500)) {
           _lastTimeBackButtonWasTapped = DateTime.now();
           Fluttertoast.showToast(msg: widget.snackBarMessage, fontSize: 14.sp);
           return false;

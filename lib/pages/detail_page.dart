@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -50,7 +51,7 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   void _showInAppTour() {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 30), () {
       SaveDetailPageTour().getDetailPageStatus().then((value) => {
             if (value == false)
               {
@@ -115,11 +116,10 @@ class _DetailPageState extends State<DetailPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0).r,
+              padding: const EdgeInsets.symmetric(horizontal: 20.0).w,
               child: Container(
                 key: calendarKey,
-                margin: const EdgeInsets.symmetric(vertical: 1.0).r,
-                padding: const EdgeInsets.symmetric(vertical: 7.0).r,
+                padding: const EdgeInsets.symmetric(vertical: 7.0).w,
                 decoration: BoxDecoration(
                   border: Border.all(color: halfGrey),
                   borderRadius: const BorderRadius.all(Radius.circular(6.0)).w,
@@ -155,7 +155,7 @@ class _DetailPageState extends State<DetailPage> {
                 ? Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0).r,
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0).w,
                         child: _kalender(),
                       ),
                       const Divider(
@@ -166,15 +166,15 @@ class _DetailPageState extends State<DetailPage> {
                 : Container(),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0)
-                      .r,
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0)
+                      .w,
               child: Column(
                 key: detailTimerKey,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                            horizontal: 5.0, vertical: 8.0)
-                        .r,
+                  Container(
+                    // padding: const EdgeInsets.symmetric(
+                    //         horizontal: 5.0, vertical: 8.0)
+                    //     .w,
                     child: Row(
                       children: [
                         SvgPicture.asset(
@@ -184,8 +184,7 @@ class _DetailPageState extends State<DetailPage> {
                           width: 20.w,
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0).r,
+                          padding: const EdgeInsets.only(left: 8.0).w,
                           child: Text(
                             "Detail",
                             style: TextStyle(
@@ -220,8 +219,8 @@ class _DetailPageState extends State<DetailPage> {
       },
       locale: "id_id",
       timeLineProps: EasyTimeLineProps(
-        hPadding: 4.8.h,
-        separatorPadding: 5.5.r,
+        hPadding: 12.w,
+        separatorPadding: 7.w,
       ),
       headerProps: const EasyHeaderProps(
         showHeader: false,
@@ -232,8 +231,32 @@ class _DetailPageState extends State<DetailPage> {
         todayHighlightColor: cetaceanBlue,
         borderColor: cetaceanBlue,
         dayStructure: DayStructure.dayStrDayNum,
-        width: 35.w,
-        height: 41.h,
+        width: 31.68.w,
+        height: 42.24.h,
+        activeDayStyle: DayStyle(
+            dayStrStyle: TextStyle(
+              fontSize: 8.8.sp,
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w600,
+              color: pureWhite),
+            dayNumStyle: TextStyle(
+              fontSize: 12.32.sp,
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w800,
+              color: pureWhite),
+            ),
+        inactiveDayStyle: DayStyle(
+          dayStrStyle: TextStyle(
+              fontSize: 8.8.sp,
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w600,
+              color: cetaceanBlue),
+            dayNumStyle: TextStyle(
+              fontSize: 12.32.sp,
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w800,
+              color: cetaceanBlue),
+            ),
       ),
     );
   }
@@ -290,9 +313,8 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildListView() {
-    final screenSize = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0).r,
+    return Container(
+      // padding: const EdgeInsets.symmetric(horizontal: 5.0).w,
       child: FutureBuilder<List<Map<String, dynamic>>>(
         future: DBCalendar.getSingleDate(_focusedDay),
         builder: (context, snapshot) {
@@ -308,45 +330,54 @@ class _DetailPageState extends State<DetailPage> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SvgPicture.asset(
-                      "assets/images/cat_setting.svg",
-                    ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0).r,
-                      child: Text(
-                        'Ayo tambahkan timer sesuai keinginanmu!',
-                        style: TextStyle(
-                          fontSize: 16.sp, 
-                          color: Colors.grey
-                        ),
+                      padding: const EdgeInsets.only(top: 69.0).w,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            "assets/images/cat_setting.svg",
+                            width: 150.w,
+                            height: 150.h,
+                          ),
+                          SizedBox(height: 12.82.h),
+                          Text(
+                            "Ayo tambahkan timer sesuai keinginanmu!",
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              fontSize: 14.sp,
+                              color: darkGrey,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    )
                   ],
                 ),
               );
             } else {
               return ListView.builder(
                 physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(vertical: 8.0).r,
                 shrinkWrap: true,
                 itemCount: dataList.length,
                 itemBuilder: (context, int index) {
                   return Container(
-                    margin: const EdgeInsets.only(bottom: 13.0).r,
+                    margin: const EdgeInsets.only(top: 14.0).h,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0).r,
+                      borderRadius: BorderRadius.circular(12.0).w,
                       color: offOrange,
                     ),
                     child: ListTile(
                       contentPadding: const EdgeInsets.symmetric(
-                          vertical: 3.0, horizontal: 19.0).r,
+                              vertical: 3.0, horizontal: 19.0)
+                          .w,
                       leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          screenSize.width * 0.04,
-                        ).r,
+                        borderRadius: BorderRadius.circular(5).w,
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 10).r,
+                                  vertical: 8, horizontal: 10)
+                              .w,
                           color: heliotrope,
                           child: SvgPicture.asset(
                             'assets/images/cat1.svg',
@@ -370,7 +401,8 @@ class _DetailPageState extends State<DetailPage> {
                           fontSize: 12.sp,
                         ),
                       ),
-                      trailing: (dataList[index]['elapsed'] >=  dataList[index]['timer'])
+                      trailing: (dataList[index]['elapsed'] >=
+                              dataList[index]['timer'])
                           ? Image.asset(
                               "assets/images/vector.png",
                             )

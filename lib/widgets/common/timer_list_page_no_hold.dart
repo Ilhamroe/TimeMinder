@@ -7,7 +7,6 @@ import 'package:time_minder/database/db_helper.dart';
 import 'package:time_minder/pages/view_list_timer_page.dart';
 import 'package:time_minder/utils/colors.dart';
 
-
 typedef ModalCloseCallback = void Function(int? id);
 
 class ListTimerPageNoHold extends StatefulWidget {
@@ -58,7 +57,7 @@ class _ListTimerPageNoHoldState extends State<ListTimerPageNoHold> {
 
   @override
   Widget build(BuildContext context) {
-    final Size screenSize = MediaQuery.of(context).size;
+    // final Size screenSize = MediaQuery.of(context).size;
     return ListView.builder(
       physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
@@ -78,16 +77,14 @@ class _ListTimerPageNoHoldState extends State<ListTimerPageNoHold> {
           child: Container(
             margin: const EdgeInsets.only(top: 14.0).h,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16.0).w,
+              borderRadius: BorderRadius.circular(12.0).w,
               color: offOrange,
             ),
             child: ListTile(
               contentPadding:
                   const EdgeInsets.symmetric(vertical: 3.0, horizontal: 19.0).w,
               leading: ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  screenSize.width * 0.04.w,
-                ),
+                borderRadius: BorderRadius.circular(5).w,
                 child: Container(
                   padding:
                       const EdgeInsets.symmetric(vertical: 8, horizontal: 10).w,
@@ -166,4 +163,3 @@ class _ListTimerPageNoHoldState extends State<ListTimerPageNoHold> {
     return '${padLeft(hours)}:${padLeft(minutes)}:${padLeft(seconds)}';
   }
 }
-
