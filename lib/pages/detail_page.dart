@@ -30,6 +30,7 @@ class _DetailPageState extends State<DetailPage> {
   late List<Map<String, dynamic>> allData = [];
   bool isLoading = false;
   bool isOptionOpen = false;
+  Map<DateTime, List<dynamic>> _events = {};
 
   void _initdetailPageInAppTour() {
     tutorialCoachMark = TutorialCoachMark(
@@ -52,14 +53,14 @@ class _DetailPageState extends State<DetailPage> {
   void _showInAppTour() {
     Future.delayed(const Duration(seconds: 2), () {
       SaveDetailPageTour().getDetailPageStatus().then((value) => {
-            if (value == false)
-              {
-                // print("User has not seen this tutor"),
-                tutorialCoachMark.show(context: context)
-              }
-            // else
-            //   {print("User has seen this tutor")}
-          });
+        if (value == false)
+          {
+            // print("User has not seen this tutor"),
+            tutorialCoachMark.show(context: context)
+          }
+        // else
+        //   {print("User has seen this tutor")}
+      });
     });
   }
 
@@ -68,6 +69,22 @@ class _DetailPageState extends State<DetailPage> {
     setState(() {
       allData = data;
       isLoading = false;
+      _prepareEvents();
+    });
+  }
+
+  void _prepareEvents() {
+    final Map<DateTime, List<dynamic>> events = {};
+    for (var data in allData) {
+      final date = DateTime.parse(data['date']);
+      if (events.containsKey(date)) {
+        events[date]!.add(data);
+      } else {
+        events[date] = [data];
+      }
+    }
+    setState(() {
+      _events = events;
     });
   }
 
@@ -132,15 +149,15 @@ class _DetailPageState extends State<DetailPage> {
                     IconButton(
                       icon: isOptionOpen
                           ? SvgPicture.asset(
-                              "assets/images/chev-down.svg",
-                              width: 20.w,
-                              height: 20.h,
-                            )
+                        "assets/images/chev-down.svg",
+                        width: 20.w,
+                        height: 20.h,
+                      )
                           : SvgPicture.asset(
-                              "assets/images/chev-up.svg",
-                              width: 20.w,
-                              height: 20.h,
-                            ),
+                        "assets/images/chev-up.svg",
+                        width: 20.w,
+                        height: 20.h,
+                      ),
                       onPressed: () {
                         setState(() {
                           isOptionOpen = !isOptionOpen;
@@ -153,27 +170,27 @@ class _DetailPageState extends State<DetailPage> {
             ),
             isOptionOpen
                 ? Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0).r,
-                        child: _kalender(),
-                      ),
-                      const Divider(
-                        color: ripeMango,
-                      ),
-                    ],
-                  )
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15.0).r,
+                  child: _kalender(),
+                ),
+                const Divider(
+                  color: ripeMango,
+                ),
+              ],
+            )
                 : Container(),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0)
-                      .r,
+              const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0)
+                  .r,
               child: Column(
                 key: detailTimerKey,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                            horizontal: 5.0, vertical: 8.0)
+                        horizontal: 5.0, vertical: 8.0)
                         .r,
                     child: Row(
                       children: [
@@ -185,7 +202,7 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                         Padding(
                           padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0).r,
+                          const EdgeInsets.symmetric(horizontal: 8.0).r,
                           child: Text(
                             "Detail",
                             style: TextStyle(
@@ -245,6 +262,9 @@ class _DetailPageState extends State<DetailPage> {
       focusedDay: _focusedDay,
       calendarFormat: _calendarFormat,
       locale: 'id_ID',
+      eventLoader: (day) {
+        return _events[day] ?? [];
+      },
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,
         titleCentered: true,
@@ -263,6 +283,13 @@ class _DetailPageState extends State<DetailPage> {
           shape: BoxShape.circle,
         ),
         selectedTextStyle: const TextStyle(color: cetaceanBlue),
+        markerDecoration: BoxDecoration(
+          color: ripeMango,
+          shape: BoxShape.circle,
+        ),
+      ),
+      calendarBuilders: CalendarBuilders(
+
       ),
       selectedDayPredicate: (day) {
         return isSameDay(_selectedDay, day);
@@ -290,134 +317,163 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildListView() {
-    final screenSize = MediaQuery.of(context).size;
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 5.0).r,
-      child: FutureBuilder<List<Map<String, dynamic>>>(
-        future: DBCalendar.getSingleDate(_focusedDay),
-        builder: (context, snapshot) {
-          pureWhite;
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            final dataList = snapshot.data!;
-            if (dataList.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      "assets/images/cat_setting.svg",
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0).r,
-                      child: Text(
-                        'Ayo tambahkan timer sesuai keinginanmu!',
-                        style: TextStyle(
-                          fontSize: 16.sp, 
-                          color: Colors.grey
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            } else {
-              return ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.symmetric(vertical: 8.0).r,
-                shrinkWrap: true,
-                itemCount: dataList.length,
-                itemBuilder: (context, int index) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 13.0).r,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0).r,
-                      color: offOrange,
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 3.0, horizontal: 19.0).r,
-                      leading: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                          screenSize.width * 0.04,
-                        ).r,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8, horizontal: 10).r,
-                          color: heliotrope,
-                          child: SvgPicture.asset(
-                            'assets/images/cat1.svg',
-                            height: 30.h,
-                          ),
-                        ),
-                      ),
-                      title: Text(
-                        dataList[index]['title'],
-                        style: TextStyle(
-                          fontFamily: 'Nunito-Bold',
-                          fontWeight: FontWeight.w900,
-                          fontSize: 14.sp,
-                        ),
-                      ),
-                      subtitle: Text(
-                        dataList[index]['description'],
-                        style: TextStyle(
-                          fontFamily: 'Nunito',
-                          fontWeight: FontWeight.w600,
-                          fontSize: 12.sp,
-                        ),
-                      ),
-                      trailing: (dataList[index]['elapsed'] >=  dataList[index]['timer'])
-                          ? Image.asset(
-                              "assets/images/vector.png",
-                            )
-                          : Row(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "${_formatTime(dataList[index]['elapsed'])} ",
-                                  style: TextStyle(
-                                    fontFamily: 'Nunito-Bold',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 14.sp,
-                                    color: cetaceanBlue,
-                                  ),
-                                ),
-                                Text(
-                                  "/ ${_formatTime(dataList[index]['timer'])}",
-                                  style: TextStyle(
-                                    fontFamily: 'Nunito-Bold',
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 10.sp,
-                                    color: cetaceanBlue,
-                                  ),
-                                ),
-                              ],
-                            ),
-                    ),
-                  );
-                },
-              );
-            }
-          }
-        },
+    final filteredData = allData
+        .where((data) => DateTime.parse(data['date']).day == _selectedDay.day)
+        .toList();
+    final groupedData = _groupData(filteredData);
+
+    return isLoading
+        ? const CircularProgressIndicator()
+        : groupedData.isEmpty
+        ? Container(
+      padding: const EdgeInsets.all(8.0).r,
+      margin: const EdgeInsets.only(top: 20.0).r,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(6.0).r,
+        color: Colors.grey[200],
       ),
+      child: Column(
+        children: [
+          SvgPicture.asset(
+            "assets/images/cat_setting.svg",
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0).r,
+            child: Text(
+              'Ayo tambahkan timer sesuai keinginanmu!',
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: Colors.grey,
+              ),
+            ),
+          ),
+        ],
+      ),
+    )
+        : ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      padding: const EdgeInsets.symmetric(vertical: 8.0).r,
+      shrinkWrap: true,
+      itemCount: groupedData.length,
+      itemBuilder: (context, int index) {
+        final item = groupedData[index];
+        return Container(
+          margin: const EdgeInsets.only(bottom: 13.0).r,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0).r,
+            color: offOrange,
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.symmetric(
+                vertical: 3.0, horizontal: 19.0)
+                .r,
+            leading: ClipRRect(
+              borderRadius: BorderRadius.circular(
+                MediaQuery.of(context).size.width * 0.04,
+              ).r,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 8, horizontal: 10)
+                    .r,
+                color: heliotrope,
+                child: SvgPicture.asset(
+                  'assets/images/cat1.svg',
+                  height: 30.h,
+                ),
+              ),
+            ),
+            title: Text(
+              item['title'],
+              style: TextStyle(
+                fontFamily: 'Nunito-Bold',
+                fontWeight: FontWeight.w900,
+                fontSize: 14.sp,
+              ),
+            ),
+            subtitle: Text(
+              item['description'],
+              style: TextStyle(
+                fontFamily: 'Nunito',
+                fontWeight: FontWeight.w600,
+                fontSize: 12.sp,
+              ),
+            ),
+            trailing: ((item['count'] > 1) && (item['elapsed'] >= item['timer']))
+                ? Text(
+              "x${item['count']}",
+              style: TextStyle(
+                fontFamily: 'Nunito-Bold',
+                fontWeight: FontWeight.w600,
+                fontSize: 14.sp,
+                color: cetaceanBlue,
+              ),
+            )
+                : (item['elapsed'] >= item['timer'])
+                ? Image.asset(
+              "assets/images/vector.png",
+            )
+                : Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "${_formatTime(item['elapsed'])} ",
+                  style: TextStyle(
+                    fontFamily: 'Nunito-Bold',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 14.sp,
+                    color: cetaceanBlue,
+                  ),
+                ),
+                Text(
+                  "/ ${_formatTime(item['timer'])}",
+                  style: TextStyle(
+                    fontFamily: 'Nunito-Bold',
+                    fontWeight: FontWeight.w600,
+                    fontSize: 10.sp,
+                    color: cetaceanBlue,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
-}
 
-String _formatTime(int time) {
-  if (time >= 3600) {
-    int jam = time ~/ 3600;
-    return '${jam}h';
-  } else if (time >= 60) {
-    int minutes = time ~/ 60;
-    return '${minutes}m';
-  } else {
-    return '${time}s';
+
+  List<Map<String, dynamic>> _groupData(List<Map<String, dynamic>> dataList) {
+    final Map<String, Map<String, dynamic>> groupedData = {};
+
+    for (var data in dataList) {
+      final key = "${data['title']}-${data['description']}-(${data['elapsed']} >= ${data['timer']})";
+
+      if (groupedData.containsKey(key)) {
+        groupedData[key]!['count'] += 1;
+      } else {
+        groupedData[key] = {
+          'title': data['title'],
+          'description': data['description'],
+          'timer': data['timer'],
+          'elapsed': data['elapsed'],
+          'count': 1,
+        };
+      }
+    }
+
+    return groupedData.values.toList();
+  }
+
+  String _formatTime(int time) {
+    if (time >= 3600) {
+      int jam = time ~/ 3600;
+      return '${jam}h';
+    } else if (time >= 60) {
+      int minutes = time ~/ 60;
+      return '${minutes}m';
+    } else {
+      return '${time}s';
+    }
   }
 }
