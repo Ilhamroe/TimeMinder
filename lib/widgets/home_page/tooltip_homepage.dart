@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:time_minder/utils/colors.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -23,9 +22,8 @@ List<TargetFocus> homePageTargets({
             step: "1/3",
             title: "Target harian.",
             desc: "Catatan ini akan melacak aktivitas Anda hari ini.",
-            onPrevious: () {
-              // controller.previous();
-            },
+            showPreviousButton: false, 
+            onPrevious: () {},
             onNext: () {
               controller.next();
             },
@@ -49,6 +47,7 @@ List<TargetFocus> homePageTargets({
             title: "Rekomendasi",
             desc:
                 "Telusuri daftar timer yang sudah disiapkan, termasuk timer Pomodoro, Long Timer, dan juga Short Timer",
+            showPreviousButton: true, 
             onPrevious: () {
               controller.previous();
             },
@@ -74,6 +73,7 @@ List<TargetFocus> homePageTargets({
             step: "3/3",
             title: "Timer Mu",
             desc: "Ini adalah daftar timer kustom yang telah Anda buat.",
+            showPreviousButton: true, 
             onPrevious: () {
               controller.previous();
             },
@@ -96,14 +96,16 @@ class CoachMarkDesc extends StatefulWidget {
     required this.step,
     required this.title,
     required this.desc,
-    required this.onPrevious,
+    required this.showPreviousButton,
+    this.onPrevious,
     required this.onNext,
   });
 
   final String step;
   final String title;
   final String desc;
-  final VoidCallback onPrevious;
+  final bool showPreviousButton;
+  final VoidCallback? onPrevious;
   final VoidCallback onNext;
 
   @override
@@ -155,9 +157,12 @@ class _CoachMarkDescState extends State<CoachMarkDesc> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                IconButton(
-                  icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
-                  onPressed: widget.onPrevious,
+                Visibility(
+                  visible: widget.showPreviousButton,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                    onPressed: widget.onPrevious,
+                  ),
                 ),
                 SizedBox(
                   width: 5.w,
@@ -168,7 +173,7 @@ class _CoachMarkDescState extends State<CoachMarkDesc> {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
