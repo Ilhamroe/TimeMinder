@@ -62,7 +62,6 @@ class GridRekomendasi extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // SizedBox(height: screenSize.width * 0.01.h),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 8, vertical: 2).w,
                     child: Text(
@@ -76,7 +75,6 @@ class GridRekomendasi extends StatelessWidget {
                       textAlign: TextAlign.center,
                     ),
                   ),
-                  // SizedBox(height: screenSize.width * 0.01.h),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 8, vertical: 2).w,
                     child: Text(
@@ -89,7 +87,6 @@ class GridRekomendasi extends StatelessWidget {
                       ),
                     ),
                   ),
-                  // SizedBox(height: screenSize.width * 0.01.h),
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 8, vertical: 2).w,
                     child: GestureDetector(

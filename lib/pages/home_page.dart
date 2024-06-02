@@ -190,21 +190,21 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               ),
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20).w,
-                child: SizedBox(key: cardHomeKey, child: const CardHome()),
+                child: SizedBox(key: cardHomeKey, child: const BannerHome()),
               ),
               Padding(
                 padding: EdgeInsets.symmetric(
                   vertical: screenSize.height * 0.03.h,
-                  horizontal: screenSize.width * 0.05.w,
+                  horizontal: 20.w,
                 ),
                 child: SizedBox(key: gridRekomendasiKey, child: const GridRekomendasi()),
               ),
               Padding(
                 padding: EdgeInsets.only(
                   bottom: screenSize.height * 0.03,
-                  right: screenSize.width * 0.05,
-                  left: screenSize.width * 0.05,
-                ).r,
+                  right: 20,
+                  left: 20,
+                ).w,
                 child: Column(
                   key: timerMuKey,
                   children: [

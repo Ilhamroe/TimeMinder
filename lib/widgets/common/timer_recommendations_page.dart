@@ -120,6 +120,7 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
                 ),
               ),
               trailing: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   // SizedBox(
                   //   height: 12.h,

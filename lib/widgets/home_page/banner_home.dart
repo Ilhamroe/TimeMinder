@@ -3,16 +3,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:time_minder/database/db_calendar.dart';
 import 'package:time_minder/utils/colors.dart';
 
-class CardHome extends StatefulWidget {
-  const CardHome({
+class BannerHome extends StatefulWidget {
+  const BannerHome({
     super.key,
   });
 
   @override
-  State<CardHome> createState() => _CardHomeState();
+  State<BannerHome> createState() => _CardHomeState();
 }
 
-class _CardHomeState extends State<CardHome> {
+class _CardHomeState extends State<BannerHome> {
   int totalElapsed = 0;
   late List<Map<String, dynamic>> allData = [];
   bool isLoading = false;
@@ -79,7 +79,7 @@ class _CardHomeState extends State<CardHome> {
           ),
           Positioned.fill(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 30).w,
+              // padding: const EdgeInsets.symmetric(horizontal: 30).w,
               child: isLoading
                   ? Center(child: CircularProgressIndicator())
                   : Column(
@@ -90,7 +90,7 @@ class _CardHomeState extends State<CardHome> {
                             ? Column(
                                 children: [
                                   Text(
-                                    'Oops! Sepertinya kamu belum memulai timer hari ini',
+                                    'Oops! Sepertinya kamu belum\nmemulai timer hari ini',
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                         fontFamily: 'Nunito',

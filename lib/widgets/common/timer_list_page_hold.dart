@@ -86,7 +86,9 @@ class _ListTimerPageHoldState extends State<ListTimerPageHold> {
                       leading: ClipRRect(
                         borderRadius: BorderRadius.circular(5).w,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10).w,
+                          padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 10)
+                              .w,
                           color: heliotrope,
                           child: SvgPicture.asset(
                             'assets/images/cat1.svg',

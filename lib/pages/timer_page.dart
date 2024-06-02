@@ -463,7 +463,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                   bottom: screenSize.height * 0.03,
                   right: screenSize.width * 0.05,
                   left: screenSize.width * 0.05,
-                ).r,
+                ).w,
                 itemCount: 2,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
