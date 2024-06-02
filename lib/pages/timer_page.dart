@@ -317,12 +317,12 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                           BorderRadius.circular(13.47).w,
                                     ),
                                     content: SizedBox(
-                                      width: screenSize.width * 0.55.w,
-                                      height: screenSize.height * 0.30.h,
+                                      // width: screenSize.width * 0.55.w,
+                                      // height: screenSize.height * 0.30.h,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        // mainAxisSize: MainAxisSize.min,
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           SizedBox(
                                             height: screenSize.height * 0.14.h,
