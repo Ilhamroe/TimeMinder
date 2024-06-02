@@ -104,7 +104,6 @@ class _NavbarBottomState extends State<NavbarBottom> {
 
   @override
   Widget build(BuildContext context) {
-    // final Size screenSize = MediaQuery.of(context).size;
     return DoubleBackToCloseApp(
       snackBarMessage: 'Tekan sekali lagi untuk keluar',
       child: Scaffold(
@@ -158,7 +157,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
             child: Container(
               height: 50.h,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -143,7 +143,7 @@ class _ListTimerPageHoldState extends State<ListTimerPageHold> {
                                 ),
                                 child: selectedItems.isNotEmpty
                                     ? Text(
-                                        "pilih",
+                                        "Pilih",
                                         style: TextStyle(
                                           fontFamily: 'Nunito',
                                           fontSize: 9.sp,
