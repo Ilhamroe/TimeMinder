@@ -159,7 +159,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 25).w,
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 8, bottom: 25).w,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -197,7 +197,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   vertical: screenSize.height * 0.03.h,
                   horizontal: screenSize.width * 0.05.w,
                 ),
-                child: SizedBox(key: gridRekomendasiKey, child: const GridRekomendasi()),
+                child: SizedBox(
+                    key: gridRekomendasiKey, child: const GridRekomendasi()),
               ),
               Padding(
                 padding: EdgeInsets.only(
@@ -223,16 +224,37 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         ),
                       ],
                     ),
-                    _allData.isEmpty
-                        ? Column(
+                    FutureBuilder(
+                      future: _loadData(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(
+                              color: halfGrey,
+                              strokeWidth: 4,
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text(
+                              'Error loading data',
+                              style: TextStyle(
+                                fontFamily: 'Nunito',
+                                fontSize: 14.sp,
+                                color: darkGrey,
+                              ),
+                            ),
+                          );
+                        } else if (_allData.isEmpty) {
+                          return Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SvgPicture.asset(
                                 "assets/images/cat_setting.svg",
-                                width: 130.w,
-                                height: 130.h,
+                                width: screenSize.width * 0.3.w,
                               ),
-                              10.verticalSpace,
+                              SizedBox(height: 10.sp),
                               Text(
                                 "Ayo tambahkan timer sesuai keinginanmu!",
                                 style: TextStyle(
@@ -242,9 +264,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 ),
                               ),
                             ],
-                          )
-                        : ListTimerPageNoHold(
-                            isSettingPressed: isSettingPressed)
+                          );
+                        } else {
+                          return ListTimerPageNoHold(
+                              isSettingPressed: isSettingPressed);
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
@@ -253,5 +279,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+
+  Future<void> _loadData() async {
+    await Future.delayed(const Duration(milliseconds: 200));
   }
 }

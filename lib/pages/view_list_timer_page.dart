@@ -499,11 +499,11 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
             borderRadius: BorderRadius.circular(13.47).w,
           ),
           content: SizedBox(
-            width: screenSize.width * 0.55.w,
-            height: screenSize.height * 0.30.h,
+            // width: screenSize.width * 0.55.w,
+            // height: screenSize.height * 0.30.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              // mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
                   height: screenSize.height * 0.14.h,
@@ -584,14 +584,12 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
         return AlertDialog(
           surfaceTintColor: pureWhite,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0).w,
+            borderRadius: BorderRadius.circular(13.47).w,
           ),
           content: SizedBox(
-            width: screenSize.width * 0.55.w,
-            height: screenSize.height * 0.30.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              // mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
                   height: screenSize.height * 0.14.h,
@@ -604,12 +602,12 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                 ),
                 Text(
                   (_jobsTimer[_currentJobIndex].type == 'ISTIRAHAT')
-                      ? "Progress tidak tersimpan,\napakah anda yakin?"
+                      ? "Progress tidak tersimpan,\napakah kamu yakin?"
                       : 'Apakah kamu yakin\nmenyelesaikan timer?',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Nunito',
-                    fontSize: 19.sp,
+                    fontSize: 16.84.sp,
                   ),
                 ),
                 SizedBox(height: 20.h),
@@ -618,16 +616,16 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0).w,
+                        borderRadius: BorderRadius.circular(11.79).w,
                         color: halfGrey,
                       ),
                       child: TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text(
+                        child: Text(
                           "Tidak",
-                          style: TextStyle(color: offGrey),
+                          style: TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),
@@ -646,9 +644,9 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                             buttonConfirm();
                           }
                         },
-                        child: const Text(
+                        child: Text(
                           "Ya",
-                          style: TextStyle(color: offGrey),
+                          style: TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),

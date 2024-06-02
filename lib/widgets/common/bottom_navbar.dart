@@ -104,44 +104,39 @@ class _NavbarBottomState extends State<NavbarBottom> {
 
   @override
   Widget build(BuildContext context) {
-    // final Size screenSize = MediaQuery.of(context).size;
     return DoubleBackToCloseApp(
       snackBarMessage: 'Tekan sekali lagi untuk keluar',
       child: Scaffold(
         body: PageStorage(
-          child: currentScreen,
           bucket: bucket,
+          child: currentScreen,
         ),
-      floatingActionButton: Transform.rotate(
-        angle: 45 * 3.1415926535 / 180,
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFFFFCE38), Color(0xFFE2A203)],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-            borderRadius: BorderRadius.circular(16.0),
-          ),
-          child: FloatingActionButton(
-            onPressed: () {
+        floatingActionButton: Transform.rotate(
+          angle: 45 * 3.1415926535 / 180,
+          child: GestureDetector(
+            onTap: () {
               _showModal((int? id) {});
             },
-            backgroundColor: Colors.transparent,
-            foregroundColor: Colors.transparent,
-            focusElevation: 0.0,
-            hoverElevation: 0.0,
-            highlightElevation: 0.0,
-            elevation: 0.0,
-            splashColor: Colors.transparent,
-            hoverColor: Colors.transparent,
-            child: CustomPaint(
-              size: const Size(24, 24), // You can adjust the size
-              painter: PlusPainter(),
+            child: Container(
+              width: 56.0,
+              height: 56.0,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFFCE38), Color(0xFFE2A203)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
+              ),
+              child: Center(
+                child: CustomPaint(
+                  size: const Size(24, 24),
+                  painter: PlusPainter(),
+                ),
+              ),
             ),
           ),
         ),
-      ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: Container(
           height: 64.h,
@@ -162,7 +157,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
             child: Container(
               height: 50.h,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
