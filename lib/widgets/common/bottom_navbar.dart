@@ -60,7 +60,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
       context: context,
       builder: (_) => GestureDetector(
         onTap: () {
-          Navigator.of(context).pop(); // closing modal outtap
+          Navigator.of(context).pop();
         },
         child: Stack(
           children: [
@@ -72,12 +72,12 @@ class _NavbarBottomState extends State<NavbarBottom> {
             ),
             Center(
               child: GestureDetector(
-                onTap: () {}, // mencegah closing saat tap di area modal
+                onTap: () {},
                 child: Container(
                   // height: 500,
                   margin: const EdgeInsets.only(top: 125).h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(70).w,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(70).w,
                   ),
                   child: ModalAdd(id: id),
                 ),
@@ -137,7 +137,8 @@ class _NavbarBottomState extends State<NavbarBottom> {
             ),
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButtonLocation:
+            FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: Container(
           height: 64.h,
           decoration: BoxDecoration(
@@ -150,7 +151,8 @@ class _NavbarBottomState extends State<NavbarBottom> {
             ],
           ),
           child: BottomAppBar(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12).w,
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 12).w,
             elevation: 8.0.r,
             color: pureWhite,
             surfaceTintColor: Colors.transparent,
@@ -191,8 +193,9 @@ class _NavbarBottomState extends State<NavbarBottom> {
                               'Beranda',
                               style: TextStyle(
                                 fontFamily: 'Nunito',
-                                color:
-                                    currentTab == 0 ? ripeMango : cetaceanBlue,
+                                color: currentTab == 0
+                                    ? ripeMango
+                                    : cetaceanBlue,
                               ),
                             ),
                           ],
@@ -227,8 +230,9 @@ class _NavbarBottomState extends State<NavbarBottom> {
                               'Timer',
                               style: TextStyle(
                                 fontFamily: 'Nunito',
-                                color:
-                                    currentTab == 1 ? ripeMango : cetaceanBlue,
+                                color: currentTab == 1
+                                    ? ripeMango
+                                    : cetaceanBlue,
                               ),
                             ),
                           ],
@@ -269,8 +273,9 @@ class _NavbarBottomState extends State<NavbarBottom> {
                               'Detail',
                               style: TextStyle(
                                 fontFamily: 'Nunito',
-                                color:
-                                    currentTab == 2 ? ripeMango : cetaceanBlue,
+                                color: currentTab == 2
+                                    ? ripeMango
+                                    : cetaceanBlue,
                               ),
                             ),
                           ],
@@ -305,8 +310,9 @@ class _NavbarBottomState extends State<NavbarBottom> {
                               'Bantuan',
                               style: TextStyle(
                                 fontFamily: 'Nunito',
-                                color:
-                                    currentTab == 3 ? ripeMango : cetaceanBlue,
+                                color: currentTab == 3
+                                    ? ripeMango
+                                    : cetaceanBlue,
                               ),
                             ),
                           ],
