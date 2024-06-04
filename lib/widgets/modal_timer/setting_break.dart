@@ -50,6 +50,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
 
   void _onBreakTimeChanged(String value) {
     final newBreakTime = breakTimeController.text;
+    debugPrint('KETIKA DIPENCET: $newBreakTime');
     if(newBreakTime.isEmpty){
       setState(() {
         counterBreakTime = 0;
@@ -70,6 +71,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
       widget.onBreakTimeChanged?.call(counterBreakTime);
     }
   }
+  debugPrint('KETIKA ga ngap ngapa: $counterBreakTime');
 }
 
   void _onIntervalChanged(String value) {
@@ -117,6 +119,42 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
     });
   }
 
+  void _incrementBreakTime() {
+    setState(() {
+      counterBreakTime++;
+      breakTimeController.text = counterBreakTime.toString();
+    });
+    widget.onBreakTimeChanged?.call(counterBreakTime);
+  }
+  
+  void _incrementInterval() {
+    setState(() {
+      counterInterval++;
+      intervalController.text = counterInterval.toString();
+    });
+    widget.onIntervalChanged?.call(counterInterval);
+  }
+
+  void _decrementBreakTime() {
+    if (counterBreakTime > 0) {
+      setState(() {
+        counterBreakTime--;
+        breakTimeController.text = counterBreakTime.toString();
+      });
+      widget.onBreakTimeChanged?.call(counterBreakTime);
+    }
+  }
+
+  void _decrementInterval() {
+    if (counterInterval > 0) {
+      setState(() {
+        counterInterval--;
+        intervalController.text = counterInterval.toString();
+      });
+      widget.onIntervalChanged?.call(counterInterval);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -138,15 +176,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               children: [
                 IconButton(
                   onPressed: widget.statusSwitch
-                      ? () {
-                          int currentValue =
-                              int.tryParse(breakTimeController.text) ?? 0;
-                          if (currentValue > 0) {
-                            _onBreakTimeChanged((currentValue - 1).toString());
-                            breakTimeController.text =
-                                (currentValue - 1).toString();
-                          }
-                        }
+                      ? _decrementBreakTime
                       : null,
                   icon: const Icon(Icons.remove),
                   iconSize: 16.h,
@@ -187,13 +217,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                 ),
                 IconButton(
                   onPressed: widget.statusSwitch
-                      ? () {
-                          int currentValue =
-                              int.tryParse(breakTimeController.text) ?? 0;
-                          _onBreakTimeChanged((currentValue + 1).toString());
-                          breakTimeController.text =
-                              (currentValue + 1).toString();
-                        }
+                      ? _incrementBreakTime
                       : null,
                   icon: const Icon(Icons.add),
                   iconSize: 16.h,
@@ -221,15 +245,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               children: [
                 IconButton(
                   onPressed: widget.statusSwitch
-                      ? () {
-                          int currentValue =
-                              int.tryParse(intervalController.text) ?? 0;
-                          if (currentValue > 0) {
-                            _onIntervalChanged((currentValue - 1).toString());
-                            intervalController.text =
-                                (currentValue - 1).toString();
-                          }
-                        }
+                      ? _decrementInterval
                       : null,
                   icon: const Icon(Icons.remove),
                   iconSize: 16.h,
@@ -270,13 +286,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                           )),
                 IconButton(
                   onPressed: widget.statusSwitch
-                      ? () {
-                          int currentValue =
-                              int.tryParse(intervalController.text) ?? 0;
-                          _onIntervalChanged((currentValue + 1).toString());
-                          intervalController.text =
-                              (currentValue + 1).toString();
-                        }
+                      ? _incrementInterval
                       : null,
                   icon: const Icon(Icons.add),
                   iconSize: 16.h,
