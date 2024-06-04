@@ -21,7 +21,7 @@ class SQLHelper {
   }
 
   static Future<int> createData(String title, String? description, int timer,
-      int rest, int interval) async {
+      int rest, int interval, ) async {
     final db = await SQLHelper.db();
 
     final data = {
@@ -29,7 +29,7 @@ class SQLHelper {
       'description': description,
       'timer': timer,
       'rest': rest,
-      'interval': interval
+      'interval': interval,
     };
     final id = await db.insert('data', data,
         conflictAlgorithm: sql.ConflictAlgorithm.replace);
@@ -48,7 +48,7 @@ class SQLHelper {
   }
 
   static Future<int> updateData(int id, String title, String? description,
-      int timer, int rest, int interval) async {
+      int timer, int rest, int interval, ) async {
     final db = await SQLHelper.db();
     final data = {
       'title': title,
