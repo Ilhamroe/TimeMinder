@@ -35,3 +35,17 @@ class SaveDetailPageTour {
     return prefs.getBool("detailPage") ?? false;
   }
 }
+
+class SaveTimerPageTour {
+  final Future<SharedPreferences> _data = SharedPreferencesService.getInstance();
+
+  Future<void> saveTimerPageStatus() async {
+    final SharedPreferences prefs = await _data;
+    prefs.setBool("timerPage", true);
+  }
+
+  Future<bool> getTimerPageStatus() async {
+    final SharedPreferences prefs = await _data;
+    return prefs.getBool("timerPage") ?? false;
+  }
+}

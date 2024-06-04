@@ -122,9 +122,6 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
               trailing: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // SizedBox(
-                  //   height: 12.h,
-                  // ),
                   Text(
                     timerList[index].time,
                     style: TextStyle(
@@ -138,47 +135,39 @@ class _RecommendationTimerPageState extends State<RecommendationTimerPage> {
                     height: 5.0.h,
                   ),
                   GestureDetector(
-                    onTap: selectedItems.isNotEmpty
-                        ? null
-                        : () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) =>
-                                    TimerView(timerIndex: index),
-                              ),
-                            );
-                          },
-                    child: IgnorePointer(
-                      ignoring: selectedItems.isNotEmpty,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                                vertical: 1, horizontal: 7)
-                            .w,
-                        decoration: BoxDecoration(
-                          color: ripeMango,
-                          borderRadius: BorderRadius.circular(5).w,
-                        ),
-                        child: selectedItems.isNotEmpty
-                            ? Text(
-                                "pilih",
-                                style: TextStyle(
-                                  fontFamily: 'Nunito',
-                                  fontSize: 9.sp,
-                                  color: pureWhite,
+                      onTap: selectedItems.isNotEmpty
+                          ? null
+                          : () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      TimerView(timerIndex: index),
                                 ),
-                              )
-                            : Text(
-                                "Mulai",
-                                style: TextStyle(
-                                  fontFamily: 'Nunito',
-                                  fontSize: 9.sp,
-                                  color: pureWhite,
+                              );
+                            },
+                      child: selectedItems.isNotEmpty
+                          ? Container()
+                          : IgnorePointer(
+                              ignoring: selectedItems.isNotEmpty,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                        vertical: 1, horizontal: 7)
+                                    .w,
+                                decoration: BoxDecoration(
+                                  color: ripeMango,
+                                  borderRadius: BorderRadius.circular(5).w,
+                                ),
+                                child: Text(
+                                  "Mulai",
+                                  style: TextStyle(
+                                    fontFamily: 'Nunito',
+                                    fontSize: 9.sp,
+                                    color: pureWhite,
+                                  ),
                                 ),
                               ),
-                      ),
-                    ),
-                  ),
+                            )),
                 ],
               ),
             ),

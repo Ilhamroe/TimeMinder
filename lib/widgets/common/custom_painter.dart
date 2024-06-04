@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:time_minder/utils/colors.dart';
 
 class CrossPainter extends CustomPainter {
   @override
@@ -27,7 +28,7 @@ class PlusPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.white
+      ..color = pureWhite
       ..strokeWidth = 3.0
       ..strokeCap = StrokeCap.round;
 
