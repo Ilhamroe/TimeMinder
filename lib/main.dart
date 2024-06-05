@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:time_minder/widgets/common/providers.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:time_minder/pages/tes_page.dart';
 import 'package:workmanager/workmanager.dart';
 
 void main() async {

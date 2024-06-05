@@ -32,6 +32,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   bool isSaved = true;
 
+  int totalElapsed = 0;
+  late List<Map<String, dynamic>> allData = [];
+  late List<Map<String, dynamic>> _allData = [];
+  bool isLoading = false;
+  bool isSettingPressed = false;
+  late String _greeting;
+  late String _imagePath;
+
   void _inithomePageInAppTour() {
     tutorialCoachMark = TutorialCoachMark(
       targets: homePageTargets(
@@ -64,14 +72,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           });
     });
   }
-
-  int totalElapsed = 0;
-  late List<Map<String, dynamic>> allData = [];
-  late List<Map<String, dynamic>> _allData = [];
-  bool isLoading = false;
-  bool isSettingPressed = false;
-  late String _greeting;
-  late String _imagePath;
 
   // refresh data
   Future<void> _refreshData() async {
@@ -136,6 +136,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
+  Future<void> _loadData() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -196,12 +200,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 ),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 20).w,
-                  child: SizedBox(key: cardHomeKey, child: const CardHome()),
+                  child: SizedBox(key: cardHomeKey, child: const BannerHome()),
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: screenSize.height * 0.03.h,
-                    horizontal: screenSize.width * 0.05.w,
+                    horizontal: 20.w,
                   ),
                   child: SizedBox(
                       key: gridRekomendasiKey, child: const GridRekomendasi()),
@@ -286,9 +290,5 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
-
-  Future<void> _loadData() async {
-    await Future.delayed(const Duration(milliseconds: 200));
   }
 }

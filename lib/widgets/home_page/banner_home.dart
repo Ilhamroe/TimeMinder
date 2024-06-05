@@ -5,16 +5,16 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:time_minder/database/db_calendar.dart';
 import 'package:time_minder/utils/colors.dart';
 
-class CardHome extends StatefulWidget {
-  const CardHome({
+class BannerHome extends StatefulWidget {
+  const BannerHome({
     super.key,
   });
 
   @override
-  State<CardHome> createState() => _CardHomeState();
+  State<BannerHome> createState() => _CardHomeState();
 }
 
-class _CardHomeState extends State<CardHome> {
+class _CardHomeState extends State<BannerHome> {
   int totalElapsed = 0;
   late List<Map<String, dynamic>> allData = [];
   bool isLoading = false;
@@ -55,7 +55,7 @@ class _CardHomeState extends State<CardHome> {
   }
 
   Future<void> _loadData() async {
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 450));
   }
 
   @override
@@ -63,6 +63,7 @@ class _CardHomeState extends State<CardHome> {
     super.initState();
     _totalElapsed();
     _refreshData();
+    // _loadData();
   }
 
   @override
@@ -109,66 +110,62 @@ class _CardHomeState extends State<CardHome> {
                           ),
                         ),
                       );
+                    } else if (allData.isEmpty) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Oops! Sepertinya kamu belum memulai timer hari ini',
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w500,
+                              height: 1.4,
+                              color: pureWhite,
+                            ),
+                          ),
+                          Text(
+                            'Yuk, mulai sekarang!',
+                            textScaleFactor: 1.0,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              fontSize: 22.sp,
+                              color: pureWhite,
+                            ),
+                          ),
+                        ],
+                      );
                     } else {
-                      return allData.isEmpty
-                          ? Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Oops! Sepertinya kamu belum memulai timer hari ini',
-                                    textScaleFactor: 1.0,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito',
-                                      fontSize: 18.sp,
-                                      fontWeight: FontWeight.w500,
-                                      height: 1.4,
-                                      color: pureWhite,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Yuk, mulai sekarang!',
-                                    textScaleFactor: 1.0,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      fontSize: 22.sp,
-                                      color: pureWhite,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          : Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'Hari ini kamu sudah fokus',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito',
-                                      fontSize: 20.89.sp,
-                                      fontWeight: FontWeight.w500,
-                                      height: 1.5,
-                                      color: pureWhite,
-                                    ),
-                                  ),
-                                  Text(
-                                    formatElapsedTime(totalElapsed),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      fontFamily: 'Nunito-Bold',
-                                      fontSize: 24.sp,
-                                      color: pureWhite,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Hari ini kamu sudah fokus',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              fontSize: 20.89.sp,
+                              fontWeight: FontWeight.w500,
+                              height: 1.5,
+                              color: pureWhite,
+                            ),
+                          ),
+                          Text(
+                            formatElapsedTime(totalElapsed),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              fontSize: 24.sp,
+                              color: pureWhite,
+                            ),
+                          ),
+                        ],
+                      );
                     }
                   },
                 ),
