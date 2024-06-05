@@ -30,7 +30,9 @@ class _DetailPageState extends State<DetailPage> {
   late List<Map<String, dynamic>> allData = [];
   bool isLoading = false;
   bool isOptionOpen = false;
-  Map<DateTime, List<dynamic>> _events = {};
+
+  late final ValueNotifier<List<dynamic>> _selectedEvents;
+
 
   void _initdetailPageInAppTour() {
     tutorialCoachMark = TutorialCoachMark(
@@ -66,31 +68,31 @@ class _DetailPageState extends State<DetailPage> {
 
   Future<void> _refreshData() async {
     final List<Map<String, dynamic>> data = await DBCalendar.getAllData();
+    final Map<DateTime, List<dynamic>> events = {};
+
+    for (var entry in data) {
+      final eventDate = DateTime.parse(entry['date']);
+      if (events.containsKey(eventDate)) {
+        events[eventDate]!.add(entry);
+      } else {
+        events[eventDate] = [entry];
+      }
+    }
+
     setState(() {
       allData = data;
       isLoading = false;
-      _prepareEvents();
+      _selectedEvents = ValueNotifier(events[_selectedDay] ?? []);
     });
   }
 
-  void _prepareEvents() {
-    final Map<DateTime, List<dynamic>> events = {};
-    for (var data in allData) {
-      final date = DateTime.parse(data['date']);
-      if (events.containsKey(date)) {
-        events[date]!.add(data);
-      } else {
-        events[date] = [data];
-      }
-    }
-    setState(() {
-      _events = events;
-    });
-  }
+
+
 
   @override
   void initState() {
     super.initState();
+    _selectedEvents = ValueNotifier([]);
     _refreshData();
     _initdetailPageInAppTour();
     _showInAppTour();
@@ -263,7 +265,7 @@ class _DetailPageState extends State<DetailPage> {
       calendarFormat: _calendarFormat,
       locale: 'id_ID',
       eventLoader: (day) {
-        return _events[day] ?? [];
+        return _selectedEvents.value;
       },
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,
@@ -287,9 +289,6 @@ class _DetailPageState extends State<DetailPage> {
           color: ripeMango,
           shape: BoxShape.circle,
         ),
-      ),
-      calendarBuilders: CalendarBuilders(
-
       ),
       selectedDayPredicate: (day) {
         return isSameDay(_selectedDay, day);
@@ -315,6 +314,10 @@ class _DetailPageState extends State<DetailPage> {
       },
     );
   }
+
+
+
+
 
   Widget _buildListView() {
     final filteredData = allData
@@ -398,14 +401,21 @@ class _DetailPageState extends State<DetailPage> {
                 fontSize: 12.sp,
               ),
             ),
-            trailing: ((item['count'] > 1) && (item['elapsed'] >= item['timer']))
-                ? Text(
-              "x${item['count']}",
-              style: TextStyle(
-                fontFamily: 'Nunito-Bold',
-                fontWeight: FontWeight.w600,
-                fontSize: 14.sp,
-                color: cetaceanBlue,
+            trailing: (item['count'] > 1) && (item['elapsed'] >= item['timer'])
+                ? Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: ripeMango, // Sesuaikan dengan kebutuhan
+              ),
+              padding: EdgeInsets.all(8.0).r, // Padding untuk mengatur ukuran lingkaran
+              child: Text(
+                "x${item['count']}",
+                style: TextStyle(
+                  fontFamily: 'Nunito-Bold',
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.sp,
+                  color: cetaceanBlue,
+                ),
               ),
             )
                 : (item['elapsed'] >= item['timer'])
