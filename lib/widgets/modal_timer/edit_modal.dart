@@ -40,8 +40,6 @@ class _EditModalState extends State<EditModal> {
   bool isNameEmpty = false;
   bool isDescEmpty = false;
   bool _isCounterZero = false;
-  late int counter1;
-  late int counter2;
 
   TextEditingController timerNameController = TextEditingController();
   TextEditingController descController = TextEditingController();
@@ -75,8 +73,10 @@ class _EditModalState extends State<EditModal> {
       if(initSwitch){
         hideContainer = false;
       }
-      counter1 = _counterBreakTime;
-      counter2 = _counterInterval;
+      if(!initSwitch){
+        _offSwitch();
+      }
+      debugPrint('getSingleData: $_counterBreakTime, $_counterInterval');
     });
 
   }
@@ -87,12 +87,14 @@ class _EditModalState extends State<EditModal> {
   void setBreakTimeCounter(int value) {
     setState(() {
       _counterBreakTime = value;
+      breakTimeController.text = value.toString();
     });
   }
 
   void setIntervalCounter(int value) {
     setState(() {
       _counterInterval = value;
+      intervalController.text = value.toString();
     });
   }
 
@@ -140,12 +142,20 @@ class _EditModalState extends State<EditModal> {
   void _handleBreakTimeChange(int value) {
     setState(() {
       _counterBreakTime = value;
+      breakTimeController.text = value.toString();
+      if(!initSwitch){
+        _offSwitch();
+      }
     });
   }
 
   void _handleIntervalChange(int value) {
     setState(() {
       _counterInterval = value;
+      intervalController.text = value.toString();
+      if(!initSwitch){
+        _offSwitch();
+      }
     });
   }
 
@@ -165,6 +175,16 @@ class _EditModalState extends State<EditModal> {
         },
       );
     }
+  }
+
+  void _offSwitch() {
+    setState(() {
+      breakTimeController.text='0';
+      intervalController.text='0';
+      _counterBreakTime = 0;
+      _counterInterval = 0;
+      _settingBreakWidgetKey.currentState?.resetCounter();
+    });
   }
 
   // add data
@@ -359,6 +379,11 @@ class _EditModalState extends State<EditModal> {
                                   setState(() {
                                     initSwitch = value;
                                     debugPrint('initSwitch: $initSwitch');
+                                    debugPrint('durasi: $_counterBreakTime');
+                                    debugPrint('controller: $breakTimeController');
+                                    if(!initSwitch){
+                                      _offSwitch();
+                                    }
                                   });
                                 },
                               ),

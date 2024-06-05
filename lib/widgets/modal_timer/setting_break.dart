@@ -11,13 +11,13 @@ class SettingBreakWidget extends StatefulWidget {
   final int initialInterval;
 
   const SettingBreakWidget({
-    Key? key,
+    super.key,
     required this.statusSwitch,
     this.onBreakTimeChanged,
     this.onIntervalChanged,
     required this.initialBreakTime,
     required this.initialInterval,
-  }) : super(key: key);
+  });
 
   @override
   SettingBreakWidgetState createState() => SettingBreakWidgetState();
@@ -29,6 +29,8 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
   int counterInterval = 0;
   TextEditingController breakTimeController = TextEditingController();
   TextEditingController intervalController = TextEditingController();
+  TextEditingController breakTimeEmptyController = TextEditingController();
+  TextEditingController intervalEmptyController = TextEditingController();
 
   @override
   void dispose() {
@@ -40,12 +42,16 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
   @override
   void initState() {
     super.initState();
+    statusSwitch= widget.statusSwitch;
     counterBreakTime = widget.initialBreakTime;
     counterInterval = widget.initialInterval;
     breakTimeController =
         TextEditingController(text: counterBreakTime.toString());
     intervalController =
         TextEditingController(text: counterInterval.toString());
+    breakTimeEmptyController = TextEditingController(text: '0');
+    intervalEmptyController = TextEditingController(text: '0');
+    print("SETSTATE");
   }
 
   void _onBreakTimeChanged(String value) {
@@ -124,6 +130,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
       counterBreakTime++;
       breakTimeController.text = counterBreakTime.toString();
     });
+    debugPrint('KETIKA DIPENCET: $counterBreakTime');
     widget.onBreakTimeChanged?.call(counterBreakTime);
   }
   
@@ -154,6 +161,15 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
       widget.onIntervalChanged?.call(counterInterval);
     }
   }
+
+  // void _offSwitch(){
+  //   setState(() {
+  //     counterBreakTime= 0;
+  //     counterInterval= 0;
+  //     breakTimeController.text= '0';
+  //     intervalController.text= '0';
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +218,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                           textAlign: TextAlign.center,
                         )
                       : TextFormField(
-                          controller: breakTimeController,
+                          controller: breakTimeEmptyController,                        
                           enabled: false,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
@@ -271,7 +287,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                             textAlign: TextAlign.center,
                           )
                         : TextFormField(
-                            controller: intervalController,
+                            controller: intervalEmptyController,
                             enabled: false,
                             decoration: const InputDecoration(
                               border: InputBorder.none,
