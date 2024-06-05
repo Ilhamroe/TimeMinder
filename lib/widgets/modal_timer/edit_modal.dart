@@ -6,6 +6,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:time_minder/database/db_helper.dart';
 import 'package:time_minder/services/onboarding_routes.dart';
 import 'package:time_minder/utils/colors.dart';
+import 'package:time_minder/widgets/common/field_validator.dart';
 import 'package:time_minder/widgets/modal_timer/alert_data.dart';
 import 'package:time_minder/widgets/modal_timer/button_execute.dart';
 import 'package:time_minder/widgets/modal_timer/cupertino_switch.dart';
@@ -14,7 +15,7 @@ import 'package:time_minder/widgets/modal_timer/setting_break.dart';
 import 'package:time_minder/widgets/modal_timer/setting_time.dart';
 
 class EditModal extends StatefulWidget {
-  const EditModal({Key? key, this.id}) : super(key: key);
+  const EditModal({super.key, this.id});
   final int? id;
 
   @override
@@ -33,12 +34,17 @@ class _EditModalState extends State<EditModal> {
   late int _counterBreakTime;
   late int _counterInterval;
   bool isLoading = false;
-  bool statusSwitch = false;
+  late bool initSwitch = false;
   bool hideContainer = true;
   bool isOptionOpen = false;
+  bool isNameEmpty = false;
+  bool isDescEmpty = false;
+  bool _isCounterZero = false;
+  late int counter1;
+  late int counter2;
 
-  TextEditingController namaTimerController = TextEditingController();
-  TextEditingController deskripsiController = TextEditingController();
+  TextEditingController timerNameController = TextEditingController();
+  TextEditingController descController = TextEditingController();
 
   //databases
   late List<Map<String, dynamic>> allData = [];
@@ -60,11 +66,17 @@ class _EditModalState extends State<EditModal> {
     final int timerValue = data[0]['timer'] ?? 0;
 
     setState(() {
-      namaTimerController.text = data[0]['title'];
-      deskripsiController.text = data[0]['description'];
+      timerNameController.text = data[0]['title'];
+      descController.text = data[0]['description'];
       _counter = timerValue;
       _counterBreakTime = data[0]['rest'] ?? 0;
       _counterInterval = data[0]['interval'] ?? 0;
+      initSwitch = _counterBreakTime != 0 || _counterInterval != 0;
+      if(initSwitch){
+        hideContainer = false;
+      }
+      counter1 = _counterBreakTime;
+      counter2 = _counterInterval;
     });
 
   }
@@ -85,16 +97,15 @@ class _EditModalState extends State<EditModal> {
   }
 
   void _submitSetting() async {
-    final name = namaTimerController.text.trim();
-    final description = deskripsiController.text.trim();
+    final name = timerNameController.text.trim();
+    final description = descController.text.trim();
     final counter = _counter;
     if (name.isEmpty || description.isEmpty || counter == 0) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return const AlertData();
-        },
-      );
+      setState(() {
+        isNameEmpty = name.isEmpty;
+        isDescEmpty = description.isEmpty;
+        _isCounterZero = counter == 0;
+      });
     } else {
       if (id == null) {
         await _addData().then((data) => _refreshData());
@@ -108,17 +119,21 @@ class _EditModalState extends State<EditModal> {
 
   void _resetSetting() {
     setState(() {
-      namaTimerController.clear();
-      deskripsiController.clear();
+      timerNameController.clear();
+      descController.clear();
       _settingTimeWidgetKey.currentState?.resetCounter();
       _settingBreakWidgetKey.currentState?.resetCounter();
       hideContainer = true;
+      _isCounterZero = false;
     });
   }
 
   void _handleTimerChange(int value) {
     setState(() {
       _counter = value;
+      if(value != 0) {
+        _isCounterZero = false;
+      }
     });
   }
 
@@ -135,13 +150,12 @@ class _EditModalState extends State<EditModal> {
   }
 
   void _openAnotherOption() {
-    if (namaTimerController.text.isNotEmpty &&
-        deskripsiController.text.isNotEmpty &&
+    if (timerNameController.text.isNotEmpty &&
+        descController.text.isNotEmpty &&
         _counter != 0) {
       setState(() {
         isOptionOpen = !isOptionOpen;
         hideContainer = !hideContainer;
-        statusSwitch = false;
       });
     } else {
       showDialog(
@@ -156,23 +170,26 @@ class _EditModalState extends State<EditModal> {
   // add data
   Future<void> _addData() async {
     await SQLHelper.createData(
-        namaTimerController.text,
-        deskripsiController.text,
+        timerNameController.text,
+        descController.text,
         _counter,
         _counterBreakTime,
-        _counterInterval);
+        _counterInterval,
+        );
     _refreshData();
   }
 
   // edit data
   Future<void> _updateData(int id) async {
+    debugPrint('UPDATE DATA: $_counterBreakTime, $_counterInterval');
     await SQLHelper.updateData(
         id,
-        namaTimerController.text,
-        deskripsiController.text,
+        timerNameController.text,
+        descController.text,
         _counter,
         _counterBreakTime,
-        _counterInterval);
+        _counterInterval,
+        );
     _refreshData();
   }
 
@@ -183,21 +200,37 @@ class _EditModalState extends State<EditModal> {
     if (id != null) {
       getSingleData(id!);
     }
+    timerNameController.addListener(() {
+      if (timerNameController.text.isNotEmpty && isNameEmpty) {
+        setState(() {
+          isNameEmpty= false;
+        });
+      }
+    });
+    descController.addListener(() {
+      if (descController.text.isNotEmpty && isDescEmpty) {
+        setState(() {
+          isDescEmpty = false;
+        });
+      }
+    });
+    if(initSwitch){
+      hideContainer = false;
+    }
   }
 
   @override
   void dispose() {
-    namaTimerController.dispose();
-    deskripsiController.dispose();
+    timerNameController.dispose();
+    descController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final Size screenSize = MediaQuery.of(context).size;
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20),
+      insetPadding: const EdgeInsets.symmetric(horizontal: 20).w,
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
@@ -205,10 +238,10 @@ class _EditModalState extends State<EditModal> {
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20.0),
+            borderRadius: BorderRadius.circular(20.0).w,
           ),
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(26, 15, 26, 21),
+          padding: const EdgeInsets.fromLTRB(26, 15, 26, 21).w,
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -216,10 +249,10 @@ class _EditModalState extends State<EditModal> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Expanded(
+                    Expanded(
                       child: CustomTextField(
                         labelText: 'Tambah waktumu sendiri',
-                        fontSize: 15.5,
+                        fontSize: 15.5.sp,
                         fontFamily: 'Nunito-Bold',
                       ),
                     ),
@@ -236,20 +269,28 @@ class _EditModalState extends State<EditModal> {
                 TextField(
                   maxLength: 20,
                   maxLines: 1,
-                  controller: namaTimerController,
+                  controller: timerNameController,
                   decoration: const InputDecoration(
                     counterText: '',
                   ),
+                ),
+                FieldValidator(
+                  isFieldEmpty: isNameEmpty, 
+                  desc: "Nama harus diisi"
                 ),
                 SizedBox(height: 6.4.h),
                 const CustomTextField(labelText: "Deskripsi : "),
                 TextField(
                   maxLength: 30,
                   maxLines: 1,
-                  controller: deskripsiController,
+                  controller: descController,
                   decoration: const InputDecoration(
                     counterText: '',
                   ),
+                ),
+                FieldValidator(
+                  isFieldEmpty: isDescEmpty, 
+                  desc: "Deskripsi harus diisi"
                 ),
                 const SizedBox(height: 6.4),
                 Column(
@@ -263,6 +304,11 @@ class _EditModalState extends State<EditModal> {
                       initialCounter: _counter,
                       onChanged: _handleTimerChange,
                     ),
+                    if(_isCounterZero)
+                      const FieldValidator(
+                        isFieldEmpty: true, 
+                        desc: "Angka tidak boleh 0"
+                      ),
                     SizedBox(height: 10.h),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
@@ -271,8 +317,11 @@ class _EditModalState extends State<EditModal> {
                           child: CustomTextField(labelText: "Opsi Lainnya"),
                         ),
                         IconButton(
-                          onPressed: () => _openAnotherOption(),
-                          icon: isOptionOpen
+                          onPressed: () {_openAnotherOption();
+                                    debugPrint('initSwitch: $initSwitch');
+                                    debugPrint('hideContainer: $hideContainer');
+                          },
+                          icon: !hideContainer
                               ? SvgPicture.asset(
                                   "assets/images/option_up.svg",
                                   width: 28.w,
@@ -305,10 +354,11 @@ class _EditModalState extends State<EditModal> {
                               ),
                               const Spacer(),
                               CupertinoSwitchAdaptiveWidget(
-                                statusSwitch: statusSwitch,
+                                statusSwitch: initSwitch,
                                 onChanged: (value) {
                                   setState(() {
-                                    statusSwitch = value;
+                                    initSwitch = value;
+                                    debugPrint('initSwitch: $initSwitch');
                                   });
                                 },
                               ),
@@ -338,7 +388,7 @@ class _EditModalState extends State<EditModal> {
                               SizedBox(height: 14.6.h),
                               SettingBreakWidget(
                                 key: _settingBreakWidgetKey,
-                                statusSwitch: statusSwitch,
+                                statusSwitch: initSwitch,
                                 onBreakTimeChanged: _handleBreakTimeChange,
                                 onIntervalChanged: _handleIntervalChange,
                                 initialBreakTime: _counterBreakTime,

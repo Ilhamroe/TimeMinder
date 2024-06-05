@@ -31,8 +31,7 @@ class _DetailPageState extends State<DetailPage> {
   bool isLoading = false;
   bool isOptionOpen = false;
 
-  late final ValueNotifier<List<dynamic>> _selectedEvents;
-
+  // late final ValueNotifier<List<dynamic>> _selectedEvents;
 
   void _initdetailPageInAppTour() {
     tutorialCoachMark = TutorialCoachMark(
@@ -46,23 +45,16 @@ class _DetailPageState extends State<DetailPage> {
       hideSkip: true,
       opacityShadow: 0.5,
       onFinish: () {
-        // print("Completed!");
         SaveDetailPageTour().saveDetailPageStatus();
       },
     );
   }
 
   void _showInAppTour() {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 30), () {
       SaveDetailPageTour().getDetailPageStatus().then((value) => {
-        if (value == false)
-          {
-            // print("User has not seen this tutor"),
-            tutorialCoachMark.show(context: context)
-          }
-        // else
-        //   {print("User has seen this tutor")}
-      });
+            if (value == false) {tutorialCoachMark.show(context: context)}
+          });
     });
   }
 
@@ -82,17 +74,14 @@ class _DetailPageState extends State<DetailPage> {
     setState(() {
       allData = data;
       isLoading = false;
-      _selectedEvents = ValueNotifier(events[_selectedDay] ?? []);
+      // _selectedEvents = ValueNotifier(events[_selectedDay] ?? []);
     });
   }
-
-
-
 
   @override
   void initState() {
     super.initState();
-    _selectedEvents = ValueNotifier([]);
+    // _selectedEvents = ValueNotifier([]);
     _refreshData();
     _initdetailPageInAppTour();
     _showInAppTour();
@@ -134,11 +123,10 @@ class _DetailPageState extends State<DetailPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15.0).r,
+              padding: const EdgeInsets.symmetric(horizontal: 20.0).w,
               child: Container(
                 key: calendarKey,
-                margin: const EdgeInsets.symmetric(vertical: 1.0).r,
-                padding: const EdgeInsets.symmetric(vertical: 7.0).r,
+                padding: const EdgeInsets.symmetric(vertical: 7.0).w,
                 decoration: BoxDecoration(
                   border: Border.all(color: halfGrey),
                   borderRadius: const BorderRadius.all(Radius.circular(6.0)).w,
@@ -151,15 +139,15 @@ class _DetailPageState extends State<DetailPage> {
                     IconButton(
                       icon: isOptionOpen
                           ? SvgPicture.asset(
-                        "assets/images/chev-down.svg",
-                        width: 20.w,
-                        height: 20.h,
-                      )
+                              "assets/images/chev-down.svg",
+                              width: 20.w,
+                              height: 20.h,
+                            )
                           : SvgPicture.asset(
-                        "assets/images/chev-up.svg",
-                        width: 20.w,
-                        height: 20.h,
-                      ),
+                              "assets/images/chev-up.svg",
+                              width: 20.w,
+                              height: 20.h,
+                            ),
                       onPressed: () {
                         setState(() {
                           isOptionOpen = !isOptionOpen;
@@ -172,27 +160,27 @@ class _DetailPageState extends State<DetailPage> {
             ),
             isOptionOpen
                 ? Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 15.0).r,
-                  child: _kalender(),
-                ),
-                const Divider(
-                  color: ripeMango,
-                ),
-              ],
-            )
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15.0).r,
+                        child: _kalender(),
+                      ),
+                      const Divider(
+                        color: ripeMango,
+                      ),
+                    ],
+                  )
                 : Container(),
             Padding(
               padding:
-              const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0)
-                  .r,
+                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0)
+                      .r,
               child: Column(
                 key: detailTimerKey,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 5.0, vertical: 8.0)
+                            horizontal: 5.0, vertical: 8.0)
                         .r,
                     child: Row(
                       children: [
@@ -204,7 +192,7 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                         Padding(
                           padding:
-                          const EdgeInsets.symmetric(horizontal: 8.0).r,
+                              const EdgeInsets.symmetric(horizontal: 8.0).r,
                           child: Text(
                             "Detail",
                             style: TextStyle(
@@ -218,7 +206,32 @@ class _DetailPageState extends State<DetailPage> {
                       ],
                     ),
                   ),
-                  _buildListView(),
+                  FutureBuilder(
+                    future: _loadData(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: halfGrey,
+                            strokeWidth: 4,
+                          ),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text(
+                            'Error loading data',
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              fontSize: 14.sp,
+                              color: darkGrey,
+                            ),
+                          ),
+                        );
+                      } else {
+                        return _buildListView();
+                      }
+                    },
+                  ),
                 ],
               ),
             ),
@@ -226,6 +239,10 @@ class _DetailPageState extends State<DetailPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _loadData() async {
+    await Future.delayed(const Duration(milliseconds: 250));
   }
 
   EasyDateTimeLine _slideDate() {
@@ -239,8 +256,8 @@ class _DetailPageState extends State<DetailPage> {
       },
       locale: "id_id",
       timeLineProps: EasyTimeLineProps(
-        hPadding: 4.8.h,
-        separatorPadding: 5.5.r,
+        hPadding: 12.w,
+        separatorPadding: 7.w,
       ),
       headerProps: const EasyHeaderProps(
         showHeader: false,
@@ -251,8 +268,32 @@ class _DetailPageState extends State<DetailPage> {
         todayHighlightColor: cetaceanBlue,
         borderColor: cetaceanBlue,
         dayStructure: DayStructure.dayStrDayNum,
-        width: 35.w,
-        height: 41.h,
+        width: 31.68.w,
+        height: 42.24.h,
+        activeDayStyle: DayStyle(
+          dayStrStyle: TextStyle(
+              fontSize: 8.8.sp,
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w600,
+              color: pureWhite),
+          dayNumStyle: TextStyle(
+              fontSize: 12.32.sp,
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w800,
+              color: pureWhite),
+        ),
+        inactiveDayStyle: DayStyle(
+          dayStrStyle: TextStyle(
+              fontSize: 8.8.sp,
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w600,
+              color: cetaceanBlue),
+          dayNumStyle: TextStyle(
+              fontSize: 12.32.sp,
+              fontFamily: 'Nunito',
+              fontWeight: FontWeight.w800,
+              color: cetaceanBlue),
+        ),
       ),
     );
   }
@@ -264,9 +305,9 @@ class _DetailPageState extends State<DetailPage> {
       focusedDay: _focusedDay,
       calendarFormat: _calendarFormat,
       locale: 'id_ID',
-      eventLoader: (day) {
-        return _selectedEvents.value;
-      },
+      // eventLoader: (day) {
+      //   return _selectedEvents.value;
+      // },
       headerStyle: const HeaderStyle(
         formatButtonVisible: false,
         titleCentered: true,
@@ -285,7 +326,7 @@ class _DetailPageState extends State<DetailPage> {
           shape: BoxShape.circle,
         ),
         selectedTextStyle: const TextStyle(color: cetaceanBlue),
-        markerDecoration: BoxDecoration(
+        markerDecoration: const BoxDecoration(
           color: ripeMango,
           shape: BoxShape.circle,
         ),
@@ -315,149 +356,157 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-
-
-
-
   Widget _buildListView() {
     final filteredData = allData
         .where((data) => DateTime.parse(data['date']).day == _selectedDay.day)
         .toList();
     final groupedData = _groupData(filteredData);
-
     return isLoading
         ? const CircularProgressIndicator()
         : groupedData.isEmpty
-        ? Container(
-      padding: const EdgeInsets.all(8.0).r,
-      margin: const EdgeInsets.only(top: 20.0).r,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(6.0).r,
-        color: Colors.grey[200],
-      ),
-      child: Column(
-        children: [
-          SvgPicture.asset(
-            "assets/images/cat_setting.svg",
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0).r,
-            child: Text(
-              'Ayo tambahkan timer sesuai keinginanmu!',
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: Colors.grey,
-              ),
-            ),
-          ),
-        ],
-      ),
-    )
-        : ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(vertical: 8.0).r,
-      shrinkWrap: true,
-      itemCount: groupedData.length,
-      itemBuilder: (context, int index) {
-        final item = groupedData[index];
-        return Container(
-          margin: const EdgeInsets.only(bottom: 13.0).r,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16.0).r,
-            color: offOrange,
-          ),
-          child: ListTile(
-            contentPadding: const EdgeInsets.symmetric(
-                vertical: 3.0, horizontal: 19.0)
-                .r,
-            leading: ClipRRect(
-              borderRadius: BorderRadius.circular(
-                MediaQuery.of(context).size.width * 0.04,
-              ).r,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 8, horizontal: 10)
-                    .r,
-                color: heliotrope,
-                child: SvgPicture.asset(
-                  'assets/images/cat1.svg',
-                  height: 30.h,
+            ? Container(
+                padding: const EdgeInsets.all(8.0).r,
+                margin: const EdgeInsets.only(top: 20.0).r,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(6.0).r,
+                  color: pureWhite,
                 ),
-              ),
-            ),
-            title: Text(
-              item['title'],
-              style: TextStyle(
-                fontFamily: 'Nunito-Bold',
-                fontWeight: FontWeight.w900,
-                fontSize: 14.sp,
-              ),
-            ),
-            subtitle: Text(
-              item['description'],
-              style: TextStyle(
-                fontFamily: 'Nunito',
-                fontWeight: FontWeight.w600,
-                fontSize: 12.sp,
-              ),
-            ),
-            trailing: (item['count'] > 1) && (item['elapsed'] >= item['timer'])
-                ? Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: ripeMango, // Sesuaikan dengan kebutuhan
-              ),
-              padding: EdgeInsets.all(8.0).r, // Padding untuk mengatur ukuran lingkaran
-              child: Text(
-                "x${item['count']}",
-                style: TextStyle(
-                  fontFamily: 'Nunito-Bold',
-                  fontWeight: FontWeight.w600,
-                  fontSize: 14.sp,
-                  color: offGrey,
+                child: Column(
+                  children: [
+                    SvgPicture.asset(
+                      "assets/images/cat_setting.svg",
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0).r,
+                      child: Text(
+                        'Ayo tambahkan timer sesuai keinginanmu!',
+                        style: TextStyle(
+                          fontSize: 16.sp,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            )
-                : (item['elapsed'] >= item['timer'])
-                ? Image.asset(
-              "assets/images/vector.png",
-            )
-                : Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "${_formatTime(item['elapsed'])} ",
-                  style: TextStyle(
-                    fontFamily: 'Nunito-Bold',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14.sp,
-                    color: cetaceanBlue,
-                  ),
-                ),
-                Text(
-                  "/ ${_formatTime(item['timer'])}",
-                  style: TextStyle(
-                    fontFamily: 'Nunito-Bold',
-                    fontWeight: FontWeight.w600,
-                    fontSize: 10.sp,
-                    color: cetaceanBlue,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
+              )
+            : ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.symmetric(vertical: 8.0).r,
+                shrinkWrap: true,
+                itemCount: groupedData.length,
+                itemBuilder: (context, int index) {
+                  final item = groupedData[index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 13.0).r,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16.0).r,
+                      color: offOrange,
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                              vertical: 3.0, horizontal: 19.0)
+                          .r,
+                      leading: ClipRRect(
+                        borderRadius: BorderRadius.circular(
+                          MediaQuery.of(context).size.width * 0.04,
+                        ).r,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                                  vertical: 8, horizontal: 10)
+                              .r,
+                          color: heliotrope,
+                          child: SvgPicture.asset(
+                            'assets/images/cat1.svg',
+                            height: 30.h,
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        item['title'],
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
+                          fontWeight: FontWeight.w900,
+                          fontSize: 14.sp,
+                        ),
+                      ),
+                      subtitle: Text(
+                        item['description'],
+                        style: TextStyle(
+                          fontFamily: 'Nunito',
+                          fontWeight: FontWeight.w600,
+                          fontSize: 12.sp,
+                        ),
+                      ),
+                      trailing: (item['count'] > 1) &&
+                              (item['elapsed'] >= item['timer'])
+                          ? Container(
+                              decoration: const BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: ripeMango,
+                              ),
+                              height: 24.h,
+                              width: 24.w,
+                              // padding: const EdgeInsets.all(8.0).r,
+                              child: Center(
+                                child: Text(
+                                  "${item['count']}x",
+                                  style: TextStyle(
+                                    fontFamily: 'Nunito-Bold',
+                                    fontSize: 10.sp,
+                                    color: offGrey,
+                                  ),
+                                ),
+                              ),
+                            )
+                          : (item['elapsed'] >= item['timer'])
+                              ? Container(
+                                  decoration: const BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.transparent,
+                                  ),
+                                  height: 24.h,
+                                  width: 24.w,
+                                  child: Image.asset(
+                                    "assets/images/vector.png",
+                                    color: ripeMango,
+                                  ),
+                                )
+                              : Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "${_formatTime(item['elapsed'])} ",
+                                      style: TextStyle(
+                                        fontFamily: 'Nunito-Bold',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14.sp,
+                                        color: cetaceanBlue,
+                                      ),
+                                    ),
+                                    Text(
+                                      "/ ${_formatTime(item['timer'])}",
+                                      style: TextStyle(
+                                        fontFamily: 'Nunito-Bold',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 10.sp,
+                                        color: cetaceanBlue,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                    ),
+                  );
+                },
+              );
   }
-
 
   List<Map<String, dynamic>> _groupData(List<Map<String, dynamic>> dataList) {
     final Map<String, Map<String, dynamic>> groupedData = {};
 
     for (var data in dataList) {
-      final key = "${data['title']}-${data['description']}-(${data['elapsed']} >= ${data['timer']})";
+      final key =
+          "${data['title']}-${data['description']}-(${data['elapsed']} >= ${data['timer']})";
 
       if (groupedData.containsKey(key)) {
         groupedData[key]!['count'] += 1;

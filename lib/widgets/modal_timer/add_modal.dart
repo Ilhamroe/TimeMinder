@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:time_minder/database/db_helper.dart';
 import 'package:time_minder/services/onboarding_routes.dart';
 import 'package:time_minder/utils/colors.dart';
+import 'package:time_minder/widgets/common/field_validator.dart';
 import 'package:time_minder/widgets/modal_timer/alert_data.dart';
 import 'package:time_minder/widgets/modal_timer/button_execute.dart';
 import 'package:time_minder/widgets/modal_timer/cupertino_switch.dart';
@@ -34,9 +35,12 @@ class _ModalAddState extends State<ModalAdd> {
   bool statusSwitch = false;
   bool hideContainer = true;
   bool isOptionOpen = false;
+  bool isNameEmpty = false;
+  bool isDescEmpty = false;
+  bool _isCounterZero = false;
 
-  TextEditingController namaTimerController = TextEditingController();
-  TextEditingController deskripsiController = TextEditingController();
+  TextEditingController timerNameController = TextEditingController();
+  TextEditingController descController = TextEditingController();
 
   //databases
   late List<Map<String, dynamic>> allData = [];
@@ -58,8 +62,8 @@ class _ModalAddState extends State<ModalAdd> {
     final int timerValue = data[0]['timer'] ?? 0;
 
     setState(() {
-      namaTimerController.text = data[0]['title'];
-      deskripsiController.text = data[0]['description'];
+      timerNameController.text = data[0]['title'];
+      descController.text = data[0]['description'];
       _counter = timerValue;
       _counterBreakTime = data[0]['rest'] ?? 0;
       _counterInterval = data[0]['interval'] ?? 0;
@@ -67,16 +71,21 @@ class _ModalAddState extends State<ModalAdd> {
   }
 
   void _submitSetting() async {
-    final name = namaTimerController.text.trim();
-    final description = deskripsiController.text.trim();
+    final name = timerNameController.text.trim();
+    final description = descController.text.trim();
     final counter = _counter;
     if (name.isEmpty || description.isEmpty || counter == 0) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return const AlertData();
-        },
-      );
+      // showDialog(
+      //   context: context,
+      //   builder: (BuildContext context) {
+      //     return const AlertData();
+      //   },
+      // );
+      setState(() {
+        isNameEmpty = name.isEmpty;
+        isDescEmpty = description.isEmpty;
+        _isCounterZero = counter == 0;
+      });
     } else {
       if (id == null) {
         await _addData().then((data) => _refreshData());
@@ -90,17 +99,21 @@ class _ModalAddState extends State<ModalAdd> {
 
   void _resetSetting() {
     setState(() {
-      namaTimerController.clear();
-      deskripsiController.clear();
+      timerNameController.clear();
+      descController.clear();
       _settingTimeWidgetKey.currentState?.resetCounter();
       _settingBreakWidgetKey.currentState?.resetCounter();
       hideContainer = true;
+      _isCounterZero = false;
     });
   }
 
   void _handleTimerChange(int value) {
     setState(() {
       _counter = value;
+      if (value != 0) {
+        _isCounterZero = false;
+      }
     });
   }
 
@@ -117,8 +130,8 @@ class _ModalAddState extends State<ModalAdd> {
   }
 
   void _openAnotherOption() {
-    if (namaTimerController.text.isNotEmpty &&
-        deskripsiController.text.isNotEmpty &&
+    if (timerNameController.text.isNotEmpty &&
+        descController.text.isNotEmpty &&
         _counter != 0) {
       setState(() {
         isOptionOpen = !isOptionOpen;
@@ -138,11 +151,12 @@ class _ModalAddState extends State<ModalAdd> {
   // add data
   Future<void> _addData() async {
     await SQLHelper.createData(
-        namaTimerController.text,
-        deskripsiController.text,
+        timerNameController.text,
+        descController.text,
         _counter,
         _counterBreakTime,
-        _counterInterval);
+        _counterInterval,
+        );
     _refreshData();
   }
 
@@ -150,11 +164,12 @@ class _ModalAddState extends State<ModalAdd> {
   Future<void> _updateData(int id) async {
     await SQLHelper.updateData(
         id,
-        namaTimerController.text,
-        deskripsiController.text,
+        timerNameController.text,
+        descController.text,
         _counter,
         _counterBreakTime,
-        _counterInterval);
+        _counterInterval,
+        );
     _refreshData();
   }
 
@@ -165,18 +180,31 @@ class _ModalAddState extends State<ModalAdd> {
     if (id != null) {
       getSingleData(id!);
     }
+    timerNameController.addListener(() {
+      if (timerNameController.text.isNotEmpty && isNameEmpty) {
+        setState(() {
+          isNameEmpty= false;
+        });
+      }
+    });
+    descController.addListener(() {
+      if (descController.text.isNotEmpty && isDescEmpty) {
+        setState(() {
+          isDescEmpty = false;
+        });
+      }
+    });
   }
 
   @override
   void dispose() {
-    namaTimerController.dispose();
-    deskripsiController.dispose();
+    timerNameController.dispose();
+    descController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // final Size screenSize = MediaQuery.of(context).size;
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: const EdgeInsets.symmetric(horizontal: 20).w,
@@ -214,24 +242,32 @@ class _ModalAddState extends State<ModalAdd> {
                   ],
                 ),
                 SizedBox(height: 6.4.h),
-                const CustomTextField(labelText: "Nama Timer : "),
+               const  CustomTextField(labelText: "Nama Timer : "),
                 TextField(
                   maxLength: 20,
                   maxLines: 1,
-                  controller: namaTimerController,
+                  controller: timerNameController,
                   decoration: const InputDecoration(
                     counterText: '',
                   ),
+                ),
+                FieldValidator(
+                  isFieldEmpty: isNameEmpty, 
+                  desc: "Nama harus diisi"
                 ),
                 SizedBox(height: 6.4.h),
                 const CustomTextField(labelText: "Deskripsi : "),
                 TextField(
                   maxLength: 30,
                   maxLines: 1,
-                  controller: deskripsiController,
+                  controller: descController,
                   decoration: const InputDecoration(
                     counterText: '',
                   ),
+                ),
+                FieldValidator(
+                  isFieldEmpty: isDescEmpty, 
+                  desc: "Deskripsi harus diisi"
                 ),
                 SizedBox(height: 6.4.h),
                 Column(
@@ -244,6 +280,11 @@ class _ModalAddState extends State<ModalAdd> {
                       key: _settingTimeWidgetKey,
                       initialCounter: _counter,
                       onChanged: _handleTimerChange,
+                    ),
+                    if(_isCounterZero)
+                      const FieldValidator(
+                        isFieldEmpty: true, 
+                      desc: 'Angka tidak boleh 0'
                     ),
                     SizedBox(height: 10.h),
                     Row(

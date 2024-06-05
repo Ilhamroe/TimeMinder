@@ -5,6 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:logger/logger.dart';
 import 'package:time_minder/database/db_helper.dart';
+import 'package:time_minder/services/tooltip_storage.dart';
 import 'package:time_minder/utils/colors.dart';
 import 'package:time_minder/widgets/common/bottom_navbar.dart';
 import 'package:time_minder/widgets/common/providers.dart';
@@ -12,6 +13,8 @@ import 'package:time_minder/widgets/common/timer_list_page_hold.dart';
 import 'package:time_minder/widgets/common/timer_recommendations_page.dart';
 import 'package:provider/provider.dart';
 import 'package:time_minder/widgets/modal_timer/edit_modal.dart';
+import 'package:time_minder/widgets/timer_page/tooltip_timerpage.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 final logger = Logger();
 typedef ModalCloseCallback = void Function(int? id);
@@ -24,6 +27,14 @@ class TimerPage extends StatefulWidget {
 }
 
 class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final btnSemuaKey = GlobalKey();
+  final btnTimermuKey = GlobalKey();
+  final holdToEditKey = GlobalKey();
+
+  late TutorialCoachMark tutorialCoachMark;
+  bool isSaved = true;
+
   late List<Map<String, dynamic>> _allData = [];
 
   late TabController tabController;
@@ -38,6 +49,39 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
 
   final TextEditingController _namaTimerController = TextEditingController();
   final TextEditingController _deskripsiController = TextEditingController();
+
+  void _inittimerPageInAppTour() {
+    tutorialCoachMark = TutorialCoachMark(
+      targets: timerPageTargets(
+        btnSemuaKey: btnSemuaKey,
+        btnTimermuKey: btnTimermuKey,
+        holdToEditKey: holdToEditKey,
+      ),
+      pulseEnable: false,
+      colorShadow: darkGrey,
+      paddingFocus: 20,
+      hideSkip: true,
+      opacityShadow: 0.5,
+      onFinish: () {
+        // print("Completed!");
+        SaveTimerPageTour().saveTimerPageStatus();
+      },
+    );
+  }
+
+  void _showInAppTour() {
+    Future.delayed(const Duration(milliseconds: 30), () {
+      SaveTimerPageTour().getTimerPageStatus().then((value) => {
+            if (value == false)
+              {
+                // print("User has not seen this tutor"),
+                tutorialCoachMark.show(context: context)
+              }
+            // else
+            //   {print("User has seen this tutor")}
+          });
+    });
+  }
 
   void updateSelectedItems(List<int> newSelectedItems) {
     final selectedItemsProvider =
@@ -90,9 +134,9 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
           // Modal content
           Center(
             child: Container(
-              margin: const EdgeInsets.only(top: 150),
+              margin: const EdgeInsets.only(top: 125).h,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(70),
+                borderRadius: BorderRadius.circular(70).w,
               ),
               child: EditModal(id: id),
             ),
@@ -113,6 +157,8 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _refreshData();
+    _inittimerPageInAppTour();
+    _showInAppTour();
     tabController =
         TabController(initialIndex: selectedIndex, length: 2, vsync: this);
     tabController.animation?.addListener(() {
@@ -268,15 +314,15 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                     surfaceTintColor: Colors.white,
                                     shape: RoundedRectangleBorder(
                                       borderRadius:
-                                          BorderRadius.circular(10.0).w,
+                                          BorderRadius.circular(13.47).w,
                                     ),
                                     content: SizedBox(
-                                      width: screenSize.width * 0.55.w,
-                                      height: screenSize.height * 0.30.h,
+                                      // width: screenSize.width * 0.55.w,
+                                      // height: screenSize.height * 0.30.h,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
-                                        // mainAxisSize: MainAxisSize.min,
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
                                           SizedBox(
                                             height: screenSize.height * 0.14.h,
@@ -292,7 +338,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                               fontFamily: 'Nunito',
-                                              fontSize: 19.sp,
+                                              fontSize: 16.84.sp,
                                             ),
                                           ),
                                           SizedBox(height: 20.h),
@@ -304,7 +350,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                              10.0)
+                                                              11.79)
                                                           .w,
                                                   color: halfGrey,
                                                 ),
@@ -312,10 +358,11 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                                   onPressed: () {
                                                     Navigator.of(context).pop();
                                                   },
-                                                  child: const Text(
+                                                  child: Text(
                                                     "Tidak",
                                                     style: TextStyle(
-                                                        color: offGrey),
+                                                        fontSize: 16.84.sp,
+                                                        color: pureWhite),
                                                   ),
                                                 ),
                                               ),
@@ -324,7 +371,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                                 decoration: BoxDecoration(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                              10.0)
+                                                              11.79)
                                                           .w,
                                                   color: ripeMango,
                                                 ),
@@ -344,10 +391,11 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                                       Navigator.pop(context);
                                                     });
                                                   },
-                                                  child: const Text(
+                                                  child: Text(
                                                     "Ya",
                                                     style: TextStyle(
-                                                        color: offGrey),
+                                                        fontSize: 16.84.sp,
+                                                        color: pureWhite),
                                                   ),
                                                 ),
                                               ),
@@ -390,6 +438,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                         left: 15,
                       ).w,
                       child: Container(
+                        key: btnSemuaKey,
                         alignment: Alignment.centerRight,
                         height: 40,
                         width: screenSize.width * 0.35.w,
@@ -418,6 +467,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                         right: 15,
                       ).w,
                       child: Container(
+                        key: btnTimermuKey,
                         alignment: Alignment.topCenter,
                         height: 40,
                         width: screenSize.width * 0.35.w,
@@ -461,12 +511,13 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                   bottom: screenSize.height * 0.03,
                   right: screenSize.width * 0.05,
                   left: screenSize.width * 0.05,
-                ).r,
+                ).w,
                 itemCount: 2,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
                   if (index == 0) {
                     return RecommendationTimerPage(
+                        key: holdToEditKey, 
                         isSettingPressed: isSettingPressed);
                   } else {
                     return _allData.isEmpty
@@ -486,8 +537,8 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                 children: [
                   _allData.isEmpty
                       ? Padding(
-                        padding: const EdgeInsets.only(top: 69.0).w,
-                        child: Column(
+                          padding: const EdgeInsets.only(top: 69.0).w,
+                          child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
@@ -507,7 +558,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                               ),
                             ],
                           ),
-                      )
+                        )
                       : ListTimerPageHold(
                           allData: _allData,
                         ),

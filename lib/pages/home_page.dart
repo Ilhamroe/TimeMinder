@@ -5,8 +5,8 @@ import 'package:time_minder/database/db_calendar.dart';
 import 'package:time_minder/database/db_helper.dart';
 import 'package:time_minder/utils/colors.dart';
 import 'package:time_minder/widgets/common/timer_list_page_no_hold.dart';
-import 'package:time_minder/widgets/home_page/card_home.dart';
-import 'package:time_minder/widgets/home_page/gird_recommendation.dart';
+import 'package:time_minder/widgets/home_page/banner_home.dart';
+import 'package:time_minder/widgets/home_page/grid_recommendation.dart';
 import 'package:time_minder/widgets/home_page/tooltip_homepage.dart';
 import 'package:time_minder/services/tooltip_storage.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -32,6 +32,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
   bool isSaved = true;
 
+  int totalElapsed = 0;
+  late List<Map<String, dynamic>> allData = [];
+  late List<Map<String, dynamic>> _allData = [];
+  bool isLoading = false;
+  bool isSettingPressed = false;
+  late String _greeting;
+  late String _imagePath;
+
   void _inithomePageInAppTour() {
     tutorialCoachMark = TutorialCoachMark(
       targets: homePageTargets(
@@ -52,26 +60,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   void _showInAppTour() {
-    Future.delayed(const Duration(seconds: 2), () {
+    Future.delayed(const Duration(milliseconds: 30), () {
       SaveInAppTour().getHomePageStatus().then((value) => {
-            if (value == false)
-              {
-                // print("User has not seen this tutor"),
-                tutorialCoachMark.show(context: context)
-              }
-            // else
-            //   {print("User has seen this tutor")}
+            if (value == false) {tutorialCoachMark.show(context: context)}
           });
     });
   }
-
-  int totalElapsed = 0;
-  late List<Map<String, dynamic>> allData = [];
-  late List<Map<String, dynamic>> _allData = [];
-  bool isLoading = false;
-  bool isSettingPressed = false;
-  late String _greeting;
-  late String _imagePath;
 
   // refresh data
   Future<void> _refreshData() async {
@@ -95,7 +89,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     data.forEach((element) {
       totalElapsed += element['elapsed'] as int;
     });
-    // print(totalElapsed);
   }
 
   String formatElapsedTime(int totalSeconds) {
@@ -136,6 +129,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
+  Future<void> _loadData() async {
+    await Future.delayed(const Duration(milliseconds: 250));
+  }
+
   @override
   void initState() {
     super.initState();
@@ -152,105 +149,136 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    return Scaffold(
-      backgroundColor: pureWhite,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              SizedBox(height: 20.h),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20).w,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          '$_greeting ',
-                          style: TextStyle(
-                            fontFamily: 'Nunito-Bold',
-                            fontSize: 22.42.sp,
-                            fontWeight: FontWeight.w900,
-                            color: cetaceanBlue,
+    return MediaQuery(
+      data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+      child: Scaffold(
+        backgroundColor: pureWhite,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                          left: 20, right: 20, top: 8, bottom: 25)
+                      .w,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            '$_greeting ',
+                            textScaleFactor: 1.0,
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              fontSize: 22.42.sp,
+                              fontWeight: FontWeight.w900,
+                              color: cetaceanBlue,
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 15.w),
-                        SvgPicture.asset(_imagePath)
-                      ],
-                    ),
-                    Text(
-                      "Yuk capai target fokusmu hari ini",
-                      style: TextStyle(
-                        fontFamily: 'Nunito-Bold',
-                        fontSize: 14.sp,
-                        color: ripeMango,
+                          SvgPicture.asset(_imagePath)
+                        ],
                       ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(height: 28.sp),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20).w,
-                child: SizedBox(key: cardHomeKey, child: const CardHome()),
-              ),
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: screenSize.height * 0.03.h,
-                  horizontal: screenSize.width * 0.05.w,
-                ),
-                child: SizedBox(key: gridRekomendasiKey, child: const GridRekomendasi()),
-              ),
-              Padding(
-                padding: EdgeInsets.only(
-                  bottom: screenSize.height * 0.03,
-                  right: screenSize.width * 0.05,
-                  left: screenSize.width * 0.05,
-                ).r,
-                child: Column(
-                  key: timerMuKey,
-                  children: [
-                    Row(
-                      children: [
-                        SvgPicture.asset('assets/images/timer.svg'),
-                        SizedBox(width: 10.w),
-                        Text(
-                          "Timer Mu",
-                          style: TextStyle(
-                            fontFamily: 'Nunito-Bold',
-                            fontSize: 14.sp,
-                            fontWeight: FontWeight.w900,
-                            color: cetaceanBlue,
-                          ),
+                      Text(
+                        "Yuk capai target fokusmu hari ini",
+                        textScaleFactor: 1.0,
+                        style: TextStyle(
+                          fontFamily: 'Nunito-Bold',
+                          fontSize: 14.sp,
+                          color: ripeMango,
                         ),
-                      ],
-                    ),
-                    _allData.isEmpty
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SvgPicture.asset(
-                                "assets/images/cat_setting.svg",
-                                width: screenSize.width * 0.3.w,
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 20).w,
+                  child: SizedBox(key: cardHomeKey, child: const BannerHome()),
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(
+                    vertical: screenSize.height * 0.03.h,
+                    horizontal: 20.w,
+                  ),
+                  child: SizedBox(
+                      key: gridRekomendasiKey, child: const GridRekomendasi()),
+                ),
+                Padding(
+                  padding: EdgeInsets.only(
+                    bottom: screenSize.height * 0.03,
+                    right: screenSize.width * 0.05,
+                    left: screenSize.width * 0.05,
+                  ).r,
+                  child: Column(
+                    key: timerMuKey,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset('assets/images/timer.svg'),
+                          SizedBox(width: 10.w),
+                          Text(
+                            "Timer Mu",
+                            style: TextStyle(
+                              fontFamily: 'Nunito-Bold',
+                              fontSize: 14.sp,
+                              fontWeight: FontWeight.w900,
+                              color: cetaceanBlue,
+                            ),
+                          ),
+                        ],
+                      ),
+                      FutureBuilder(
+                        future: _loadData(),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: CircularProgressIndicator(
+                                color: halfGrey,
+                                strokeWidth: 4,
                               ),
-                              SizedBox(height: 10.sp),
-                              Text(
-                                "Ayo tambahkan timer sesuai keinginanmu!",
+                            );
+                          } else if (snapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                'Error loading data',
                                 style: TextStyle(
                                   fontFamily: 'Nunito',
                                   fontSize: 14.sp,
                                   color: darkGrey,
                                 ),
                               ),
-                            ],
-                          )
-                        : ListTimerPageNoHold(
-                            isSettingPressed: isSettingPressed)
-                  ],
+                            );
+                          } else if (_allData.isEmpty) {
+                            return Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  "assets/images/cat_setting.svg",
+                                  width: screenSize.width * 0.3.w,
+                                ),
+                                SizedBox(height: 10.sp),
+                                Text(
+                                  "Ayo tambahkan timer sesuai keinginanmu!",
+                                  style: TextStyle(
+                                    fontFamily: 'Nunito',
+                                    fontSize: 14.sp,
+                                    color: darkGrey,
+                                  ),
+                                ),
+                              ],
+                            );
+                          } else {
+                            return ListTimerPageNoHold(
+                                isSettingPressed: isSettingPressed);
+                          }
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

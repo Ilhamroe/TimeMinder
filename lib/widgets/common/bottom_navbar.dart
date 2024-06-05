@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:time_minder/database/db_helper.dart';
@@ -11,6 +13,7 @@ import 'package:time_minder/pages/timer_page.dart';
 import 'package:time_minder/utils/colors.dart';
 import 'package:time_minder/widgets/modal_timer/add_modal.dart';
 import 'package:time_minder/widgets/common/double_tap_close.dart';
+import 'package:time_minder/widgets/common/custom_painter.dart';
 
 typedef ModalCloseCallback = void Function(int? id);
 
@@ -57,25 +60,33 @@ class _NavbarBottomState extends State<NavbarBottom> {
 
     final newData = await showCupertinoModalPopup(
       context: context,
-      builder: (_) => Stack(
-        children: [
-          BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
-            child: Container(
-              color: Colors.transparent,
-            ),
-          ),
-          // Modal content
-          Center(
-            child: Container(
-              margin: const EdgeInsets.only(top: 150).h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(70).r,
+      builder: (_) => GestureDetector(
+        onTap: () {
+          Navigator.of(context).pop();
+        },
+        child: Stack(
+          children: [
+            BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 50, sigmaY: 50),
+              child: Container(
+                color: Colors.transparent,
               ),
-              child: ModalAdd(id: id),
             ),
-          ),
-        ],
+            Center(
+              child: GestureDetector(
+                onTap: () {},
+                child: Container(
+                  // height: 500,
+                  margin: const EdgeInsets.only(top: 125).h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(70).w,
+                  ),
+                  child: ModalAdd(id: id),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
     onClose(newData);
@@ -95,40 +106,35 @@ class _NavbarBottomState extends State<NavbarBottom> {
 
   @override
   Widget build(BuildContext context) {
-    // final Size screenSize = MediaQuery.of(context).size;
     return DoubleBackToCloseApp(
       snackBarMessage: 'Tekan sekali lagi untuk keluar',
       child: Scaffold(
         body: PageStorage(
-          child: currentScreen,
           bucket: bucket,
+          child: currentScreen,
         ),
         floatingActionButton: Transform.rotate(
           angle: 45 * 3.1415926535 / 180,
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFFFCE38), Color(0xFFE2A203)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+          child: GestureDetector(
+            onTap: () {
+              _showModal((int? id) {});
+            },
+            child: Container(
+              width: 56.0,
+              height: 56.0,
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(
+                  colors: [Color(0xFFFFCE38), Color(0xFFE2A203)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+                borderRadius: BorderRadius.circular(16.0),
               ),
-              borderRadius: BorderRadius.circular(16.0).r,
-            ),
-            child: FloatingActionButton(
-              onPressed: () {
-                _showModal((int? id) {});
-              },
-              backgroundColor: Colors.transparent,
-              foregroundColor: Colors.transparent,
-              focusElevation: 0.0,
-              hoverElevation: 0.0,
-              highlightElevation: 0.0,
-              elevation: 0.0,
-              splashColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              child: SvgPicture.asset(
-                'assets/images/cross.svg',
-                color: Colors.white,
+              child: Center(
+                child: CustomPaint(
+                  size: const Size(24, 24),
+                  painter: PlusPainter(),
+                ),
               ),
             ),
           ),
@@ -146,164 +152,162 @@ class _NavbarBottomState extends State<NavbarBottom> {
             ],
           ),
           child: BottomAppBar(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12).w,
             elevation: 8.0.r,
             color: pureWhite,
             surfaceTintColor: Colors.transparent,
             child: Container(
               height: 50.h,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MaterialButton(
-                        minWidth: 10.w,
-                        onPressed: () {
-                          setState(() {
-                            currentScreen = const HomePage();
-                            currentTab = 0;
-                          });
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            currentTab == 0
-                                ? SvgPicture.asset(
-                                    'assets/images/home_bold.svg',
-                                    color: currentTab == 0
-                                        ? ripeMango
-                                        : cetaceanBlue,
-                                  )
-                                : SvgPicture.asset(
-                                    'assets/images/home.svg',
-                                    color: currentTab == 0
-                                        ? ripeMango
-                                        : cetaceanBlue,
-                                  ),
-                            Text(
-                              'Beranda',
-                              style: TextStyle(
-                                fontFamily: 'Nunito',
-                                color:
-                                    currentTab == 0 ? ripeMango : cetaceanBlue,
-                              ),
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Container(
+                    // padding: EdgeInsets.only(left: 10),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          currentScreen = const HomePage();
+                          currentTab = 0;
+                        });
+                      },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          currentTab == 0
+                              ? SvgPicture.asset(
+                                  'assets/images/home_bold.svg',
+                                  color: currentTab == 0
+                                      ? ripeMango
+                                      : cetaceanBlue,
+                                )
+                              : SvgPicture.asset(
+                                  'assets/images/home.svg',
+                                  color: currentTab == 0
+                                      ? ripeMango
+                                      : cetaceanBlue,
+                                ),
+                          Text(
+                            'Beranda',
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              color: currentTab == 0 ? ripeMango : cetaceanBlue,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      MaterialButton(
-                        minWidth: 10.w,
-                        onPressed: () {
-                          setState(() {
-                            currentScreen = const TimerPage();
-                            currentTab = 1;
-                          });
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            currentTab == 1
-                                ? SvgPicture.asset(
-                                    'assets/images/timer_bold.svg',
-                                    color: currentTab == 1
-                                        ? ripeMango
-                                        : cetaceanBlue,
-                                  )
-                                : SvgPicture.asset(
-                                    'assets/images/timer.svg',
-                                    color: currentTab == 1
-                                        ? ripeMango
-                                        : cetaceanBlue,
-                                  ),
-                            Text(
-                              'Timer',
-                              style: TextStyle(
-                                fontFamily: 'Nunito',
-                                color:
-                                    currentTab == 1 ? ripeMango : cetaceanBlue,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      MaterialButton(
-                        minWidth: 10.w,
-                        onPressed: () {
-                          setState(() {
-                            currentScreen = const DetailPage();
-                            currentTab = 2;
-                          });
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            currentTab == 2
-                                ? SvgPicture.asset(
-                                    'assets/images/detail_bold.svg',
-                                    color: currentTab == 2
-                                        ? ripeMango
-                                        : cetaceanBlue,
-                                  )
-                                : SvgPicture.asset(
-                                    'assets/images/detail.svg',
-                                    color: currentTab == 2
-                                        ? ripeMango
-                                        : cetaceanBlue,
-                                  ),
-                            Text(
-                              'Detail',
-                              style: TextStyle(
-                                fontFamily: 'Nunito',
-                                color:
-                                    currentTab == 2 ? ripeMango : cetaceanBlue,
-                              ),
+                  Container(
+                    padding: EdgeInsets.only(right: 20),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          currentScreen = const TimerPage();
+                          currentTab = 1;
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          currentTab == 1
+                              ? SvgPicture.asset(
+                                  'assets/images/timer_bold.svg',
+                                  color: currentTab == 1
+                                      ? ripeMango
+                                      : cetaceanBlue,
+                                )
+                              : SvgPicture.asset(
+                                  'assets/images/timer.svg',
+                                  color: currentTab == 1
+                                      ? ripeMango
+                                      : cetaceanBlue,
+                                ),
+                          Text(
+                            'Timer',
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              color: currentTab == 1 ? ripeMango : cetaceanBlue,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      MaterialButton(
-                        minWidth: 10.w,
-                        onPressed: () {
-                          setState(() {
-                            currentScreen = const FaqPage();
-                            currentTab = 3;
-                          });
-                        },
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            currentTab == 3
-                                ? SvgPicture.asset(
-                                    'assets/images/bantuan_bold.svg',
-                                    color: currentTab == 3
-                                        ? ripeMango
-                                        : cetaceanBlue,
-                                  )
-                                : SvgPicture.asset(
-                                    'assets/images/bantuan.svg',
-                                    color: currentTab == 3
-                                        ? ripeMango
-                                        : cetaceanBlue,
-                                  ),
-                            Text(
-                              'Bantuan',
-                              style: TextStyle(
-                                fontFamily: 'Nunito',
-                                color:
-                                    currentTab == 3 ? ripeMango : cetaceanBlue,
-                              ),
+                    ),
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(left: 20),
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          currentScreen = const DetailPage();
+                          currentTab = 2;
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          currentTab == 2
+                              ? SvgPicture.asset(
+                                  'assets/images/detail_bold.svg',
+                                  color: currentTab == 2
+                                      ? ripeMango
+                                      : cetaceanBlue,
+                                )
+                              : SvgPicture.asset(
+                                  'assets/images/detail.svg',
+                                  color: currentTab == 2
+                                      ? ripeMango
+                                      : cetaceanBlue,
+                                ),
+                          Text(
+                            'Detail',
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              color: currentTab == 2 ? ripeMango : cetaceanBlue,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  )
+                    ),
+                  ),
+                  Container(
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          currentScreen = const FaqPage();
+                          currentTab = 3;
+                        });
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          currentTab == 3
+                              ? SvgPicture.asset(
+                                  'assets/images/bantuan_bold.svg',
+                                  color: currentTab == 3
+                                      ? ripeMango
+                                      : cetaceanBlue,
+                                )
+                              : SvgPicture.asset(
+                                  'assets/images/bantuan.svg',
+                                  color: currentTab == 3
+                                      ? ripeMango
+                                      : cetaceanBlue,
+                                ),
+                          Text(
+                            'Bantuan',
+                            style: TextStyle(
+                              fontFamily: 'Nunito',
+                              color: currentTab == 3 ? ripeMango : cetaceanBlue,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

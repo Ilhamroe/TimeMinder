@@ -22,11 +22,8 @@ List<TargetFocus> homePageTargets({
             step: "1/3",
             title: "Target harian.",
             desc: "Catatan ini akan melacak aktivitas Anda hari ini.",
-            skip: "Lewati",
-            next: "Selanjutnya",
-            onSkip: () {
-              controller.skip();
-            },
+            showPreviousButton: false, 
+            onPrevious: () {},
             onNext: () {
               controller.next();
             },
@@ -50,10 +47,9 @@ List<TargetFocus> homePageTargets({
             title: "Rekomendasi",
             desc:
                 "Telusuri daftar timer yang sudah disiapkan, termasuk timer Pomodoro, Long Timer, dan juga Short Timer",
-            skip: "Lewati",
-            next: "Selanjutnya",
-            onSkip: () {
-              controller.skip();
+            showPreviousButton: true, 
+            onPrevious: () {
+              controller.previous();
             },
             onNext: () {
               controller.next();
@@ -77,10 +73,9 @@ List<TargetFocus> homePageTargets({
             step: "3/3",
             title: "Timer Mu",
             desc: "Ini adalah daftar timer kustom yang telah Anda buat.",
-            skip: "Lewati",
-            next: "Selesai",
-            onSkip: () {
-              controller.skip();
+            showPreviousButton: true, 
+            onPrevious: () {
+              controller.previous();
             },
             onNext: () {
               controller.next();
@@ -101,18 +96,16 @@ class CoachMarkDesc extends StatefulWidget {
     required this.step,
     required this.title,
     required this.desc,
-    required this.skip,
-    required this.next,
-    required this.onSkip,
+    required this.showPreviousButton,
+    this.onPrevious,
     required this.onNext,
   });
 
   final String step;
   final String title;
   final String desc;
-  final String skip;
-  final String next;
-  final VoidCallback onSkip;
+  final bool showPreviousButton;
+  final VoidCallback? onPrevious;
   final VoidCallback onNext;
 
   @override
@@ -159,40 +152,28 @@ class _CoachMarkDescState extends State<CoachMarkDesc> {
           SizedBox(
             height: 10.h,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                onPressed: widget.onSkip,
-                child: Text(
-                  widget.skip,
-                  style: const TextStyle(
-                    color: pureWhite,
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.bold,
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Visibility(
+                  visible: widget.showPreviousButton,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Colors.white),
+                    onPressed: widget.onPrevious,
                   ),
                 ),
-              ),
-              SizedBox(
-                width: 16.w,
-              ),
-              ElevatedButton(
-                onPressed: widget.onNext,
-                style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5).r,
-                )),
-                child: Text(
-                  widget.next,
-                  style: const TextStyle(
-                    color: cetaceanBlue,
-                    fontFamily: 'Nunito',
-                    fontWeight: FontWeight.bold,
-                  ),
+                SizedBox(
+                  width: 5.w,
                 ),
-              ),
-            ],
-          )
+                IconButton(
+                  icon: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white),
+                  onPressed: widget.onNext,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

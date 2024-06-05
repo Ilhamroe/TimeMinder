@@ -15,7 +15,7 @@ class _AlertDataState extends State<AlertData> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(milliseconds: 1500), () {
+    Timer(const Duration(milliseconds: 15000), () {
       if (mounted) {
         Navigator.of(context).pop();
       }
@@ -27,39 +27,51 @@ class _AlertDataState extends State<AlertData> {
     final Size screenSize = MediaQuery.of(context).size;
     return AlertDialog(
       surfaceTintColor: pureWhite,
-      title: const Text(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(13.47).w,
+      ),
+      title: Text(
         "Data tidak lengkap",
+        textAlign: TextAlign.center,
         style: TextStyle(
           fontFamily: 'Nunito',
+          fontSize: 22.sp,
         ),
       ),
       content: SizedBox(
+        width: screenSize.width * 0.55.w,
+        height: screenSize.height * 0.2.h,
         child: Column(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          // mainAxisSize: MainAxisSize.min,
           children: [
             SizedBox(
-              height: screenSize.height * 0.2.h,
+              height: screenSize.height * 0.14.h,
               child: SvgPicture.asset(
                 'assets/images/confirm_popup.svg',
+                fit: BoxFit.contain,
+                width: screenSize.width * 0.2.w,
+                height: screenSize.width * 0.2.h,
               ),
             ),
             Text(
-              'Nama Timer, Deskripsi, dan Waktu harus diisi.',
+              'Nama Timer, Deskripsi, dan Waktu Fokus harus diisi.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontFamily: 'Nunito',
-                fontSize: 15.sp,
-              ),
+                  fontFamily: 'Nunito',
+                  fontSize: 16.84.sp,
+                  fontWeight: FontWeight.w600),
             ),
           ],
         ),
       ),
       actions: <Widget>[
         TextButton(
-          child: const Text(
+          child: Text(
             "OK",
             style: TextStyle(
               fontFamily: 'Nunito',
+              fontSize: 16.84.sp,
             ),
           ),
           onPressed: () {

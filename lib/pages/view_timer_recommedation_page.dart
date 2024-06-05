@@ -2,17 +2,13 @@ import 'dart:async';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:time_minder/database/db_calendar.dart';
 import 'package:time_minder/models/list_timer.dart';
-import 'package:time_minder/services/notif.dart';
+import 'package:time_minder/services/notif_service.dart';
 import 'package:time_minder/utils/colors.dart';
 import 'package:time_minder/widgets/common/bottom_navbar.dart';
-
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
 
 class TimerView extends StatefulWidget {
   final int timerIndex;
@@ -77,7 +73,6 @@ class _TimerState extends State<TimerView> {
     _convertTimeInSec(context, _jam, _menit, _detik);
     _controller = CountDownController();
     endTime = DateTime.now().add(Duration(seconds: timeInSec));
-    Notif.initialize(flutterLocalNotificationsPlugin);
     player.onPlayerComplete.listen((event) {
       setState(() {
         isSoundPlayed = false;
@@ -105,6 +100,7 @@ class _TimerState extends State<TimerView> {
         backgroundColor: pureWhite,
         appBar: AppBar(
           leading: IconButton(
+            padding: const EdgeInsets.only(left: 20).w,
             onPressed: () {
               _showPopup();
             },
@@ -149,9 +145,9 @@ class _TimerState extends State<TimerView> {
             ),
             width: screenSize.width,
             height: screenSize.height,
-            padding: EdgeInsets.symmetric(
-              horizontal: screenSize.width * 0.1.w,
-              vertical: screenSize.height * 0.05.w,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 40,
             ).w,
             child: Center(
               child: Column(
@@ -201,7 +197,7 @@ class _TimerState extends State<TimerView> {
                     strokeCap: StrokeCap.round,
                     autoStart: true,
                     textStyle: TextStyle(
-                      fontSize: screenSize.width * 0.1.sp,
+                      fontSize: 36.sp,
                       color: _controller.isPaused ? red : cetaceanBlue,
                       fontWeight: FontWeight.bold,
                     ),
@@ -210,7 +206,7 @@ class _TimerState extends State<TimerView> {
                       startTimer();
                     },
                   ),
-                  SizedBox(height: screenSize.height * 0.05.h),
+                  SizedBox(height: screenSize.height * 0.07.h),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -220,22 +216,25 @@ class _TimerState extends State<TimerView> {
                             alignment: Alignment.center,
                             children: [
                               Container(
-                                width: screenSize.width * 0.15.w,
-                                height: screenSize.width * 0.15.h,
+                                width: 50.w,
+                                height: 50.h,
                                 decoration: BoxDecoration(
                                   color: offBlue,
-                                  borderRadius: BorderRadius.circular(20).w,
+                                  borderRadius: BorderRadius.circular(16).w,
                                 ),
                               ),
-                              GestureDetector(
-                                onTap: isStarted ? resumeTimer : pauseTimer,
-                                child: SvgPicture.asset(
-                                  isStarted
-                                      ? "assets/images/play.svg"
-                                      : "assets/images/pause.svg",
-                                  width: screenSize.width * 0.07.w,
-                                  height: screenSize.width * 0.07.h,
-                                  color: blueJeans,
+                              Padding(
+                                padding: const EdgeInsets.all(10.0).w,
+                                child: GestureDetector(
+                                  onTap: isStarted ? resumeTimer : pauseTimer,
+                                  child: SvgPicture.asset(
+                                    isStarted
+                                        ? "assets/images/play.svg"
+                                        : "assets/images/pause.svg",
+                                    width: 25.w,
+                                    height: 25.h,
+                                    color: blueJeans,
+                                  ),
                                 ),
                               ),
                             ],
@@ -280,11 +279,11 @@ class _TimerState extends State<TimerView> {
                             alignment: Alignment.center,
                             children: [
                               Container(
-                                width: screenSize.width * 0.15.w,
-                                height: screenSize.width * 0.15.h,
+                                width: 50.w,
+                                height: 50.h,
                                 decoration: BoxDecoration(
                                   color: offBlue,
-                                  borderRadius: BorderRadius.circular(20).w,
+                                  borderRadius: BorderRadius.circular(16).w,
                                 ),
                               ),
                               IconButton(
@@ -351,14 +350,12 @@ class _TimerState extends State<TimerView> {
         return AlertDialog(
           surfaceTintColor: pureWhite,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0).w,
+            borderRadius: BorderRadius.circular(13.47).w,
           ),
           content: SizedBox(
-            width: screenSize.width * 0.55.w,
-            height: screenSize.height * 0.30.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              // mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
                   height: screenSize.height * 0.14.h,
@@ -374,7 +371,7 @@ class _TimerState extends State<TimerView> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Nunito',
-                    fontSize: 19.sp,
+                    fontSize: 16.84.sp,
                   ),
                 ),
                 SizedBox(height: 20.h),
@@ -383,32 +380,34 @@ class _TimerState extends State<TimerView> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0).r,
+                        borderRadius: BorderRadius.circular(11.79).w,
                         color: halfGrey,
                       ),
                       child: TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text(
+                        child: Text(
                           "Tidak",
-                          style: TextStyle(color: offGrey),
+                          style:
+                              TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),
                     SizedBox(width: 30.w),
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0).r,
+                        borderRadius: BorderRadius.circular(11.79).w,
                         color: ripeMango,
                       ),
                       child: TextButton(
                         onPressed: () {
                           buttonConfirm();
                         },
-                        child: const Text(
+                        child: Text(
                           "Ya",
-                          style: TextStyle(color: offGrey),
+                          style:
+                              TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),
@@ -430,14 +429,12 @@ class _TimerState extends State<TimerView> {
         return AlertDialog(
           surfaceTintColor: pureWhite,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0).w,
+            borderRadius: BorderRadius.circular(13.47).w,
           ),
           content: SizedBox(
-            width: screenSize.width * 0.55.w,
-            height: screenSize.height * 0.30.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              // mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
                   height: screenSize.height * 0.14.h,
@@ -453,7 +450,7 @@ class _TimerState extends State<TimerView> {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontFamily: 'Nunito',
-                    fontSize: 19.sp,
+                    fontSize: 16.84.sp,
                   ),
                 ),
                 SizedBox(height: 20.h),
@@ -462,32 +459,34 @@ class _TimerState extends State<TimerView> {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0).w,
+                        borderRadius: BorderRadius.circular(11.79).w,
                         color: halfGrey,
                       ),
                       child: TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: const Text(
+                        child: Text(
                           "Tidak",
-                          style: TextStyle(color: offGrey),
+                          style:
+                              TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),
                     SizedBox(width: 30.w),
                     Container(
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10.0).w,
+                        borderRadius: BorderRadius.circular(11.79).w,
                         color: ripeMango,
                       ),
                       child: TextButton(
                         onPressed: () {
                           buttonConfirm();
                         },
-                        child: const Text(
+                        child: Text(
                           "Ya",
-                          style: TextStyle(color: offGrey),
+                          style:
+                              TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),
@@ -502,7 +501,7 @@ class _TimerState extends State<TimerView> {
   }
 
   void startTimer() async {
-    _showNotification("Timer dimulai");
+    _showAwesome('Timer dimulai');
     player.play(AssetSource("sounds/start.wav"));
   }
 
@@ -512,9 +511,8 @@ class _TimerState extends State<TimerView> {
     setState(() {
       _controller.resume();
       isStarted = false;
-      _showNotification("Timer dilanjutkan");
+      _showAwesome("Timer dilanjutkan");
     });
-
     await player.play(AssetSource("sounds/resume.wav"));
     isSoundPlayed = true;
   }
@@ -524,9 +522,8 @@ class _TimerState extends State<TimerView> {
     setState(() {
       _controller.pause();
       isStarted = true;
-      _showNotification("Timer dijeda");
+      _showAwesome("Timer dijeda");
     });
-
     await player.play(AssetSource("sounds/pause.wav"));
     isSoundPlayed = false;
   }
@@ -534,9 +531,8 @@ class _TimerState extends State<TimerView> {
   Future<void> complete() async {
     setState(() {
       addData();
-      _showNotification('Timer selesai');
+      _showAwesome('Timer selesai');
     });
-
     await player.play(AssetSource("sounds/end.wav"));
     Navigator.push(
       context,
@@ -546,30 +542,16 @@ class _TimerState extends State<TimerView> {
     );
   }
 
-  void _showNotification(String message) {
-    Notif.showBigTextNotification(
-      title: "TimeMinder",
-      body: message,
-      fln: flutterLocalNotificationsPlugin,
-    );
+  void _showAwesome(String message) {
+    NotifAwesome.showInstantNotification(title: 'TimeMinder', body: message);
   }
-
-  // Future<bool> _onBackButtonPressed(BuildContext context) async {
-  //   bool? exitApp = await showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return const OnBackButton();
-  //     },
-  //   );
-  //   return exitApp ?? false;
-  // }
 
   Future<void> buttonConfirm() async {
     if (pauseTime != null) {
       pauseCount += DateTime.now().difference(pauseTime!).inSeconds;
     }
     setState(() {
-      _showNotification("Timer dihentikan");
+      _showAwesome("Timer dihentikan");
       Navigator.push(
         context,
         MaterialPageRoute(
