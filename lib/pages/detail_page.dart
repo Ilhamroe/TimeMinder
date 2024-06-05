@@ -414,7 +414,7 @@ class _DetailPageState extends State<DetailPage> {
                   fontFamily: 'Nunito-Bold',
                   fontWeight: FontWeight.w600,
                   fontSize: 14.sp,
-                  color: cetaceanBlue,
+                  color: offGrey,
                 ),
               ),
             )
