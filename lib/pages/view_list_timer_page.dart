@@ -7,6 +7,7 @@ import 'package:time_minder/database/db_calendar.dart';
 import 'package:time_minder/database/db_helper.dart';
 import 'package:time_minder/models/list_jobs.dart';
 import 'package:time_minder/services/logic_timer.dart';
+import 'package:time_minder/services/notif_service.dart';
 import 'package:time_minder/utils/colors.dart';
 import 'package:time_minder/services/notif.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -49,12 +50,12 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
         pauseTime = null;
         _player.play(AssetSource('sounds/resume.wav'));
         _cDController.resume();
-        _showNotification('Timer dilanjutkan');
+        _showAwesome('Timer dilanjutkan');
       } else {
         pauseTime = DateTime.now();
         _player.play(AssetSource('sounds/pause.wav'));
         _cDController.pause();
-        _showNotification('Timer dihentikan');
+        _showAwesome('Timer dihentikan');
       }
     });
   }
@@ -64,7 +65,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
       _currentJobIndex = 0;
       _cDController.restart(
           duration: _jobsTimer[_currentJobIndex].duration * 60);
-      _showNotification('Timer Selesai');
+      _showAwesome('Timer Selesai');
       _player.play(AssetSource('sounds/nothing.wav'));
     });
   }
@@ -143,15 +144,15 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
         if (_jobsTimer[_currentJobIndex].type == 'ISTIRAHAT') {
           istirahatCount++;
           _player.play(AssetSource('sounds/jobs_rest.wav'));
-          _showNotification("Waktunya Istirahat");
+          _showAwesome("Waktunya Istirahat");
         }
         if (_jobsTimer[_currentJobIndex].type == 'FOKUS') {
           _player.play(AssetSource('sounds/job_focus.wav'));
-          _showNotification("Istirahat Selesai");
+          _showAwesome("Istirahat Selesai");
         }
       } else {
         _player.play(AssetSource('sounds/end.wav'));
-        _showNotification("Timer Selesai");
+        _showAwesome("Timer Selesai");
         _cDController.pause();
         Navigator.push(
           context,
@@ -182,27 +183,16 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
     }
   }
 
-  void _showNotification(String message) {
-    Notif.showBigTextNotification(
-      title: "TimeMinder",
-      body: message,
-      fln: flutterLocalNotificationsPlugin,
-    );
-  }
-
-  // Future<bool> _onBackButtonPressed(BuildContext context) async {
-  //   bool? exitApp = await showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return const AlertDialog();
-  //     },
-  //   );
-  //   return exitApp ?? false;
-  // }
-
   Future<bool> _onBackButtonPressed(BuildContext context) async {
     bool? exitApp = await _showPopupBack(context);
     return exitApp ?? false;
+  }
+
+  void _showAwesome(String message) {
+    NotifAwesome.showNotificationWithDelay(
+      title: 'Notif delay',
+      body: message,
+    );
   }
 
   @override
@@ -321,7 +311,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                             ),
                             onStart: () {
                               _player.play(AssetSource('sounds/start.wav'));
-                              _showNotification("Timer dimulai");
+                              _showAwesome("Timer dimulai");
                             },
                             onComplete: () => _queueTimerJob()),
                         SizedBox(height: screenSize.height * 0.07.h),
@@ -464,7 +454,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
       pauseCount += DateTime.now().difference(pauseTime!).inSeconds;
     }
     setState(() {
-      _showNotification("Timer dihentikan");
+      _showAwesome("Timer dihentikan");
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -478,7 +468,7 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
   Future<void> buttonConfirmBack() async {
     _clearJobs();
     setState(() {
-      _showNotification("Timer dihentikan");
+      _showAwesome("Timer dihentikan");
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -499,8 +489,6 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
             borderRadius: BorderRadius.circular(13.47).w,
           ),
           content: SizedBox(
-            // width: screenSize.width * 0.55.w,
-            // height: screenSize.height * 0.30.h,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
@@ -625,7 +613,8 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                         },
                         child: Text(
                           "Tidak",
-                          style: TextStyle(fontSize: 16.84.sp, color: pureWhite),
+                          style:
+                              TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),
@@ -646,7 +635,8 @@ class _CombinedTimerPageState extends State<CombinedTimerPage> {
                         },
                         child: Text(
                           "Ya",
-                          style: TextStyle(fontSize: 16.84.sp, color: pureWhite),
+                          style:
+                              TextStyle(fontSize: 16.84.sp, color: pureWhite),
                         ),
                       ),
                     ),

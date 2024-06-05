@@ -13,8 +13,7 @@ class GridRekomendasi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
-    double itemWidth = (screenWidth - 40.w - 20.w) /
-        3; // Total padding of 20.w on each side, plus spacing between items
+    double itemWidth = (screenWidth - 40.w - 20.w) / 3;
 
     return Container(
       child: ListView(
@@ -22,8 +21,8 @@ class GridRekomendasi extends StatelessWidget {
         shrinkWrap: true,
         children: [
           Wrap(
-            spacing: 10.w, // Horizontal space between children
-            runSpacing: 10.h, // Vertical space between lines
+            spacing: 10.w,
+            runSpacing: 10.h,
             children: List.generate(timerList.length, (index) {
               return Container(
                 width: itemWidth,
@@ -96,9 +95,9 @@ class GridRekomendasi extends StatelessWidget {
                           ),
                         ),
                         Container(
-                          margin:
-                              EdgeInsets.only(left: 8, right: 8, top: 2, bottom: 10.37)
-                                  .w,
+                          margin: EdgeInsets.only(
+                                  left: 8, right: 8, top: 2, bottom: 10.37)
+                              .w,
                           child: GestureDetector(
                             onTap: () {
                               Navigator.push(
