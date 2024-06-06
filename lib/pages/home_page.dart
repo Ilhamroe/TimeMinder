@@ -67,7 +67,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     });
   }
 
-  // refresh data
   Future<void> _refreshData() async {
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
