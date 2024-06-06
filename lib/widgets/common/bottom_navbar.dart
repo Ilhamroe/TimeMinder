@@ -76,7 +76,6 @@ class _NavbarBottomState extends State<NavbarBottom> {
               child: GestureDetector(
                 onTap: () {},
                 child: Container(
-                  // height: 500,
                   margin: const EdgeInsets.only(top: 125).h,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(70).w,
@@ -156,14 +155,12 @@ class _NavbarBottomState extends State<NavbarBottom> {
             elevation: 8.0.r,
             color: pureWhite,
             surfaceTintColor: Colors.transparent,
-            child: Container(
-              // height: 50.h,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  InkWell(
-                    borderRadius: BorderRadius.circular(30).w,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50).w,
                     onTap: () {
                       setState(() {
                         currentScreen = const HomePage();
@@ -194,120 +191,114 @@ class _NavbarBottomState extends State<NavbarBottom> {
                       ],
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(right: 20).r,
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          currentScreen = const TimerPage();
-                          currentTab = 1;
-                        });
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          currentTab == 1
-                              ? SvgPicture.asset(
-                                  'assets/images/timer_bold.svg',
-                                  color: currentTab == 1
-                                      ? ripeMango
-                                      : cetaceanBlue,
-                                )
-                              : SvgPicture.asset(
-                                  'assets/images/timer.svg',
-                                  color: currentTab == 1
-                                      ? ripeMango
-                                      : cetaceanBlue,
-                                ),
-                          Text(
-                            'Timer',
-                            style: TextStyle(
-                              fontFamily: 'Nunito',
-                              color: currentTab == 1 ? ripeMango : cetaceanBlue,
-                            ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50).w,
+                    onTap: () {
+                      setState(() {
+                        currentScreen = const TimerPage();
+                        currentTab = 1;
+                      });
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        currentTab == 1
+                            ? SvgPicture.asset(
+                                'assets/images/timer_bold.svg',
+                                color:
+                                    currentTab == 1 ? ripeMango : cetaceanBlue,
+                              )
+                            : SvgPicture.asset(
+                                'assets/images/timer.svg',
+                                color:
+                                    currentTab == 1 ? ripeMango : cetaceanBlue,
+                              ),
+                        Text(
+                          'Timer',
+                          style: TextStyle(
+                            fontFamily: 'Nunito',
+                            color: currentTab == 1 ? ripeMango : cetaceanBlue,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  Container(
-                    padding: const EdgeInsets.only(left: 20).r,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30.0)),
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          currentScreen = const DetailPage();
-                          currentTab = 2;
-                        });
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          currentTab == 2
-                              ? SvgPicture.asset(
-                                  'assets/images/detail_bold.svg',
-                                  color: currentTab == 2
-                                      ? ripeMango
-                                      : cetaceanBlue,
-                                )
-                              : SvgPicture.asset(
-                                  'assets/images/detail.svg',
-                                  color: currentTab == 2
-                                      ? ripeMango
-                                      : cetaceanBlue,
-                                ),
-                          Text(
-                            'Detail',
-                            style: TextStyle(
-                              fontFamily: 'Nunito',
-                              color: currentTab == 2 ? ripeMango : cetaceanBlue,
-                            ),
+                ),
+                const SizedBox(width: 56.0), // Placeholder for FAB
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50).w,
+                    onTap: () {
+                      setState(() {
+                        currentScreen = const DetailPage();
+                        currentTab = 2;
+                      });
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        currentTab == 2
+                            ? SvgPicture.asset(
+                                'assets/images/detail_bold.svg',
+                                color:
+                                    currentTab == 2 ? ripeMango : cetaceanBlue,
+                              )
+                            : SvgPicture.asset(
+                                'assets/images/detail.svg',
+                                color:
+                                    currentTab == 2 ? ripeMango : cetaceanBlue,
+                              ),
+                        Text(
+                          'Detail',
+                          style: TextStyle(
+                            fontFamily: 'Nunito',
+                            color: currentTab == 2 ? ripeMango : cetaceanBlue,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                  Container(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          currentScreen = const FaqPage();
-                          currentTab = 3;
-                        });
-                      },
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          currentTab == 3
-                              ? SvgPicture.asset(
-                                  'assets/images/bantuan_bold.svg',
-                                  color: currentTab == 3
-                                      ? ripeMango
-                                      : cetaceanBlue,
-                                )
-                              : SvgPicture.asset(
-                                  'assets/images/bantuan.svg',
-                                  color: currentTab == 3
-                                      ? ripeMango
-                                      : cetaceanBlue,
-                                ),
-                          Text(
-                            'Bantuan',
-                            style: TextStyle(
-                              fontFamily: 'Nunito',
-                              color: currentTab == 3 ? ripeMango : cetaceanBlue,
-                            ),
+                ),
+                Expanded(
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(50).w,
+                    onTap: () {
+                      setState(() {
+                        currentScreen = const FaqPage();
+                        currentTab = 3;
+                      });
+                    },
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        currentTab == 3
+                            ? SvgPicture.asset(
+                                'assets/images/bantuan_bold.svg',
+                                color:
+                                    currentTab == 3 ? ripeMango : cetaceanBlue,
+                              )
+                            : SvgPicture.asset(
+                                'assets/images/bantuan.svg',
+                                color:
+                                    currentTab == 3 ? ripeMango : cetaceanBlue,
+                              ),
+                        Text(
+                          'Bantuan',
+                          style: TextStyle(
+                            fontFamily: 'Nunito',
+                            color: currentTab == 3 ? ripeMango : cetaceanBlue,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
