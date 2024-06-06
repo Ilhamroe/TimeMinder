@@ -141,7 +141,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: Container(
-          height: 64.h,
+          height: 60.h,
           decoration: BoxDecoration(
             boxShadow: [
               BoxShadow(
@@ -157,14 +157,13 @@ class _NavbarBottomState extends State<NavbarBottom> {
             color: pureWhite,
             surfaceTintColor: Colors.transparent,
             child: Container(
-              height: 50.h,
+              // height: 50.h,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   Container(
-                    // padding: EdgeInsets.only(left: 10),
-                    child: GestureDetector(
+                    child: InkWell(
                       onTap: () {
                         setState(() {
                           currentScreen = const HomePage();
@@ -200,7 +199,7 @@ class _NavbarBottomState extends State<NavbarBottom> {
                   ),
                   Container(
                     padding: EdgeInsets.only(right: 20),
-                    child: GestureDetector(
+                    child: InkWell(
                       onTap: () {
                         setState(() {
                           currentScreen = const TimerPage();
