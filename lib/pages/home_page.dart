@@ -205,8 +205,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                 Padding(
                   padding: EdgeInsets.only(
                     bottom: screenSize.height * 0.03,
-                    right: screenSize.width * 0.05,
-                    left: screenSize.width * 0.05,
+                    right: 20.w,
+                    left: 20.w,
                   ).r,
                   child: Column(
                     key: timerMuKey,

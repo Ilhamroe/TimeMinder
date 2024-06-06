@@ -317,8 +317,6 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                                           BorderRadius.circular(13.47).w,
                                     ),
                                     content: SizedBox(
-                                      // width: screenSize.width * 0.55.w,
-                                      // height: screenSize.height * 0.30.h,
                                       child: Column(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
@@ -452,6 +450,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                           child: Text(
                             'Semua',
                             style: TextStyle(
+                              fontFamily: 'Nunito',
                                 color: selectedIndex == 0
                                     ? pureWhite
                                     : cetaceanBlue),
@@ -481,6 +480,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                           child: Text(
                             'Timer Mu',
                             style: TextStyle(
+                              fontFamily: 'Nunito',
                                 color: selectedIndex == 1
                                     ? pureWhite
                                     : cetaceanBlue),
@@ -509,8 +509,8 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
               ListView.builder(
                 padding: EdgeInsets.only(
                   bottom: screenSize.height * 0.03,
-                  right: screenSize.width * 0.05,
-                  left: screenSize.width * 0.05,
+                  right: 20.w,
+                  left: 20.w,
                 ).w,
                 itemCount: 2,
                 shrinkWrap: true,
@@ -531,8 +531,8 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
               ListView(
                 padding: EdgeInsets.only(
                   bottom: screenSize.height * 0.03,
-                  right: screenSize.width * 0.05,
-                  left: screenSize.width * 0.05,
+                  right: 20.w,
+                  left: 20.w,
                 ).r,
                 children: [
                   _allData.isEmpty

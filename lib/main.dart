@@ -67,12 +67,18 @@ class _MainAppState extends State<MainApp> {
       minTextAdapt: true,
       splitScreenMode: true,
       builder: (_, child) {
-        return const MaterialApp(
+        return  MaterialApp(
           themeMode: ThemeMode.light,
           debugShowCheckedModeBanner: false,
           initialRoute: AppRoutes.splash,
           onGenerateRoute: AppRoutes.generateRoute,
           // home: NotificationSettingsScreen(),
+          builder: (context, widget) {
+            return MediaQuery(
+              data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+              child: widget!,
+            );
+          },
         );
       },
     );
