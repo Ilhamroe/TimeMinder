@@ -124,7 +124,7 @@ class _DetailPageState extends State<DetailPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 22.0).w,
+              padding: const EdgeInsets.symmetric(horizontal: 20.0).w,
               child: Container(
                 key: calendarKey,
                 padding: const EdgeInsets.symmetric(vertical: 7.0).w,
@@ -177,12 +177,11 @@ class _DetailPageState extends State<DetailPage> {
                   const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0)
                       .w,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 key: detailTimerKey,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.symmetric(
-                            horizontal: 1.0, vertical: 8.0)
-                        .w,
+                    padding: const EdgeInsets.symmetric(vertical: 8.0).w,
                     child: Row(
                       children: [
                         SvgPicture.asset(
@@ -192,8 +191,8 @@ class _DetailPageState extends State<DetailPage> {
                           width: 20.w,
                         ),
                         Container(
-                          // padding:
-                          //     const EdgeInsets.symmetric(horizontal: 8.0).w,
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 8.0).w,
                           child: Text(
                             "Detail",
                             style: TextStyle(
@@ -366,10 +365,10 @@ class _DetailPageState extends State<DetailPage> {
         ? const CircularProgressIndicator()
         : groupedData.isEmpty
             ? Container(
-                padding: const EdgeInsets.all(8.0).r,
+                // padding: const EdgeInsets.all(8.0).r,
                 margin: const EdgeInsets.only(top: 20.0).r,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(6.0).r,
+                  borderRadius: BorderRadius.circular(6.0).w,
                   color: pureWhite,
                 ),
                 child: Column(
@@ -378,7 +377,7 @@ class _DetailPageState extends State<DetailPage> {
                       "assets/images/cat_setting.svg",
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0).r,
+                      padding: const EdgeInsets.symmetric(vertical: 8.0).w,
                       child: Text(
                         'Ayo tambahkan timer sesuai keinginanmu!',
                         style: TextStyle(
@@ -400,7 +399,7 @@ class _DetailPageState extends State<DetailPage> {
                   return Container(
                     margin: const EdgeInsets.only(bottom: 13.0).r,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16.0).r,
+                      borderRadius: BorderRadius.circular(16.0).w,
                       color: offOrange,
                     ),
                     child: ListTile(

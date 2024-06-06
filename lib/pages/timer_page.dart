@@ -434,7 +434,7 @@ class _TimerPageState extends State<TimerPage> with TickerProviderStateMixin {
                     child: Padding(
                       padding: const EdgeInsets.only(
                         left: 15,
-                      ).w,
+                      ).r,
                       child: Container(
                         key: btnSemuaKey,
                         alignment: Alignment.centerRight,
