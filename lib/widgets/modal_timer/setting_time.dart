@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:time_minder/utils/colors.dart';
 
@@ -35,12 +36,23 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
   }
 
   void _onTextChanged() {
-    final newText = _textController.text;
-    if (newText.isNotEmpty) {
-      final newValue = int.tryParse(newText);
-      if (newValue != null) {
+    final newText= _textController.text;
+    if(newText.isEmpty){
+      setState(() {
+        _counterMainTime = 0;
+        _textController.text= '0';
+        _textController.selection= const TextSelection.collapsed(offset: 1);
+      });
+      widget.onChanged?.call(_counterMainTime);
+    }else{
+      final newValue= int.tryParse(newText);
+      if(newValue != null){
         setState(() {
-          _counterMainTime = newValue;
+          _counterMainTime= newValue;
+          _textController.value= TextEditingValue(
+            text: _counterMainTime.toString(),
+            selection: TextSelection.collapsed(offset: _counterMainTime.toString().length),
+          );
         });
         widget.onChanged?.call(_counterMainTime);
       }
@@ -121,6 +133,9 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                   child: TextFormField(
                     controller: _textController,
                     keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly
+                    ],
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16.sp,
@@ -132,6 +147,11 @@ class SettingTimeWidgetState extends State<SettingTimeWidget> {
                     ),
                     onChanged: (text) {
                       _onTextChanged();
+                    },
+                    onTap: () {
+                      if(_textController.text == '0'){
+                        _textController.clear();
+                      }
                     },
                   ),
                 ),

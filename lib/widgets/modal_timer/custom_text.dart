@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextField extends StatelessWidget {
   final String labelText;
-  final double fontSize;
+  final double? fontSize;
   final String fontFamily;
 
-  const CustomTextField({
+   const CustomTextField({
     super.key,
     this.labelText = "Default Label",
-    this.fontSize = 14,
+    this.fontSize,
     this.fontFamily = 'Nunito',
   });
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    final adjustedFontSize = screenWidth * 0.04;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -25,7 +22,7 @@ class CustomTextField extends StatelessWidget {
           labelText,
           style: TextStyle(
             fontFamily: fontFamily,
-            fontSize: adjustedFontSize,
+            fontSize: 14.sp
           ),
         ),
       ],

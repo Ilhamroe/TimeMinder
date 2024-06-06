@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:time_minder/utils/colors.dart';
 
@@ -48,25 +49,51 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
   }
 
   void _onBreakTimeChanged(String value) {
-    if (widget.statusSwitch) {
-      int breakTime = int.tryParse(value) ?? 0;
-      if (breakTime > 0) {
-        setState(() {
-          counterBreakTime = breakTime;
-        });
-        widget.onBreakTimeChanged?.call(breakTime);
-      }
+    final newBreakTime = breakTimeController.text;
+    debugPrint('KETIKA DIPENCET: $newBreakTime');
+    if(newBreakTime.isEmpty){
+      setState(() {
+        counterBreakTime = 0;
+        breakTimeController.text= '0';
+        breakTimeController.selection= const TextSelection.collapsed(offset: 1);
+      });
+      widget.onBreakTimeChanged?.call(counterBreakTime);
+  }else{
+    final newValue2= int.tryParse(newBreakTime);
+    if(newValue2 != null){
+      setState(() {
+        counterBreakTime= newValue2;
+        breakTimeController.value= TextEditingValue(
+          text: counterBreakTime.toString(),
+          selection: TextSelection.collapsed(offset: counterBreakTime.toString().length),
+        );
+      });
+      widget.onBreakTimeChanged?.call(counterBreakTime);
     }
   }
+  debugPrint('KETIKA ga ngap ngapa: $counterBreakTime');
+}
 
   void _onIntervalChanged(String value) {
-    if (widget.statusSwitch) {
-      int interval = int.tryParse(value) ?? 0;
-      if (interval > 0) {
+    final newInterval= intervalController.text;
+    if(newInterval.isEmpty){
+      setState(() {
+        counterInterval = 0;
+        intervalController.text= '0';
+        intervalController.selection= const TextSelection.collapsed(offset: 1);
+      });
+      widget.onIntervalChanged?.call(counterInterval);
+    }else{
+      final newValue= int.tryParse(newInterval);
+      if(newValue != null){
         setState(() {
-          counterInterval = interval;
+          counterInterval= newValue;
+          intervalController.value= TextEditingValue(
+            text: counterInterval.toString(),
+            selection: TextSelection.collapsed(offset: counterInterval.toString().length),
+          );
         });
-        widget.onIntervalChanged?.call(interval);
+        widget.onIntervalChanged?.call(counterInterval);
       }
     }
   }
@@ -92,6 +119,42 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
     });
   }
 
+  void _incrementBreakTime() {
+    setState(() {
+      counterBreakTime++;
+      breakTimeController.text = counterBreakTime.toString();
+    });
+    widget.onBreakTimeChanged?.call(counterBreakTime);
+  }
+  
+  void _incrementInterval() {
+    setState(() {
+      counterInterval++;
+      intervalController.text = counterInterval.toString();
+    });
+    widget.onIntervalChanged?.call(counterInterval);
+  }
+
+  void _decrementBreakTime() {
+    if (counterBreakTime > 0) {
+      setState(() {
+        counterBreakTime--;
+        breakTimeController.text = counterBreakTime.toString();
+      });
+      widget.onBreakTimeChanged?.call(counterBreakTime);
+    }
+  }
+
+  void _decrementInterval() {
+    if (counterInterval > 0) {
+      setState(() {
+        counterInterval--;
+        intervalController.text = counterInterval.toString();
+      });
+      widget.onIntervalChanged?.call(counterInterval);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -99,7 +162,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
         Expanded(
           child: Container(
             padding: const EdgeInsets.all(2).w,
-            margin: EdgeInsets.only(right: 4).w,
+            margin: const EdgeInsets.only(right: 4).w,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(15).w,
               color: widget.statusSwitch ? offYellow : offGrey,
@@ -113,15 +176,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               children: [
                 IconButton(
                   onPressed: widget.statusSwitch
-                      ? () {
-                          int currentValue =
-                              int.tryParse(breakTimeController.text) ?? 0;
-                          if (currentValue > 0) {
-                            _onBreakTimeChanged((currentValue - 1).toString());
-                            breakTimeController.text =
-                                (currentValue - 1).toString();
-                          }
-                        }
+                      ? _decrementBreakTime
                       : null,
                   icon: const Icon(Icons.remove),
                   iconSize: 16.h,
@@ -132,6 +187,9 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                       ? TextFormField(
                           controller: breakTimeController,
                           keyboardType: TextInputType.number,
+                          inputFormatters: [
+                            FilteringTextInputFormatter.digitsOnly
+                          ],
                           onChanged: _onBreakTimeChanged,
                           decoration: const InputDecoration(
                             border: InputBorder.none,
@@ -159,13 +217,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                 ),
                 IconButton(
                   onPressed: widget.statusSwitch
-                      ? () {
-                          int currentValue =
-                              int.tryParse(breakTimeController.text) ?? 0;
-                          _onBreakTimeChanged((currentValue + 1).toString());
-                          breakTimeController.text =
-                              (currentValue + 1).toString();
-                        }
+                      ? _incrementBreakTime
                       : null,
                   icon: const Icon(Icons.add),
                   iconSize: 16.h,
@@ -193,15 +245,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
               children: [
                 IconButton(
                   onPressed: widget.statusSwitch
-                      ? () {
-                          int currentValue =
-                              int.tryParse(intervalController.text) ?? 0;
-                          if (currentValue > 0) {
-                            _onIntervalChanged((currentValue - 1).toString());
-                            intervalController.text =
-                                (currentValue - 1).toString();
-                          }
-                        }
+                      ? _decrementInterval
                       : null,
                   icon: const Icon(Icons.remove),
                   iconSize: 16.h,
@@ -212,6 +256,9 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                         ? TextFormField(
                             controller: intervalController,
                             keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly
+                            ],
                             decoration: const InputDecoration(
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.zero,
@@ -239,13 +286,7 @@ class SettingBreakWidgetState extends State<SettingBreakWidget> {
                           )),
                 IconButton(
                   onPressed: widget.statusSwitch
-                      ? () {
-                          int currentValue =
-                              int.tryParse(intervalController.text) ?? 0;
-                          _onIntervalChanged((currentValue + 1).toString());
-                          intervalController.text =
-                              (currentValue + 1).toString();
-                        }
+                      ? _incrementInterval
                       : null,
                   icon: const Icon(Icons.add),
                   iconSize: 16.h,

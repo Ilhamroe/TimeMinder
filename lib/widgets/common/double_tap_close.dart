@@ -27,7 +27,8 @@ class _DoubleBackToCloseAppState extends State<DoubleBackToCloseApp> {
             DateTime.now().difference(_lastTimeBackButtonWasTapped!) >
                 const Duration(milliseconds: 1500)) {
           _lastTimeBackButtonWasTapped = DateTime.now();
-          Fluttertoast.showToast(msg: widget.snackBarMessage, fontSize: 14.sp);
+          Fluttertoast.showToast(
+              msg: widget.snackBarMessage, fontSize: 14.sp);
           return false;
         }
         exit(0);
