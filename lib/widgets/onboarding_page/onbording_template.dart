@@ -23,7 +23,7 @@ class ContentTemplate extends StatelessWidget {
         ),
         FittedBox(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30).r,
+            padding: const EdgeInsets.symmetric(horizontal: 30).w,
             child: Text(
               item.title,
               style: Theme.of(context)

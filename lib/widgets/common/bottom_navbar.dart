@@ -159,46 +159,43 @@ class _NavbarBottomState extends State<NavbarBottom> {
             child: Container(
               // height: 50.h,
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  Container(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          currentScreen = const HomePage();
-                          currentTab = 0;
-                        });
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          currentTab == 0
-                              ? SvgPicture.asset(
-                                  'assets/images/home_bold.svg',
-                                  color: currentTab == 0
-                                      ? ripeMango
-                                      : cetaceanBlue,
-                                )
-                              : SvgPicture.asset(
-                                  'assets/images/home.svg',
-                                  color: currentTab == 0
-                                      ? ripeMango
-                                      : cetaceanBlue,
-                                ),
-                          Text(
-                            'Beranda',
-                            style: TextStyle(
-                              fontFamily: 'Nunito',
-                              color: currentTab == 0 ? ripeMango : cetaceanBlue,
-                            ),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(30).w,
+                    onTap: () {
+                      setState(() {
+                        currentScreen = const HomePage();
+                        currentTab = 0;
+                      });
+                    },
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        currentTab == 0
+                            ? SvgPicture.asset(
+                                'assets/images/home_bold.svg',
+                                color:
+                                    currentTab == 0 ? ripeMango : cetaceanBlue,
+                              )
+                            : SvgPicture.asset(
+                                'assets/images/home.svg',
+                                color:
+                                    currentTab == 0 ? ripeMango : cetaceanBlue,
+                              ),
+                        Text(
+                          'Beranda',
+                          style: TextStyle(
+                            fontFamily: 'Nunito',
+                            color: currentTab == 0 ? ripeMango : cetaceanBlue,
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(right: 20),
+                    padding: const EdgeInsets.only(right: 20).r,
                     child: InkWell(
                       onTap: () {
                         setState(() {
@@ -235,7 +232,9 @@ class _NavbarBottomState extends State<NavbarBottom> {
                     ),
                   ),
                   Container(
-                    padding: EdgeInsets.only(left: 20),
+                    padding: const EdgeInsets.only(left: 20).r,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30.0)),
                     child: InkWell(
                       onTap: () {
                         setState(() {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:easy_date_timeline/easy_date_timeline.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -123,7 +124,7 @@ class _DetailPageState extends State<DetailPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0).w,
+              padding: const EdgeInsets.symmetric(horizontal: 22.0).w,
               child: Container(
                 key: calendarKey,
                 padding: const EdgeInsets.symmetric(vertical: 7.0).w,
@@ -162,7 +163,7 @@ class _DetailPageState extends State<DetailPage> {
                 ? Column(
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15.0).r,
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0).w,
                         child: _kalender(),
                       ),
                       const Divider(
@@ -173,15 +174,15 @@ class _DetailPageState extends State<DetailPage> {
                 : Container(),
             Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 15.0, vertical: 10.0)
-                      .r,
+                  const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0)
+                      .w,
               child: Column(
                 key: detailTimerKey,
                 children: [
                   Padding(
                     padding: const EdgeInsets.symmetric(
-                            horizontal: 5.0, vertical: 8.0)
-                        .r,
+                            horizontal: 1.0, vertical: 8.0)
+                        .w,
                     child: Row(
                       children: [
                         SvgPicture.asset(
@@ -190,9 +191,9 @@ class _DetailPageState extends State<DetailPage> {
                           height: 20.h,
                           width: 20.w,
                         ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8.0).r,
+                        Container(
+                          // padding:
+                          //     const EdgeInsets.symmetric(horizontal: 8.0).w,
                           child: Text(
                             "Detail",
                             style: TextStyle(
