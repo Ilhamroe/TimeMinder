@@ -5,8 +5,8 @@ import 'package:time_minder/database/db_calendar.dart';
 import 'package:time_minder/database/db_helper.dart';
 import 'package:time_minder/utils/colors.dart';
 import 'package:time_minder/widgets/common/timer_list_page_no_hold.dart';
-import 'package:time_minder/widgets/home_page/card_home.dart';
-import 'package:time_minder/widgets/home_page/gird_recommendation.dart';
+import 'package:time_minder/widgets/home_page/banner_home.dart';
+import 'package:time_minder/widgets/home_page/grid_recommendation.dart';
 import 'package:time_minder/widgets/home_page/tooltip_homepage.dart';
 import 'package:time_minder/services/tooltip_storage.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
@@ -73,7 +73,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   late String _greeting;
   late String _imagePath;
 
-  // refresh data
   Future<void> _refreshData() async {
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
