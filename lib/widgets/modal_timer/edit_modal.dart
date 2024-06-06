@@ -40,6 +40,8 @@ class _EditModalState extends State<EditModal> {
   bool isNameEmpty = false;
   bool isDescEmpty = false;
   bool _isCounterZero = false;
+  late int counter1;
+  late int counter2;
 
   TextEditingController timerNameController = TextEditingController();
   TextEditingController descController = TextEditingController();
@@ -70,9 +72,11 @@ class _EditModalState extends State<EditModal> {
       _counterBreakTime = data[0]['rest'] ?? 0;
       _counterInterval = data[0]['interval'] ?? 0;
       initSwitch = _counterBreakTime != 0 || _counterInterval != 0;
-      if (initSwitch) {
+      if(initSwitch){
         hideContainer = false;
       }
+      counter1 = _counterBreakTime;
+      counter2 = _counterInterval;
     });
 
   }
@@ -177,6 +181,7 @@ class _EditModalState extends State<EditModal> {
 
   // edit data
   Future<void> _updateData(int id) async {
+    debugPrint('UPDATE DATA: $_counterBreakTime, $_counterInterval');
     await SQLHelper.updateData(
         id,
         timerNameController.text,
@@ -353,9 +358,6 @@ class _EditModalState extends State<EditModal> {
                                 onChanged: (value) {
                                   setState(() {
                                     initSwitch = value;
-                                    // if(!initSwitch){
-                                    //   _resetBreak();
-                                    // }
                                     debugPrint('initSwitch: $initSwitch');
                                   });
                                 },

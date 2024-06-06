@@ -62,18 +62,11 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   void _showInAppTour() {
     Future.delayed(const Duration(milliseconds: 30), () {
       SaveInAppTour().getHomePageStatus().then((value) => {
-            if (value == false)
-              {
-                // print("User has not seen this tutor"),
-                tutorialCoachMark.show(context: context)
-              }
-            // else
-            //   {print("User has seen this tutor")}
+            if (value == false) {tutorialCoachMark.show(context: context)}
           });
     });
   }
 
-  // refresh data
   Future<void> _refreshData() async {
     final List<Map<String, dynamic>> data = await SQLHelper.getAllData();
     setState(() {
@@ -95,7 +88,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     data.forEach((element) {
       totalElapsed += element['elapsed'] as int;
     });
-    // print(totalElapsed);
   }
 
   String formatElapsedTime(int totalSeconds) {
@@ -137,7 +129,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   }
 
   Future<void> _loadData() async {
-    await Future.delayed(const Duration(milliseconds: 200));
+    await Future.delayed(const Duration(milliseconds: 250));
   }
 
   @override

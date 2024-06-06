@@ -55,7 +55,7 @@ class _CardHomeState extends State<BannerHome> {
   }
 
   Future<void> _loadData() async {
-    await Future.delayed(const Duration(milliseconds: 450));
+    await Future.delayed(const Duration(milliseconds: 250));
   }
 
   @override
